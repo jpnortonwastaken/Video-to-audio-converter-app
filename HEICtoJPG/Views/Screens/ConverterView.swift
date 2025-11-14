@@ -11,6 +11,7 @@ import PhotosUI
 struct ConverterView: View {
     @StateObject private var viewModel = ConverterViewModel()
     @Environment(\.colorScheme) private var colorScheme
+    @State private var showImage = false
 
     var body: some View {
         NavigationView {
@@ -25,6 +26,8 @@ struct ConverterView: View {
                             // Image Preview
                             imagePreviewView(image: selectedImage)
                                 .padding(.horizontal, 24)
+                                .scaleEffect(showImage ? 1.0 : 0.3)
+                                .opacity(showImage ? 1.0 : 0.0)
                         } else {
                             // Input Options
                             VStack(spacing: 16) {
@@ -101,6 +104,18 @@ struct ConverterView: View {
         .onChange(of: viewModel.selectedPhotoItem) { _, _ in
             Task {
                 await viewModel.loadPhotoPickerItem()
+            }
+        }
+        .onChange(of: viewModel.selectedImage) { _, newValue in
+            if newValue != nil {
+                // Reset animation state
+                showImage = false
+                // Trigger bouncy animation with spring
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                    showImage = true
+                }
+            } else {
+                showImage = false
             }
         }
         .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
