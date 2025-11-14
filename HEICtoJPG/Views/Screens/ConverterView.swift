@@ -14,16 +14,16 @@ struct ConverterView: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
+            VStack(spacing: 0) {
+                // Header
+                headerView
+
                 // Background
-                (colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
-                    .ignoresSafeArea()
+                ZStack {
+                    (colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                        .ignoresSafeArea()
 
-                ScrollView {
                     VStack(spacing: 24) {
-                        // Header
-                        headerView
-
                         // Title
                         titleView
 
@@ -68,7 +68,6 @@ struct ConverterView: View {
                         .padding(.horizontal, 24)
 
                         Spacer()
-                            .frame(height: 40)
 
                         // Format Selector and Convert Button
                         VStack(spacing: 16) {
@@ -81,10 +80,10 @@ struct ConverterView: View {
                         .padding(.horizontal, 24)
                         .padding(.bottom, 100)
                     }
-                    .padding(.top, 8)
+                    .padding(.top, 20)
                 }
-                .scrollIndicators(.hidden)
             }
+            .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
             .navigationBarHidden(true)
         }
         .photosPicker(
