@@ -234,7 +234,7 @@ struct PaywallContent: View {
                 Button(action: {
                     HapticManager.shared.softImpact()
                     // Present Superwall paywall
-                    Superwall.shared.register(event: "onboarding_paywall")
+                    Superwall.shared.register(placement: "onboarding_paywall")
                     // For now, just complete onboarding
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         viewModel.completeOnboarding()
