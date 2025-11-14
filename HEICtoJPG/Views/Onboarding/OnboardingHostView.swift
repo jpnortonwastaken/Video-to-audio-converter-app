@@ -247,10 +247,12 @@ private struct StepConfiguration {
             self.showBackButton = true
             self.showProgress = true
             self.progress = 1.0
-            self.showContinueButton = false
-            self.continueButtonTitle = ""
-            self.canProceed = false
-            self.customAction = nil
+            self.showContinueButton = true
+            self.continueButtonTitle = "Continue"
+            self.canProceed = true
+            self.customAction = {
+                viewModel.completeOnboarding()
+            }
             self.showSkipButton = false
         }
     }

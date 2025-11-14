@@ -238,8 +238,8 @@ struct PaywallContent: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 let handler = PaywallPresentationHandler()
                 handler.onDismiss { paywallInfo, result in
-                    // After paywall is dismissed, complete onboarding
-                    viewModel.completeOnboarding()
+                    // Paywall dismissed - user stays on this screen
+                    // and can press continue button to proceed
                 }
 
                 Superwall.shared.register(placement: "campaign_trigger", handler: handler)
