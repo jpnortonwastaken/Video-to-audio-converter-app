@@ -157,13 +157,33 @@ struct ReviewContent: View {
                 HStack(spacing: 4) {
                     ForEach(0..<5) { _ in
                         Image(systemName: "star.fill")
-                            .font(.system(size: 32))
+                            .font(.system(size: 40))
                             .foregroundColor(.yellow)
                     }
                 }
                 .opacity(isVisible ? 1 : 0)
                 .scaleEffect(isVisible ? 1 : 0.8)
                 .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
+
+                // Supporting text
+                VStack(spacing: 12) {
+                    Text("Rate us 5 stars on the App Store")
+                        .font(.system(size: 19, weight: .semibold))
+                        .foregroundColor(.primary)
+                        .multilineTextAlignment(.center)
+                        .opacity(isVisible ? 1 : 0)
+                        .offset(y: isVisible ? 0 : 20)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
+
+                    Text("Your positive review helps us grow and continue improving the app for everyone.")
+                        .font(.system(size: 15))
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
+                        .opacity(isVisible ? 1 : 0)
+                        .offset(y: isVisible ? 0 : 20)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.3), value: isVisible)
+                }
             }
 
             Spacer()
