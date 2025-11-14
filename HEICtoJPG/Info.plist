@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SuperwallAPIKey</key>
+	<string>pk_muKbtj_cmgj92gRyw7vcf</string>
+	<key>PrivacyPolicyURL</key>
+	<string>https://www.graey.dev/privacy</string>
+	<key>AppDisplayName</key>
+	<string>HEICJPG</string>
+</dict>
+</plist>

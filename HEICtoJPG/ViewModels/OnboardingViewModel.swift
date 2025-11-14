@@ -1,0 +1,90 @@
+//
+//  OnboardingViewModel.swift
+//  HEIC to JPG
+//
+//  Created on 2025-11-07.
+//
+
+import Foundation
+import SwiftUI
+import Combine
+import StoreKit
+
+enum OnboardingStep: Int, CaseIterable, Hashable {
+    case heicToJpg = 0
+    case multipleFormats
+    case conversionHistory
+    case review
+    case paywall
+
+    var progress: Double {
+        let progressSteps = 5.0
+        return Double(self.rawValue + 1) / progressSteps
+    }
+}
+
+class OnboardingViewModel: ObservableObject {
+    @Published var currentStep: OnboardingStep = .heicToJpg
+    @Published var showOnboarding: Bool
+    @Published var hasRequestedReview = false
+
+    private let hasCompletedOnboardingKey = "hasCompletedOnboarding"
+
+    init() {
+        self.showOnboarding = !UserDefaults.standard.bool(forKey: hasCompletedOnboardingKey)
+    }
+
+    func nextStep() {
+        guard let nextStepRaw = OnboardingStep(rawValue: currentStep.rawValue + 1) else {
+            completeOnboarding()
+            return
+        }
+
+        // Request review when moving to review slide
+        if nextStepRaw == .review && !hasRequestedReview {
+            requestReview()
+        }
+
+        currentStep = nextStepRaw
+    }
+
+    func previousStep() {
+        guard currentStep.rawValue > 0,
+              let previousStepRaw = OnboardingStep(rawValue: currentStep.rawValue - 1) else {
+            return
+        }
+
+        currentStep = previousStepRaw
+    }
+
+    func completeOnboarding() {
+        UserDefaults.standard.set(true, forKey: hasCompletedOnboardingKey)
+
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+            showOnboarding = false
+        }
+    }
+
+    func canProceed(from step: OnboardingStep) -> Bool {
+        // All slides can be proceeded from
+        return true
+    }
+
+    func requestReview() {
+        guard !hasRequestedReview else { return }
+
+        hasRequestedReview = true
+
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            SKStoreReviewController.requestReview(in: windowScene)
+        }
+    }
+
+    // Reset for testing purposes
+    func resetOnboarding() {
+        UserDefaults.standard.set(false, forKey: hasCompletedOnboardingKey)
+        currentStep = .heicToJpg
+        showOnboarding = true
+        hasRequestedReview = false
+    }
+}
