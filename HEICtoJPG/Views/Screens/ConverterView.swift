@@ -285,9 +285,10 @@ struct ConverterView: View {
             .frame(height: 56)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(viewModel.selectedImage == nil ? Color.gray : Color.black)
+                    .fill(Color.black)
             )
             .foregroundColor(.white)
+            .opacity(viewModel.selectedImage == nil || viewModel.isConverting ? 0.5 : 1.0)
         }
         .disabled(viewModel.selectedImage == nil || viewModel.isConverting)
         .buttonStyle(ScaleDownButtonStyle())
