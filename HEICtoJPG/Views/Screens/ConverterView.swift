@@ -1,0 +1,326 @@
+//
+//  ConverterView.swift
+//  HEIC to JPG
+//
+//  Created by Claude on 11/14/25.
+//
+
+import SwiftUI
+import PhotosUI
+
+struct ConverterView: View {
+    @StateObject private var viewModel = ConverterViewModel()
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        NavigationView {
+            ZStack {
+                // Background
+                (colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                    .ignoresSafeArea()
+
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Header
+                        headerView
+
+                        // Title
+                        titleView
+
+                        // Input Options
+                        VStack(spacing: 16) {
+                            // Photos Option
+                            inputOptionCard(
+                                title: "Photos",
+                                subtitle: "Choose from Photos",
+                                icon: "photo.on.rectangle",
+                                backgroundColor: Color.pink.opacity(0.1),
+                                iconColor: .pink
+                            ) {
+                                viewModel.selectFromPhotos()
+                            }
+
+                            // Files and Paste Row
+                            HStack(spacing: 16) {
+                                // Files Option
+                                smallInputOptionCard(
+                                    title: "Files",
+                                    subtitle: "Pick from Files",
+                                    icon: "folder.fill",
+                                    backgroundColor: Color.blue.opacity(0.1),
+                                    iconColor: .blue
+                                ) {
+                                    viewModel.selectFromFiles()
+                                }
+
+                                // Paste Option
+                                smallInputOptionCard(
+                                    title: "Paste",
+                                    subtitle: "Paste an image",
+                                    icon: "doc.on.clipboard.fill",
+                                    backgroundColor: Color.orange.opacity(0.1),
+                                    iconColor: .orange
+                                ) {
+                                    viewModel.pasteImage()
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 24)
+
+                        Spacer()
+                            .frame(height: 40)
+
+                        // Format Selector and Convert Button
+                        VStack(spacing: 16) {
+                            // Format Selector
+                            formatSelectorView
+
+                            // Convert Button
+                            convertButton
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.bottom, 100)
+                    }
+                    .padding(.top, 8)
+                }
+                .scrollIndicators(.hidden)
+            }
+            .navigationBarHidden(true)
+        }
+        .photosPicker(
+            isPresented: $viewModel.showPhotoPicker,
+            selection: $viewModel.selectedPhotoItem,
+            matching: .images
+        )
+        .fileImporter(
+            isPresented: $viewModel.showFilePicker,
+            allowedContentTypes: [.image],
+            allowsMultipleSelection: false
+        ) { result in
+            handleFileSelection(result)
+        }
+        .onChange(of: viewModel.selectedPhotoItem) { _, _ in
+            Task {
+                await viewModel.loadPhotoPickerItem()
+            }
+        }
+        .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
+            Button("OK") {
+                viewModel.errorMessage = nil
+            }
+        } message: {
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+            }
+        }
+    }
+
+    // MARK: - Header
+    private var headerView: some View {
+        HStack {
+            // App Icon
+            Image("AppIcon")
+                .resizable()
+                .frame(width: 50, height: 50)
+                .cornerRadius(12)
+
+            // App Name
+            Text("H2JPG")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+
+            Spacer()
+
+            // Crown Icon (Premium indicator)
+            Button(action: {
+                HapticManager.shared.softImpact()
+                // TODO: Show premium/paywall
+            }) {
+                Image(systemName: "crown.fill")
+                    .font(.title2)
+                    .foregroundColor(.orange)
+                    .frame(width: 50, height: 50)
+                    .background(
+                        Circle()
+                            .fill(Color.orange.opacity(0.1))
+                    )
+            }
+        }
+        .padding(.horizontal, 24)
+    }
+
+    // MARK: - Title
+    private var titleView: some View {
+        Text("Convert to Any Format")
+            .font(.title)
+            .fontWeight(.bold)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 24)
+    }
+
+    // MARK: - Input Option Card (Large)
+    private func inputOptionCard(
+        title: String,
+        subtitle: String,
+        icon: String,
+        backgroundColor: Color,
+        iconColor: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.system(size: 50))
+                    .foregroundColor(iconColor)
+
+                Text(title)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 160)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(backgroundColor)
+            )
+        }
+        .buttonStyle(ScaleDownButtonStyle())
+    }
+
+    // MARK: - Input Option Card (Small)
+    private func smallInputOptionCard(
+        title: String,
+        subtitle: String,
+        icon: String,
+        backgroundColor: Color,
+        iconColor: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.system(size: 40))
+                    .foregroundColor(iconColor)
+
+                Text(title)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 160)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(backgroundColor)
+            )
+        }
+        .buttonStyle(ScaleDownButtonStyle())
+    }
+
+    // MARK: - Format Selector
+    private var formatSelectorView: some View {
+        HStack {
+            Text("Format")
+                .font(.headline)
+                .foregroundColor(colorScheme == .dark ? .white : .black)
+
+            Spacer()
+
+            // Dropdown button
+            Menu {
+                ForEach(ImageFormat.allCases) { format in
+                    Button(action: {
+                        HapticManager.shared.softImpact()
+                        viewModel.selectedFormat = format
+                    }) {
+                        HStack {
+                            Text(format.displayName)
+                            if viewModel.selectedFormat == format {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    Text(viewModel.selectedFormat.displayName)
+                        .font(.headline)
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                    Image(systemName: "chevron.down")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.blue.opacity(0.1))
+        )
+    }
+
+    // MARK: - Convert Button
+    private var convertButton: some View {
+        Button(action: {
+            Task {
+                await viewModel.convertImage()
+            }
+        }) {
+            HStack {
+                if viewModel.isConverting {
+                    ProgressView()
+                        .tint(.white)
+                } else {
+                    Text("Convert")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 56)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(viewModel.selectedImage == nil ? Color.gray : Color.black)
+            )
+            .foregroundColor(.white)
+        }
+        .disabled(viewModel.selectedImage == nil || viewModel.isConverting)
+        .buttonStyle(ScaleDownButtonStyle())
+    }
+
+    // MARK: - File Selection Handler
+    private func handleFileSelection(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+
+            // Load image from file URL
+            if url.startAccessingSecurityScopedResource() {
+                defer { url.stopAccessingSecurityScopedResource() }
+
+                if let data = try? Data(contentsOf: url),
+                   let image = UIImage(data: data) {
+                    viewModel.selectedImage = image
+                }
+            }
+
+        case .failure(let error):
+            viewModel.errorMessage = "Failed to load file: \(error.localizedDescription)"
+        }
+    }
+}
+
+#Preview {
+    ConverterView()
+}
