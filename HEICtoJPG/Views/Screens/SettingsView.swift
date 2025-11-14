@@ -92,6 +92,24 @@ struct SettingsView: View {
                             }
                         }
 
+                        // Debug Section
+                        #if DEBUG
+                        SettingsSection(title: "Debug") {
+                            VStack(spacing: 0) {
+                                SettingsCard(
+                                    icon: "arrow.counterclockwise",
+                                    title: "Reset Onboarding",
+                                    subtitle: "Show onboarding flow again",
+                                    iconColor: .orange,
+                                    showChevron: false
+                                ) {
+                                    HapticManager.shared.buttonTap()
+                                    onboardingViewModel.resetOnboarding()
+                                }
+                            }
+                        }
+                        #endif
+
                         // App info at bottom
                         VStack(spacing: 12) {
                             // App Icon
