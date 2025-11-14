@@ -10,10 +10,14 @@ import UniformTypeIdentifiers
 
 enum ImageFormat: String, CaseIterable, Identifiable {
     case jpg = "JPG"
-    case png = "PNG"
-    case heic = "HEIC"
+    case jpeg = "JPEG"
     case pdf = "PDF"
+    case png = "PNG"
+    case gif = "GIF"
+    case tiff = "TIFF"
     case webp = "WEBP"
+    case bmp = "BMP"
+    case heic = "HEIC"
 
     var id: String { rawValue }
 
@@ -23,7 +27,7 @@ enum ImageFormat: String, CaseIterable, Identifiable {
 
     var utType: UTType {
         switch self {
-        case .jpg:
+        case .jpg, .jpeg:
             return .jpeg
         case .png:
             return .png
@@ -33,6 +37,12 @@ enum ImageFormat: String, CaseIterable, Identifiable {
             return .pdf
         case .webp:
             return .webP
+        case .gif:
+            return .gif
+        case .tiff:
+            return .tiff
+        case .bmp:
+            return .bmp
         }
     }
 
@@ -40,6 +50,8 @@ enum ImageFormat: String, CaseIterable, Identifiable {
         switch self {
         case .jpg:
             return "jpg"
+        case .jpeg:
+            return "jpeg"
         case .png:
             return "png"
         case .heic:
@@ -48,6 +60,12 @@ enum ImageFormat: String, CaseIterable, Identifiable {
             return "pdf"
         case .webp:
             return "webp"
+        case .gif:
+            return "gif"
+        case .tiff:
+            return "tiff"
+        case .bmp:
+            return "bmp"
         }
     }
 }
