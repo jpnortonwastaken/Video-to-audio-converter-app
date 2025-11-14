@@ -18,16 +18,9 @@ struct ConverterView: View {
                 // Header
                 headerView
 
-                // Background
-                ZStack {
-                    (colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
-                        .ignoresSafeArea()
-
-                    VStack(spacing: 24) {
-                        // Title
-                        titleView
-
-                        // Input Options or Image Preview
+                // Content
+                VStack(spacing: 32) {
+                    // Input Options or Image Preview
                         if let selectedImage = viewModel.selectedImage {
                             // Image Preview
                             imagePreviewView(image: selectedImage)
@@ -86,9 +79,9 @@ struct ConverterView: View {
                         }
                         .padding(.horizontal, 24)
                         .padding(.bottom, 100)
-                    }
-                    .padding(.top, 20)
                 }
+                .padding(.top, 20)
+                .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
             }
             .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
             .navigationBarHidden(true)
@@ -135,15 +128,6 @@ struct ConverterView: View {
         .padding(.horizontal, 24)
         .padding(.top, 8)
         .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
-    }
-
-    // MARK: - Title
-    private var titleView: some View {
-        Text("Convert to Any Format")
-            .font(.title)
-            .fontWeight(.bold)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 24)
     }
 
     // MARK: - Input Option Card (Large)
