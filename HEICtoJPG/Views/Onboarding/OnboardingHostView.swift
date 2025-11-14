@@ -233,11 +233,8 @@ private struct StepConfiguration {
             self.progress = step.progress
             self.showContinueButton = true
             self.continueButtonTitle = "Continue"
-            self.canProceed = true
-            self.customAction = {
-                viewModel.requestReview()
-                viewModel.nextStep()
-            }
+            self.canProceed = viewModel.canProceedFromReview
+            self.customAction = nil
             self.showSkipButton = false
 
         case .paywall:

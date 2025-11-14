@@ -187,6 +187,12 @@ struct ReviewContent: View {
         }
         .onAppear {
             isVisible = true
+
+            // After 3 seconds, enable the continue button and request review
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                viewModel.canProceedFromReview = true
+                viewModel.requestReview()
+            }
         }
     }
 }
@@ -229,38 +235,23 @@ struct PaywallContent: View {
                         .offset(y: isVisible ? 0 : 20)
                         .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.3), value: isVisible)
                 }
-
-                // Continue button
-                Button(action: {
-                    HapticManager.shared.softImpact()
-                    // Present Superwall paywall
-                    Superwall.shared.register(placement: "campaign_trigger")
-                    // For now, just complete onboarding
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        viewModel.completeOnboarding()
-                    }
-                }) {
-                    Text("Continue")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(colorScheme == .dark ? .black : .white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(
-                            RoundedRectangle(cornerRadius: 28)
-                                .fill(colorScheme == .dark ? Color.white : Color.black)
-                        )
-                }
-                .buttonStyle(BounceButtonStyle(scaleAmount: 0.9))
-                .padding(.horizontal, 20)
-                .opacity(isVisible ? 1 : 0)
-                .offset(y: isVisible ? 0 : 20)
-                .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.4), value: isVisible)
             }
 
             Spacer()
         }
         .onAppear {
             isVisible = true
+
+            // Show paywall immediately after brief delay for animations
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let handler = PaywallPresentationHandler()
+                handler.onDismiss { paywallInfo, result in
+                    // After paywall is dismissed, complete onboarding
+                    viewModel.completeOnboarding()
+                }
+
+                Superwall.shared.register(placement: "campaign_trigger", handler: handler)
+            }
         }
     }
 }

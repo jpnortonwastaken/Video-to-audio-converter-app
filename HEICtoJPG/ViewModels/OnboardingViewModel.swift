@@ -27,6 +27,7 @@ class OnboardingViewModel: ObservableObject {
     @Published var currentStep: OnboardingStep = .heicToJpg
     @Published var showOnboarding: Bool
     @Published var hasRequestedReview = false
+    @Published var canProceedFromReview = false
 
     private let hasCompletedOnboardingKey = "hasCompletedOnboarding"
 
@@ -35,20 +36,25 @@ class OnboardingViewModel: ObservableObject {
     }
 
     func nextStep() {
+        // Reset review button state when leaving review step
+        if currentStep == .review {
+            canProceedFromReview = false
+        }
+
         guard let nextStepRaw = OnboardingStep(rawValue: currentStep.rawValue + 1) else {
             completeOnboarding()
             return
-        }
-
-        // Request review when moving to review slide
-        if nextStepRaw == .review && !hasRequestedReview {
-            requestReview()
         }
 
         currentStep = nextStepRaw
     }
 
     func previousStep() {
+        // Reset review button state when leaving review step
+        if currentStep == .review {
+            canProceedFromReview = false
+        }
+
         guard currentStep.rawValue > 0,
               let previousStepRaw = OnboardingStep(rawValue: currentStep.rawValue - 1) else {
             return
@@ -86,5 +92,6 @@ class OnboardingViewModel: ObservableObject {
         currentStep = .heicToJpg
         showOnboarding = true
         hasRequestedReview = false
+        canProceedFromReview = false
     }
 }
