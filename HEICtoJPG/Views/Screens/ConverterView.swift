@@ -31,6 +31,13 @@ struct ConverterView: View {
                         } else {
                             // Input Options
                             VStack(spacing: 16) {
+                                // Title
+                                Text("Convert to any format")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                                    .padding(.bottom, 8)
+
                                 // Photos Option
                                 inputOptionCard(
                                     title: "Photos",
