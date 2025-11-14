@@ -9,7 +9,6 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var onboardingViewModel: OnboardingViewModel
-    @State private var showingFeedback = false
     @AppStorage("appearance_preference") private var appearancePreference: AppearancePreference = .system
     @Environment(\.colorScheme) private var colorScheme
 
@@ -37,22 +36,6 @@ struct SettingsView: View {
                         SettingsSection(title: "Preferences") {
                             VStack(spacing: 0) {
                                 AppearanceSettingsCard()
-                            }
-                        }
-
-                        // Support Section
-                        SettingsSection(title: "Support") {
-                            VStack(spacing: 0) {
-                                SettingsCard(
-                                    icon: "envelope.fill",
-                                    title: "Send Feedback",
-                                    subtitle: "Share your thoughts and suggestions",
-                                    iconColor: .primary,
-                                    showChevron: true
-                                ) {
-                                    HapticManager.shared.buttonTap()
-                                    showingFeedback = true
-                                }
                             }
                         }
 
@@ -173,10 +156,6 @@ struct SettingsView: View {
             .navigationBarHidden(true)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showingFeedback) {
-                FeedbackView(isPresented: $showingFeedback)
-                    .presentationCornerRadius(32)
-            }
         }
     }
 }

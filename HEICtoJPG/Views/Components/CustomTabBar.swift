@@ -14,16 +14,16 @@ enum TabItem: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .home: return "Home"
-        case .progress: return "Progress"
+        case .home: return "Converter"
+        case .progress: return "History"
         case .settings: return "Settings"
         }
     }
 
     var icon: String {
         switch self {
-        case .home: return "house.fill"
-        case .progress: return "chart.bar.fill"
+        case .home: return "arrow.triangle.2.circlepath"
+        case .progress: return "clock.arrow.circlepath"
         case .settings: return "gearshape.fill"
         }
     }
