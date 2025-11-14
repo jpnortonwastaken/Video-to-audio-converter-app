@@ -118,35 +118,17 @@ struct ConverterView: View {
     // MARK: - Header
     private var headerView: some View {
         HStack {
-            // App Icon
-            Image("AppIcon")
-                .resizable()
-                .frame(width: 50, height: 50)
-                .cornerRadius(12)
-
-            // App Name
-            Text("H2JPG")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(AppConstants.appName)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+            }
 
             Spacer()
-
-            // Crown Icon (Premium indicator)
-            Button(action: {
-                HapticManager.shared.softImpact()
-                // TODO: Show premium/paywall
-            }) {
-                Image(systemName: "crown.fill")
-                    .font(.title2)
-                    .foregroundColor(.orange)
-                    .frame(width: 50, height: 50)
-                    .background(
-                        Circle()
-                            .fill(Color.orange.opacity(0.1))
-                    )
-            }
         }
         .padding(.horizontal, 24)
+        .padding(.top, 8)
+        .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
     }
 
     // MARK: - Title
