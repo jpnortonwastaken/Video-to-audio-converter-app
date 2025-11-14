@@ -87,24 +87,12 @@ struct TabButtonStyle: ButtonStyle {
     }
 }
 
-// Button style for settings/other buttons - scale with grey background
+// Button style for buttons - scale down on press
 struct ScaleDownButtonStyle: ButtonStyle {
     var scaleAmount: CGFloat = 0.94
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.gray.opacity(0.15))
-                    .padding(6)
-                    .opacity(configuration.isPressed ? 1 : 0)
-                    .animation(
-                        configuration.isPressed
-                            ? .easeIn(duration: 0.15)
-                            : .easeOut(duration: 0.2),
-                        value: configuration.isPressed
-                    )
-            )
             .scaleEffect(configuration.isPressed ? scaleAmount : 1.0)
             .animation(
                 configuration.isPressed
