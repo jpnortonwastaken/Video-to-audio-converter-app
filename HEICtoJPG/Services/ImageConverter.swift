@@ -7,6 +7,7 @@
 
 import UIKit
 import PDFKit
+import UniformTypeIdentifiers
 
 enum ConversionError: LocalizedError {
     case invalidImage
@@ -28,7 +29,7 @@ enum ConversionError: LocalizedError {
 actor ImageConverter {
     func convert(image: UIImage, to format: ImageFormat) async throws -> Data {
         switch format {
-        case .jpg:
+        case .jpg, .jpeg:
             return try convertToJPEG(image)
         case .png:
             return try convertToPNG(image)
@@ -40,6 +41,12 @@ actor ImageConverter {
             // WebP conversion would require additional library
             // For now, fallback to PNG
             return try convertToPNG(image)
+        case .gif:
+            return try convertToGIF(image)
+        case .tiff:
+            return try convertToTIFF(image)
+        case .bmp:
+            return try convertToBMP(image)
         }
     }
 
@@ -100,5 +107,53 @@ actor ImageConverter {
         pdfContext.closePDF()
 
         return pdfData as Data
+    }
+
+    private func convertToGIF(_ image: UIImage) throws -> Data {
+        let data = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(data, UTType.gif.identifier as CFString, 1, nil),
+              let cgImage = image.cgImage else {
+            throw ConversionError.conversionFailed
+        }
+
+        CGImageDestinationAddImage(destination, cgImage, nil)
+
+        guard CGImageDestinationFinalize(destination) else {
+            throw ConversionError.conversionFailed
+        }
+
+        return data as Data
+    }
+
+    private func convertToTIFF(_ image: UIImage) throws -> Data {
+        let data = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(data, UTType.tiff.identifier as CFString, 1, nil),
+              let cgImage = image.cgImage else {
+            throw ConversionError.conversionFailed
+        }
+
+        CGImageDestinationAddImage(destination, cgImage, nil)
+
+        guard CGImageDestinationFinalize(destination) else {
+            throw ConversionError.conversionFailed
+        }
+
+        return data as Data
+    }
+
+    private func convertToBMP(_ image: UIImage) throws -> Data {
+        let data = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(data, UTType.bmp.identifier as CFString, 1, nil),
+              let cgImage = image.cgImage else {
+            throw ConversionError.conversionFailed
+        }
+
+        CGImageDestinationAddImage(destination, cgImage, nil)
+
+        guard CGImageDestinationFinalize(destination) else {
+            throw ConversionError.conversionFailed
+        }
+
+        return data as Data
     }
 }
