@@ -31,9 +31,9 @@ struct OnboardingHostView: View {
                     .padding(.top, stepConfig.showHeader ? 16 : 0)
             }
 
-            Spacer(minLength: 0)
+            Spacer()
 
-            // Title and subtitle (hidden for welcome screen) - now below content
+            // Title and subtitle (hidden for welcome screen) - centered below content
             if stepConfig.showTitleSection {
                 VStack(alignment: .center, spacing: 8) {
                     Text(stepConfig.title)
@@ -50,12 +50,11 @@ struct OnboardingHostView: View {
                             .multilineTextAlignment(.center)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 24)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 40)
             }
 
-            Spacer(minLength: 0)
+            Spacer()
 
             // Bottom action buttons
             bottomButtons
