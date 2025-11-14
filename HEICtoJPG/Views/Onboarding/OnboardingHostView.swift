@@ -227,7 +227,7 @@ private struct StepConfiguration {
             self.showSkipButton = false
 
         case .review:
-            self.title = "Enjoying \(AppConstants.appName)?"
+            self.title = "Give us a review"
             self.subtitle = "Rate us on the App Store"
             self.showHeader = true
             self.showTitleSection = true

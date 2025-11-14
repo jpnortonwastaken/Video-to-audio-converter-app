@@ -164,24 +164,6 @@ struct ReviewContent: View {
                 .opacity(isVisible ? 1 : 0)
                 .scaleEffect(isVisible ? 1 : 0.8)
                 .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
-
-                // Title
-                Text("Enjoying \(AppConstants.appName)?")
-                    .font(.system(size: 24, weight: .bold))
-                    .multilineTextAlignment(.center)
-                    .opacity(isVisible ? 1 : 0)
-                    .offset(y: isVisible ? 0 : 20)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
-
-                // Description
-                Text("We'd love to hear from you! Rate us on the App Store.")
-                    .font(.system(size: 17))
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 20)
-                    .opacity(isVisible ? 1 : 0)
-                    .offset(y: isVisible ? 0 : 20)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.3), value: isVisible)
             }
 
             Spacer()
