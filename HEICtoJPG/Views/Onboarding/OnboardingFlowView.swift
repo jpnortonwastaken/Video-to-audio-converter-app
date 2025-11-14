@@ -94,7 +94,7 @@ struct WelcomeScreenView: View {
             .offset(y: showButton ? 0 : 20)
             .animation(.spring(response: 0.6, dampingFraction: 0.8), value: showButton)
         }
-        .background((colorScheme == .dark ? Color.black : Color(.systemBackground)).ignoresSafeArea())
+        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea())
         .onAppear {
             playAnimations()
         }

@@ -1,0 +1,237 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "96BD399D",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "17.99",
+      "familyShareable" : false,
+      "internalID" : "6755287423",
+      "localizations" : [
+        {
+          "description" : "Lifetime",
+          "displayName" : "Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "Lifetime22",
+      "referenceName" : "Lifetime22",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "23.99",
+      "familyShareable" : false,
+      "internalID" : "6755287376",
+      "localizations" : [
+        {
+          "description" : "Lifetime",
+          "displayName" : "Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "Lifetime44",
+      "referenceName" : "Lifetime44",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "29.99",
+      "familyShareable" : false,
+      "internalID" : "6755287205",
+      "localizations" : [
+        {
+          "description" : "Lifetime",
+          "displayName" : "Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "Lifetime66",
+      "referenceName" : "Lifetime66",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "35.99",
+      "familyShareable" : false,
+      "internalID" : "6755287658",
+      "localizations" : [
+        {
+          "description" : "Lifetime",
+          "displayName" : "Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "Lifetime88",
+      "referenceName" : "Lifetime88",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "5.99",
+      "familyShareable" : false,
+      "internalID" : "6755288570",
+      "localizations" : [
+        {
+          "description" : "Lifetime",
+          "displayName" : "Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "LifetimeDiscount1",
+      "referenceName" : "LifetimeDiscount1",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6755275481",
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_developerTeamID" : "9X945ZDXM2",
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 784795285.80371499,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21832062",
+      "localizations" : [
+
+      ],
+      "name" : "HEIC to JPG",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "2.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6755281133",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Weekly",
+              "displayName" : "Weekly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Weekly2",
+          "recurringSubscriptionPeriod" : "P1W",
+          "referenceName" : "Weekly2",
+          "subscriptionGroupID" : "21832062",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "3.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6755281032",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Weekly",
+              "displayName" : "Weekly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Weekly4",
+          "recurringSubscriptionPeriod" : "P1W",
+          "referenceName" : "Weekly4",
+          "subscriptionGroupID" : "21832062",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "6755286628",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Weekly",
+              "displayName" : "Weekly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Weekly6",
+          "recurringSubscriptionPeriod" : "P1W",
+          "referenceName" : "Weekly6",
+          "subscriptionGroupID" : "21832062",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "5.99",
+          "familyShareable" : false,
+          "groupNumber" : 4,
+          "internalID" : "6755286937",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Weekly",
+              "displayName" : "Weekly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Weekly8",
+          "recurringSubscriptionPeriod" : "P1W",
+          "referenceName" : "Weekly8",
+          "subscriptionGroupID" : "21832062",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
