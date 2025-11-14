@@ -149,7 +149,8 @@ struct ConverterView: View {
             Spacer()
         }
         .padding(.horizontal, 24)
-        .padding(.top, 8)
+        .padding(.top, 16)
+        .padding(.bottom, 8)
         .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
     }
 
