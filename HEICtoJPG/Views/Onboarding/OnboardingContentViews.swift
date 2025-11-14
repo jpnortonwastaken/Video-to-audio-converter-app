@@ -146,6 +146,7 @@ struct ConversionHistoryContent: View {
 struct ReviewContent: View {
     @EnvironmentObject var viewModel: OnboardingViewModel
     @State private var isVisible = false
+    @State private var reviewTask: DispatchWorkItem?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -188,11 +189,20 @@ struct ReviewContent: View {
         .onAppear {
             isVisible = true
 
-            // After 3 seconds, enable the continue button and request review
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            // Create a cancellable work item for the review timer
+            let workItem = DispatchWorkItem {
                 viewModel.canProceedFromReview = true
                 viewModel.requestReview()
             }
+            reviewTask = workItem
+
+            // After 3 seconds, enable the continue button and request review
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: workItem)
+        }
+        .onDisappear {
+            // Cancel the timer if user navigates away before it fires
+            reviewTask?.cancel()
+            reviewTask = nil
         }
     }
 }
