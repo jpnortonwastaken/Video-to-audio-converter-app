@@ -14,7 +14,6 @@ struct OnboardingHostView: View {
     @EnvironmentObject var viewModel: OnboardingViewModel
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
-    @State private var showSkipConfirmation = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -60,25 +59,6 @@ struct OnboardingHostView: View {
         }
         .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea())
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.currentStep)
-        .onChange(of: viewModel.currentStep) { _, newStep in
-            MixpanelService.shared.trackScreen(step: newStep.rawValue)
-        }
-        .onAppear {
-            // Track initial screen when view first appears
-            // .onChange only fires on changes, not initial value
-            MixpanelService.shared.trackScreen(step: viewModel.currentStep.rawValue)
-        }
-        .alert("Are you sure?", isPresented: $showSkipConfirmation) {
-            Button("Cancel", role: .cancel) {
-                HapticManager.shared.softImpact()
-            }
-            Button("Skip", role: .destructive) {
-                HapticManager.shared.softImpact()
-                viewModel.skipToLogin()
-            }
-        } message: {
-            Text("We use this to make your custom plan more accurate.")
-        }
     }
 
     // MARK: - Header
@@ -90,13 +70,8 @@ struct OnboardingHostView: View {
                 Button(action: {
                     HapticManager.shared.softImpact()
 
-                    // Dismiss keyboard immediately if on name/age step
-                    if viewModel.currentStep == .nameAge {
-                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    }
-
-                    // If on first onboarding screen (gender), dismiss back to welcome
-                    if viewModel.currentStep == .gender {
+                    // If on first onboarding screen, dismiss back to welcome
+                    if viewModel.currentStep == .heicToJpg {
                         dismiss()
                     } else {
                         viewModel.previousStep()
@@ -142,24 +117,16 @@ struct OnboardingHostView: View {
     @ViewBuilder
     private var stepContent: some View {
         switch viewModel.currentStep {
-        case .welcome:
-            EmptyView() // Welcome is now separate
-        case .gender:
-            GenderSelectionContent()
-        case .nameAge:
-            NameAgeContent()
-        case .referralSource:
-            ReferralSourceContent()
-        case .calAIComparison:
-            CalAIComparisonContent()
-        case .goal:
-            GoalSelectionContent()
-        case .calculating:
-            CalculatingResultsContent()
-        case .rating:
-            RatingContent()
-        case .login:
-            CreateAccountContent()
+        case .heicToJpg:
+            HEICtoJPGContent()
+        case .multipleFormats:
+            MultipleFormatsContent()
+        case .conversionHistory:
+            ConversionHistoryContent()
+        case .review:
+            ReviewContent()
+        case .paywall:
+            PaywallContent()
         }
     }
 
@@ -175,11 +142,6 @@ struct OnboardingHostView: View {
                     action: {
                         HapticManager.shared.softImpact()
 
-                        // Dismiss keyboard immediately if on name/age step
-                        if viewModel.currentStep == .nameAge {
-                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                        }
-
                         if let customAction = stepConfig.customAction {
                             customAction()
                         } else {
@@ -188,19 +150,6 @@ struct OnboardingHostView: View {
                     }
                 )
                 .padding(.top, 16)
-
-                // Skip button (only show on certain steps)
-                if stepConfig.showSkipButton {
-                    Button(action: {
-                        HapticManager.shared.softImpact()
-                        showSkipConfirmation = true
-                    }) {
-                        Text("Skip onboarding")
-                            .font(.system(size: 15, weight: .medium))
-                            .foregroundColor(.secondary)
-                            .frame(height: 44)
-                    }
-                }
             }
             .padding(.bottom, 8)
         }
@@ -232,65 +181,9 @@ private struct StepConfiguration {
 
     init(for step: OnboardingStep, viewModel: OnboardingViewModel) {
         switch step {
-        case .welcome:
-            self.title = ""
-            self.subtitle = nil
-            self.showHeader = false
-            self.showTitleSection = false
-            self.showBackButton = false
-            self.showProgress = false
-            self.progress = 0
-            self.showContinueButton = true
-            self.continueButtonTitle = "Get Started"
-            self.canProceed = true
-            self.customAction = nil
-            self.showSkipButton = false
-
-        case .gender:
-            self.title = "Select Your Gender"
-            self.subtitle = "Help us personalize your experience"
-            self.showHeader = true
-            self.showTitleSection = true
-            self.showBackButton = true
-            self.showProgress = true
-            self.progress = step.progress
-            self.showContinueButton = true
-            self.continueButtonTitle = "Continue"
-            self.canProceed = viewModel.canProceed(from: step)
-            self.customAction = nil
-            self.showSkipButton = true
-
-        case .nameAge:
-            self.title = "What's Your Name?"
-            self.subtitle = "And how old are you?"
-            self.showHeader = true
-            self.showTitleSection = true
-            self.showBackButton = true
-            self.showProgress = true
-            self.progress = step.progress
-            self.showContinueButton = true
-            self.continueButtonTitle = "Continue"
-            self.canProceed = viewModel.canProceed(from: step)
-            self.customAction = nil
-            self.showSkipButton = true
-
-        case .referralSource:
-            self.title = "How Did You Hear About Us?"
-            self.subtitle = "Help us improve our outreach"
-            self.showHeader = true
-            self.showTitleSection = true
-            self.showBackButton = true
-            self.showProgress = true
-            self.progress = step.progress
-            self.showContinueButton = true
-            self.continueButtonTitle = "Continue"
-            self.canProceed = viewModel.canProceed(from: step)
-            self.customAction = nil
-            self.showSkipButton = true
-
-        case .calAIComparison:
-            self.title = "Why Choose \(AppConstants.appName)?"
-            self.subtitle = "See how we compare"
+        case .heicToJpg:
+            self.title = "Convert HEIC to JPG"
+            self.subtitle = "Transform your iPhone photos to universal format"
             self.showHeader = true
             self.showTitleSection = true
             self.showBackButton = true
@@ -300,11 +193,11 @@ private struct StepConfiguration {
             self.continueButtonTitle = "Continue"
             self.canProceed = true
             self.customAction = nil
-            self.showSkipButton = true
+            self.showSkipButton = false
 
-        case .goal:
-            self.title = "What's Your Goal?"
-            self.subtitle = "We'll personalize your plan"
+        case .multipleFormats:
+            self.title = "Multiple Formats"
+            self.subtitle = "Convert to JPG, PNG, and more"
             self.showHeader = true
             self.showTitleSection = true
             self.showBackButton = true
@@ -312,27 +205,13 @@ private struct StepConfiguration {
             self.progress = step.progress
             self.showContinueButton = true
             self.continueButtonTitle = "Continue"
-            self.canProceed = viewModel.canProceed(from: step)
-            self.customAction = nil
-            self.showSkipButton = true
-
-        case .calculating:
-            self.title = "Analyzing Your Data..."
-            self.subtitle = nil
-            self.showHeader = false
-            self.showTitleSection = false
-            self.showBackButton = false
-            self.showProgress = false
-            self.progress = 1.0
-            self.showContinueButton = false
-            self.continueButtonTitle = ""
-            self.canProceed = false
+            self.canProceed = true
             self.customAction = nil
             self.showSkipButton = false
 
-        case .rating:
-            self.title = "Give us a rating"
-            self.subtitle = nil
+        case .conversionHistory:
+            self.title = "Conversion History"
+            self.subtitle = "Track all your conversions in one place"
             self.showHeader = true
             self.showTitleSection = true
             self.showBackButton = true
@@ -340,13 +219,30 @@ private struct StepConfiguration {
             self.progress = step.progress
             self.showContinueButton = true
             self.continueButtonTitle = "Continue"
-            self.canProceed = viewModel.canProceedFromRating
+            self.canProceed = true
             self.customAction = nil
             self.showSkipButton = false
 
-        case .login:
-            self.title = "Create Your Account"
-            self.subtitle = "One tap to get started"
+        case .review:
+            self.title = "Enjoying \(AppConstants.appName)?"
+            self.subtitle = "Rate us on the App Store"
+            self.showHeader = true
+            self.showTitleSection = true
+            self.showBackButton = true
+            self.showProgress = true
+            self.progress = step.progress
+            self.showContinueButton = true
+            self.continueButtonTitle = "Continue"
+            self.canProceed = true
+            self.customAction = {
+                viewModel.requestReview()
+                viewModel.nextStep()
+            }
+            self.showSkipButton = false
+
+        case .paywall:
+            self.title = "Get Started Converting"
+            self.subtitle = "Choose your plan"
             self.showHeader = true
             self.showTitleSection = true
             self.showBackButton = true

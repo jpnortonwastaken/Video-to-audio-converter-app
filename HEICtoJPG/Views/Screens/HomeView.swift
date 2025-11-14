@@ -6,10 +6,8 @@
 //
 
 import SwiftUI
-import Auth
 
 struct HomeView: View {
-    @EnvironmentObject var authManager: AuthViewModel
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -44,13 +42,6 @@ struct HomeView: View {
                             Text("Welcome!")
                                 .font(.system(size: 32, weight: .bold))
                                 .contentTransition(.numericText())
-
-                            if let user = SupabaseService.shared.currentUser, let email = user.email {
-                                Text(email)
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.secondary)
-                                    .contentTransition(.numericText())
-                            }
                         }
 
                         Spacer()
@@ -74,5 +65,4 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
-        .environmentObject(AuthViewModel())
 }

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ProgressView: View {
-    @EnvironmentObject var authManager: AuthViewModel
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -71,5 +70,4 @@ struct ProgressView: View {
 
 #Preview {
     ProgressView()
-        .environmentObject(AuthViewModel())
 }

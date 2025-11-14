@@ -6,18 +6,10 @@
 //
 
 import SwiftUI
-import Auth
 
 struct SettingsView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var onboardingViewModel: OnboardingViewModel
-    @StateObject private var userProfileViewModel = UserProfileViewModel()
-    @State private var showingNameEditor = false
-    @State private var showingSignOutAlert = false
-    @State private var showingDeleteAccountAlert = false
     @State private var showingFeedback = false
-    @State private var showingDeleteAccountError = false
-    @State private var deleteAccountErrorMessage = ""
     @AppStorage("appearance_preference") private var appearancePreference: AppearancePreference = .system
     @Environment(\.colorScheme) private var colorScheme
 
@@ -41,26 +33,6 @@ struct SettingsView: View {
                 // Settings Content
                 ScrollView {
                     VStack(spacing: 32) {
-                        // User Profile Section
-                        SettingsSection(title: "Profile") {
-                            SettingsCard(
-                                icon: "person.fill",
-                                title: userProfileViewModel.displayNameOrPlaceholder,
-                                subtitle: {
-                                    if let user = SupabaseService.shared.currentUser {
-                                        return "Member since \(memberSinceText(user.createdAt))"
-                                    } else {
-                                        return "Not signed in"
-                                    }
-                                }(),
-                                iconColor: .primary,
-                                showChevron: true
-                            ) {
-                                HapticManager.shared.buttonTap()
-                                showingNameEditor = true
-                            }
-                        }
-
                         // Preferences Section
                         SettingsSection(title: "Preferences") {
                             VStack(spacing: 0) {
@@ -116,36 +88,6 @@ struct SettingsView: View {
                                     if let url = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/") {
                                         UIApplication.shared.open(url)
                                     }
-                                }
-                            }
-                        }
-
-                        // Account Section
-                        SettingsSection(title: "Account") {
-                            VStack(spacing: 0) {
-                                SettingsCard(
-                                    icon: "rectangle.portrait.and.arrow.right.fill",
-                                    title: "Logout",
-                                    subtitle: "",
-                                    iconColor: .red,
-                                    showChevron: false
-                                ) {
-                                    HapticManager.shared.buttonTap()
-                                    showingSignOutAlert = true
-                                }
-
-                                Divider()
-                                    .padding(.horizontal, 16)
-
-                                SettingsCard(
-                                    icon: "trash.fill",
-                                    title: "Delete Account",
-                                    subtitle: "Permanently delete your account and all data",
-                                    iconColor: .red,
-                                    showChevron: false
-                                ) {
-                                    HapticManager.shared.buttonTap()
-                                    showingDeleteAccountAlert = true
                                 }
                             }
                         }
@@ -213,62 +155,11 @@ struct SettingsView: View {
             .navigationBarHidden(true)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showingNameEditor) {
-                NameEditorView(currentName: userProfileViewModel.displayName) { newName in
-                    Task {
-                        await userProfileViewModel.updateDisplayName(newName)
-                    }
-                }
-                .presentationCornerRadius(32)
-            }
             .sheet(isPresented: $showingFeedback) {
                 FeedbackView(isPresented: $showingFeedback)
                     .presentationCornerRadius(32)
             }
-            .alert("Are you sure?", isPresented: $showingSignOutAlert) {
-                Button("Logout", role: .destructive) {
-                    Task {
-                        await authViewModel.signOut()
-                        await MainActor.run {
-                            onboardingViewModel.resetOnboardingCompletion()
-                        }
-                    }
-                }
-                Button("Cancel", role: .cancel) { }
-            } message: {
-                Text("You will be logged out of your account.")
-            }
-            .alert("Delete Account", isPresented: $showingDeleteAccountAlert) {
-                Button("Delete Account", role: .destructive) {
-                    Task {
-                        do {
-                            try await authViewModel.deleteAccount()
-                            await MainActor.run {
-                                onboardingViewModel.resetOnboardingCompletion()
-                            }
-                        } catch {
-                            deleteAccountErrorMessage = error.localizedDescription
-                            showingDeleteAccountError = true
-                        }
-                    }
-                }
-                Button("Cancel", role: .cancel) { }
-            } message: {
-                Text("This action is permanent and cannot be undone. All your data and account information will be permanently deleted.")
-            }
-            .alert("Delete Account Failed", isPresented: $showingDeleteAccountError) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text(deleteAccountErrorMessage)
-            }
         }
-    }
-
-    private func memberSinceText(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter.string(from: date)
     }
 }
 

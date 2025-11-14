@@ -152,27 +152,15 @@ struct FeedbackView: View {
         }
 
         Task {
-            do {
-                try await SupabaseService.shared.sendFeedback(feedbackText)
+            // Simulate sending feedback (no backend)
+            try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
 
-                // Track feedback submission
-                MixpanelService.shared.trackFeedbackSubmitted()
-
-                await MainActor.run {
-                    isSending = false
-                    showProgress = false
-                    showingSuccessAlert = true
-                    feedbackText = ""
-                    HapticManager.shared.success()
-                }
-            } catch {
-                await MainActor.run {
-                    isSending = false
-                    showProgress = false
-                    errorMessage = "Failed to send feedback. Please try again."
-                    showingErrorAlert = true
-                    HapticManager.shared.error()
-                }
+            await MainActor.run {
+                isSending = false
+                showProgress = false
+                showingSuccessAlert = true
+                feedbackText = ""
+                HapticManager.shared.success()
             }
         }
     }

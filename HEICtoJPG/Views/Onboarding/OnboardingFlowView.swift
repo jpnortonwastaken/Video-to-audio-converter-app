@@ -74,13 +74,6 @@ struct WelcomeScreenView: View {
             // Get Started Button
             Button(action: {
                 HapticManager.shared.softImpact()
-
-                // Check if user is subscribed but logged out
-                if Superwall.shared.subscriptionStatus.isActive {
-                    // Skip directly to Create Account page for subscribed users
-                    viewModel.currentStep = .login
-                }
-
                 showOnboardingFlow = true
             }) {
                 Text("Get Started")
@@ -103,8 +96,6 @@ struct WelcomeScreenView: View {
         }
         .background((colorScheme == .dark ? Color.black : Color(.systemBackground)).ignoresSafeArea())
         .onAppear {
-            // Track welcome screen view
-            MixpanelService.shared.trackScreen(step: 0)
             playAnimations()
         }
     }
