@@ -24,32 +24,35 @@ struct OnboardingHostView: View {
                     .padding(.horizontal, 20)
             }
 
-            // Title and subtitle (hidden for welcome screen)
+            // Main content area - changes based on step
+            VStack(spacing: 0) {
+                stepContent
+                    .padding(.horizontal, 20)
+                    .padding(.top, stepConfig.showHeader ? 16 : 0)
+            }
+
+            Spacer(minLength: 0)
+
+            // Title and subtitle (hidden for welcome screen) - now below content
             if stepConfig.showTitleSection {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .center, spacing: 8) {
                     Text(stepConfig.title)
                         .font(.system(size: 28, weight: .bold))
                         .foregroundColor(.primary)
                         .contentTransition(.numericText())
+                        .multilineTextAlignment(.center)
 
                     if let subtitle = stepConfig.subtitle {
                         Text(subtitle)
                             .font(.system(size: 15))
                             .foregroundColor(.secondary)
                             .contentTransition(.numericText())
+                            .multilineTextAlignment(.center)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.horizontal, 20)
-                .padding(.top, 32)
-                .padding(.bottom, 16)
-            }
-
-            // Main content area - changes based on step
-            VStack(spacing: 0) {
-                stepContent
-                    .padding(.horizontal, 20)
-                    .padding(.top, stepConfig.showTitleSection ? 16 : 0)
+                .padding(.vertical, 24)
             }
 
             Spacer(minLength: 0)
