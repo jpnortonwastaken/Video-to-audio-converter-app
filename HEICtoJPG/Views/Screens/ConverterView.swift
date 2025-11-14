@@ -15,12 +15,14 @@ struct ConverterView: View {
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
-                // Header
-                headerView
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    // Header
+                    headerView
+                        .padding(.top, geometry.safeAreaInsets.top)
 
-                // Content
-                VStack(spacing: 32) {
+                    // Content
+                    VStack(spacing: 32) {
                     // Input Options or Image Preview
                         if let selectedImage = viewModel.selectedImage {
                             // Image Preview
@@ -93,8 +95,10 @@ struct ConverterView: View {
                 }
                 .padding(.top, 20)
                 .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+                }
+                .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+                .ignoresSafeArea()
             }
-            .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
             .navigationBarHidden(true)
         }
         .photosPicker(
@@ -139,18 +143,20 @@ struct ConverterView: View {
 
     // MARK: - Header
     private var headerView: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(AppConstants.appName)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-            }
+        VStack(spacing: 0) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(AppConstants.appName)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                }
 
-            Spacer()
+                Spacer()
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 8)
+            .padding(.bottom, 8)
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 16)
-        .padding(.bottom, 8)
         .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
     }
 
