@@ -36,6 +36,7 @@ struct ConverterView: View {
                                     .font(.title2)
                                     .fontWeight(.semibold)
                                     .foregroundColor(colorScheme == .dark ? .white : .black)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.bottom, 8)
 
                                 // Photos Option
