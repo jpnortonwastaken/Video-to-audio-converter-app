@@ -28,6 +28,7 @@ class OnboardingViewModel: ObservableObject {
     @Published var showOnboarding: Bool
     @Published var hasRequestedReview = false
     @Published var canProceedFromReview = false
+    @Published var hasShownPaywall = false
 
     private let hasCompletedOnboardingKey = "hasCompletedOnboarding"
 
@@ -93,5 +94,6 @@ class OnboardingViewModel: ObservableObject {
         showOnboarding = true
         hasRequestedReview = false
         canProceedFromReview = false
+        hasShownPaywall = false
     }
 }

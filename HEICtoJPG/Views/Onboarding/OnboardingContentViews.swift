@@ -234,8 +234,14 @@ struct PaywallContent: View {
         .onAppear {
             isVisible = true
 
+            // Only show paywall once during onboarding session
+            guard !viewModel.hasShownPaywall else { return }
+
             // Show paywall immediately after brief delay for animations
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                // Mark paywall as shown to prevent duplicate displays
+                viewModel.hasShownPaywall = true
+
                 let handler = PaywallPresentationHandler()
                 handler.onDismiss { paywallInfo, result in
                     // Paywall dismissed - user stays on this screen
