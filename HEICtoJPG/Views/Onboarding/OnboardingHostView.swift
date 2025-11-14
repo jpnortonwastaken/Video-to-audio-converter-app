@@ -40,14 +40,14 @@ struct OnboardingHostView: View {
                     Text(stepConfig.title)
                         .font(.system(size: 28, weight: .bold))
                         .foregroundColor(.primary)
-                        .contentTransition(.numericText())
+                        .contentTransition(.numericText(countsDown: true))
                         .multilineTextAlignment(.center)
 
                     if let subtitle = stepConfig.subtitle {
                         Text(subtitle)
                             .font(.system(size: 15))
                             .foregroundColor(.secondary)
-                            .contentTransition(.numericText())
+                            .contentTransition(.numericText(countsDown: true))
                             .multilineTextAlignment(.center)
                     }
                 }

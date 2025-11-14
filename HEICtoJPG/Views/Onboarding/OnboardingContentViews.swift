@@ -198,8 +198,8 @@ struct ReviewContent: View {
             }
             reviewTask = workItem
 
-            // After 3 seconds, enable the continue button and request review
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: workItem)
+            // After 2 seconds, enable the continue button and request review
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: workItem)
         }
         .onDisappear {
             // Cancel the timer if user navigates away before it fires
