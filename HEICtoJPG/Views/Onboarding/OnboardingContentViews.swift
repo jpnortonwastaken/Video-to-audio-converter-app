@@ -167,7 +167,7 @@ struct ReviewContent: View {
 
                 // Supporting text
                 VStack(spacing: 12) {
-                    Text("Rate us 5 stars on the App Store")
+                    Text("Please Rate Us")
                         .font(.system(size: 19, weight: .semibold))
                         .foregroundColor(.primary)
                         .multilineTextAlignment(.center)
@@ -175,7 +175,7 @@ struct ReviewContent: View {
                         .offset(y: isVisible ? 0 : 20)
                         .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
 
-                    Text("Your positive review helps us grow and continue improving the app for everyone.")
+                    Text("Your feedback helps us grow and continue improving for everyone.")
                         .font(.system(size: 15))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
