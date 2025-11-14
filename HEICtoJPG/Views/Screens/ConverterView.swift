@@ -27,45 +27,52 @@ struct ConverterView: View {
                         // Title
                         titleView
 
-                        // Input Options
-                        VStack(spacing: 16) {
-                            // Photos Option
-                            inputOptionCard(
-                                title: "Photos",
-                                subtitle: "Choose from Photos",
-                                icon: "photo.on.rectangle",
-                                backgroundColor: Color.pink.opacity(0.1),
-                                iconColor: .pink
-                            ) {
-                                viewModel.selectFromPhotos()
-                            }
-
-                            // Files and Paste Row
-                            HStack(spacing: 16) {
-                                // Files Option
-                                smallInputOptionCard(
-                                    title: "Files",
-                                    subtitle: "Pick from Files",
-                                    icon: "folder.fill",
-                                    backgroundColor: Color.blue.opacity(0.1),
-                                    iconColor: .blue
+                        // Input Options or Image Preview
+                        if let selectedImage = viewModel.selectedImage {
+                            // Image Preview
+                            imagePreviewView(image: selectedImage)
+                                .padding(.horizontal, 24)
+                        } else {
+                            // Input Options
+                            VStack(spacing: 16) {
+                                // Photos Option
+                                inputOptionCard(
+                                    title: "Photos",
+                                    subtitle: "Choose from Photos",
+                                    icon: "photo.on.rectangle",
+                                    backgroundColor: Color.pink.opacity(0.1),
+                                    iconColor: .pink
                                 ) {
-                                    viewModel.selectFromFiles()
+                                    viewModel.selectFromPhotos()
                                 }
 
-                                // Paste Option
-                                smallInputOptionCard(
-                                    title: "Paste",
-                                    subtitle: "Paste an image",
-                                    icon: "doc.on.clipboard.fill",
-                                    backgroundColor: Color.orange.opacity(0.1),
-                                    iconColor: .orange
-                                ) {
-                                    viewModel.pasteImage()
+                                // Files and Paste Row
+                                HStack(spacing: 16) {
+                                    // Files Option
+                                    smallInputOptionCard(
+                                        title: "Files",
+                                        subtitle: "Pick from Files",
+                                        icon: "folder.fill",
+                                        backgroundColor: Color.blue.opacity(0.1),
+                                        iconColor: .blue
+                                    ) {
+                                        viewModel.selectFromFiles()
+                                    }
+
+                                    // Paste Option
+                                    smallInputOptionCard(
+                                        title: "Paste",
+                                        subtitle: "Paste an image",
+                                        icon: "doc.on.clipboard.fill",
+                                        backgroundColor: Color.orange.opacity(0.1),
+                                        iconColor: .orange
+                                    ) {
+                                        viewModel.pasteImage()
+                                    }
                                 }
                             }
+                            .padding(.horizontal, 24)
                         }
-                        .padding(.horizontal, 24)
 
                         Spacer()
 
@@ -278,6 +285,36 @@ struct ConverterView: View {
         }
         .disabled(viewModel.selectedImage == nil || viewModel.isConverting)
         .buttonStyle(ScaleDownButtonStyle())
+    }
+
+    // MARK: - Image Preview
+    private func imagePreviewView(image: UIImage) -> some View {
+        ZStack(alignment: .topTrailing) {
+            // Image
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: .infinity)
+                .frame(height: 336) // Same total height as the three buttons
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .clipped()
+
+            // X button
+            Button(action: {
+                HapticManager.shared.softImpact()
+                viewModel.reset()
+            }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
+                    .frame(width: 28, height: 28)
+                    .background(
+                        Circle()
+                            .fill(Color.black.opacity(0.6))
+                    )
+            }
+            .padding(12)
+        }
     }
 
     // MARK: - File Selection Handler
