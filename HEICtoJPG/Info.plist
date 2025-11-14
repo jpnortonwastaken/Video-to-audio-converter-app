@@ -8,5 +8,7 @@
 	<string>https://www.graey.dev/privacy</string>
 	<key>AppDisplayName</key>
 	<string>HEIC to JPG</string>
+	<key>SKIncludeConsumableInAppPurchaseHistory</key>
+	<true/>
 </dict>
 </plist>
