@@ -161,7 +161,14 @@ struct ConverterView: View {
     // MARK: - Header
     private var headerView: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: 12) {
+                // App Icon
+                Image("WelcomeScreenAppIcon")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 40, height: 40)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
                 VStack(alignment: .leading, spacing: 4) {
                     Text(AppConstants.appName)
                         .font(.largeTitle)
