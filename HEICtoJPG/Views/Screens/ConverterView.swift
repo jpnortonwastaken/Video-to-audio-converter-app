@@ -376,6 +376,7 @@ struct FormatSelectionSheet: View {
                         // Spacing below drag indicator
                         Spacer()
                             .frame(height: 8)
+                            .background(Color.red)
 
                         VStack(spacing: 12) {
                             ForEach(ImageFormat.allCases) { format in
@@ -400,13 +401,22 @@ struct FormatSelectionSheet: View {
                                     if selectedFormat == format {
                                         Image(systemName: "checkmark.circle.fill")
                                             .font(.title3)
-                                            .foregroundColor(.blue)
+                                            .foregroundColor(colorScheme == .dark ? .white : .black)
                                     }
                                 }
                                 .padding(20)
                                 .background(
                                     RoundedRectangle(cornerRadius: 16)
                                         .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(
+                                            selectedFormat == format
+                                            ? (colorScheme == .dark ? Color.white : Color.black)
+                                            : Color.clear,
+                                            lineWidth: 2
+                                        )
                                 )
                             }
                             .buttonStyle(ScaleDownButtonStyle())
@@ -416,6 +426,7 @@ struct FormatSelectionSheet: View {
                     }
                     .padding(.top, 32)
                     .padding(.bottom, 24)
+                    .background(Color.red.opacity(0.3))
                 }
             }
             .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
