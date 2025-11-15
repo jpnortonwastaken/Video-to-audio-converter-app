@@ -22,89 +22,91 @@ struct ConverterView: View {
                     headerView
                         .padding(.top, geometry.safeAreaInsets.top)
 
-                    // Content
-                    VStack(spacing: 32) {
-                    // Input Options or Image Preview
-                        if let selectedImage = viewModel.selectedImage {
-                            // Image Preview
-                            imagePreviewView(image: selectedImage)
+                    // Scrollable Content
+                    ScrollView {
+                        VStack(spacing: 32) {
+                            // Input Options or Image Preview
+                            if let selectedImage = viewModel.selectedImage {
+                                // Image Preview
+                                imagePreviewView(image: selectedImage)
+                                    .padding(.horizontal, 24)
+                                    .scaleEffect(showImage ? 1.0 : 0.3)
+                                    .opacity(showImage ? 1.0 : 0.0)
+                            } else {
+                                // Input Options
+                                VStack(spacing: 16) {
+                                    // Title
+                                    Text("Convert to any format")
+                                        .font(.title2)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(.bottom, 8)
+
+                                    // Photos Option
+                                    inputOptionCard(
+                                        title: "Photos",
+                                        subtitle: "Choose from Photos",
+                                        icon: "photo.on.rectangle",
+                                        backgroundColor: Color.pink.opacity(0.1),
+                                        iconColor: .pink
+                                    ) {
+                                        viewModel.selectFromPhotos()
+                                    }
+
+                                    // Files and Paste Row
+                                    HStack(spacing: 16) {
+                                        // Files Option
+                                        smallInputOptionCard(
+                                            title: "Files",
+                                            subtitle: "Pick from Files",
+                                            icon: "folder.fill",
+                                            backgroundColor: Color.blue.opacity(0.1),
+                                            iconColor: .blue
+                                        ) {
+                                            viewModel.selectFromFiles()
+                                        }
+
+                                        // Paste Option
+                                        smallInputOptionCard(
+                                            title: "Paste",
+                                            subtitle: "Paste an image",
+                                            icon: "doc.on.clipboard.fill",
+                                            backgroundColor: Color.orange.opacity(0.1),
+                                            iconColor: .orange
+                                        ) {
+                                            viewModel.pasteImage()
+                                        }
+                                    }
+                                }
                                 .padding(.horizontal, 24)
-                                .scaleEffect(showImage ? 1.0 : 0.3)
-                                .opacity(showImage ? 1.0 : 0.0)
-                        } else {
-                            // Input Options
-                            VStack(spacing: 16) {
-                                // Title
-                                Text("Convert to any format")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(colorScheme == .dark ? .white : .black)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.bottom, 8)
-
-                                // Photos Option
-                                inputOptionCard(
-                                    title: "Photos",
-                                    subtitle: "Choose from Photos",
-                                    icon: "photo.on.rectangle",
-                                    backgroundColor: Color.pink.opacity(0.1),
-                                    iconColor: .pink
-                                ) {
-                                    viewModel.selectFromPhotos()
-                                }
-
-                                // Files and Paste Row
-                                HStack(spacing: 16) {
-                                    // Files Option
-                                    smallInputOptionCard(
-                                        title: "Files",
-                                        subtitle: "Pick from Files",
-                                        icon: "folder.fill",
-                                        backgroundColor: Color.blue.opacity(0.1),
-                                        iconColor: .blue
-                                    ) {
-                                        viewModel.selectFromFiles()
-                                    }
-
-                                    // Paste Option
-                                    smallInputOptionCard(
-                                        title: "Paste",
-                                        subtitle: "Paste an image",
-                                        icon: "doc.on.clipboard.fill",
-                                        backgroundColor: Color.orange.opacity(0.1),
-                                        iconColor: .orange
-                                    ) {
-                                        viewModel.pasteImage()
-                                    }
-                                }
                             }
-                            .padding(.horizontal, 24)
                         }
+                        .padding(.top, 20)
+                        .padding(.bottom, 220) // Space for bottom container
+                    }
 
-                        Spacer()
+                    Spacer()
 
-                        // Format Selector and Convert Button
-                        VStack(spacing: 16) {
-                            // Format Selector
-                            formatSelectorView
+                    // Format Selector and Convert Button (Pinned to Bottom)
+                    VStack(spacing: 16) {
+                        // Format Selector
+                        formatSelectorView
 
-                            // Convert Button
-                            convertButton
-                        }
-                        .padding(20)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(colorScheme == .dark ? Color(.systemGray5) : Color.white)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5), lineWidth: 1)
-                        )
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 100)
-                }
-                .padding(.top, 20)
-                .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+                        // Convert Button
+                        convertButton
+                    }
+                    .padding(20)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(colorScheme == .dark ? Color(.systemGray5) : Color.white)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5), lineWidth: 1)
+                    )
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
                 }
                 .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
                 .ignoresSafeArea()
