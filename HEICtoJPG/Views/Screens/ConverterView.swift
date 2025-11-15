@@ -22,17 +22,15 @@ struct ConverterView: View {
                     headerView
                         .padding(.top, geometry.safeAreaInsets.top)
 
-                    // Content
-                    VStack(spacing: 32) {
-                        // Input Options or Image Preview
+                    // Fixed-height content container (TESTING: Red border)
+                    ZStack {
                         if let selectedImage = viewModel.selectedImage {
-                            // Image Preview
+                            // Image Preview (inside fixed container)
                             imagePreviewView(image: selectedImage)
-                                .padding(.horizontal, 24)
                                 .scaleEffect(showImage ? 1.0 : 0.3)
                                 .opacity(showImage ? 1.0 : 0.0)
                         } else {
-                            // Input Options
+                            // Input Options (inside fixed container)
                             VStack(spacing: 16) {
                                 // Title
                                 Text("Convert to any format")
@@ -78,12 +76,13 @@ struct ConverterView: View {
                                     }
                                 }
                             }
-                            .padding(.horizontal, 24)
                         }
-
                     }
+                    .frame(height: 390) // Fixed height to prevent movement
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 24)
                     .padding(.top, 20)
-                    .frame(maxWidth: .infinity, alignment: .top)
+                    .border(Color.red, width: 2) // TESTING: Red border
 
                     Spacer(minLength: 0)
 
