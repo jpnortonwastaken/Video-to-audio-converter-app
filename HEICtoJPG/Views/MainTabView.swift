@@ -33,6 +33,12 @@ struct MainTabView: View {
                     .tag(TabItem.settings)
             }
             .toolbar(.hidden, for: .tabBar)
+            .clipShape(
+                UnevenRoundedRectangle(
+                    bottomLeadingRadius: 20,
+                    bottomTrailingRadius: 20
+                )
+            )
 
             CustomTabBar(selectedTab: $selectedTab)
         }
