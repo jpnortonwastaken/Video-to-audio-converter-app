@@ -12,6 +12,7 @@ struct ConverterView: View {
     @StateObject private var viewModel = ConverterViewModel()
     @Environment(\.colorScheme) private var colorScheme
     @State private var showImage = false
+    @State private var showFormatSheet = false
 
     var body: some View {
         NavigationView {
@@ -148,6 +149,13 @@ struct ConverterView: View {
                 Text(errorMessage)
             }
         }
+        .sheet(isPresented: $showFormatSheet) {
+            FormatSelectionSheet(
+                selectedFormat: $viewModel.selectedFormat,
+                isPresented: $showFormatSheet
+            )
+            .presentationDetents([.medium])
+        }
     }
 
     // MARK: - Header
@@ -240,29 +248,17 @@ struct ConverterView: View {
 
     // MARK: - Format Selector
     private var formatSelectorView: some View {
-        HStack {
-            Text("Format")
-                .font(.headline)
-                .foregroundColor(colorScheme == .dark ? .white : .black)
+        Button(action: {
+            HapticManager.shared.softImpact()
+            showFormatSheet = true
+        }) {
+            HStack {
+                Text("Format")
+                    .font(.headline)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
 
-            Spacer()
+                Spacer()
 
-            // Dropdown button
-            Menu {
-                ForEach(ImageFormat.allCases) { format in
-                    Button(action: {
-                        HapticManager.shared.softImpact()
-                        viewModel.selectedFormat = format
-                    }) {
-                        HStack {
-                            Text(format.displayName)
-                            if viewModel.selectedFormat == format {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                    }
-                }
-            } label: {
                 HStack(spacing: 8) {
                     Text(viewModel.selectedFormat.displayName)
                         .font(.headline)
@@ -273,12 +269,13 @@ struct ConverterView: View {
                         .foregroundColor(.gray)
                 }
             }
+            .padding(20)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
+            )
         }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
-        )
+        .buttonStyle(ScaleDownButtonStyle())
     }
 
     // MARK: - Convert Button
@@ -359,6 +356,74 @@ struct ConverterView: View {
 
         case .failure(let error):
             viewModel.errorMessage = "Failed to load file: \(error.localizedDescription)"
+        }
+    }
+}
+
+// MARK: - Format Selection Sheet
+struct FormatSelectionSheet: View {
+    @Binding var selectedFormat: ImageFormat
+    @Binding var isPresented: Bool
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 0) {
+                // Header
+                HStack {
+                    Text("Select Format")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                    Spacer()
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.bottom, 16)
+
+                // Format Options
+                ScrollView {
+                    VStack(spacing: 12) {
+                        ForEach(ImageFormat.allCases) { format in
+                            Button(action: {
+                                HapticManager.shared.softImpact()
+                                selectedFormat = format
+                                isPresented = false
+                            }) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(format.displayName)
+                                            .font(.headline)
+                                            .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                                        Text(format.fileExtension.uppercased())
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
+
+                                    Spacer()
+
+                                    if selectedFormat == format {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .font(.title3)
+                                            .foregroundColor(.blue)
+                                    }
+                                }
+                                .padding(20)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
+                                )
+                            }
+                            .buttonStyle(ScaleDownButtonStyle())
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                }
+            }
+            .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
+            .navigationBarHidden(true)
         }
     }
 }
