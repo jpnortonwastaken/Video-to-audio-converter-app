@@ -384,46 +384,7 @@ struct FormatSelectionSheet: View {
 
                         VStack(spacing: 12) {
                             ForEach(ImageFormat.allCases) { format in
-                            Button(action: {
-                                HapticManager.shared.softImpact()
-                                selectedFormat = format
-                                isPresented = false
-                            }) {
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(format.displayName)
-                                            .font(.headline)
-                                            .foregroundColor(colorScheme == .dark ? .white : .black)
-
-                                        Text(format.fileExtension.uppercased())
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
-                                    }
-
-                                    Spacer()
-
-                                    if selectedFormat == format {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .font(.title3)
-                                            .foregroundColor(colorScheme == .dark ? .white : .black)
-                                    }
-                                }
-                                .padding(20)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
-                                )
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(
-                                            selectedFormat == format
-                                            ? (colorScheme == .dark ? Color.white : Color.black)
-                                            : Color.clear,
-                                            lineWidth: 2
-                                        )
-                                )
-                            }
-                            .buttonStyle(ScaleDownButtonStyle())
+                                formatOptionButton(for: format)
                             }
                         }
                         .padding(.horizontal, 24)
@@ -436,6 +397,52 @@ struct FormatSelectionSheet: View {
             .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
             .navigationBarHidden(true)
         }
+    }
+
+    // MARK: - Helper Views
+    private func formatOptionButton(for format: ImageFormat) -> some View {
+        Button(action: {
+            HapticManager.shared.softImpact()
+            selectedFormat = format
+            isPresented = false
+        }) {
+            formatOptionContent(for: format)
+        }
+        .buttonStyle(ScaleDownButtonStyle())
+    }
+
+    private func formatOptionContent(for format: ImageFormat) -> some View {
+        let isSelected = selectedFormat == format
+        let borderColor = isSelected ? (colorScheme == .dark ? Color.white : Color.black) : Color.clear
+
+        return HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(format.displayName)
+                    .font(.headline)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                Text(format.fileExtension.uppercased())
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+
+            Spacer()
+
+            if isSelected {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.title3)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(borderColor, lineWidth: 2)
+        )
     }
 }
 
