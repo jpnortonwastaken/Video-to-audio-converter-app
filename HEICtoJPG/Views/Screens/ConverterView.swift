@@ -90,6 +90,15 @@ struct ConverterView: View {
                             // Convert Button
                             convertButton
                         }
+                        .padding(20)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(colorScheme == .dark ? Color(.systemGray5) : Color.white)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5), lineWidth: 1)
+                        )
                         .padding(.horizontal, 24)
                         .padding(.bottom, 100)
                 }
@@ -268,7 +277,7 @@ struct ConverterView: View {
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color.blue.opacity(0.1))
+                .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
         )
     }
 
