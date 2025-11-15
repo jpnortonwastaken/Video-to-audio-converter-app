@@ -314,7 +314,7 @@ struct ConverterView: View {
             // Image
             Image(uiImage: image)
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: .infinity)
                 .frame(height: 336) // Same total height as the three buttons
                 .clipShape(RoundedRectangle(cornerRadius: 16))
