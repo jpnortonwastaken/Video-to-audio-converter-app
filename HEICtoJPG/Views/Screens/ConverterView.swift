@@ -404,9 +404,6 @@ struct FormatSelectionSheet: View {
         let textColor = isSelected
             ? (colorScheme == .dark ? Color.black : Color.white)
             : (colorScheme == .dark ? Color.white : Color.black)
-        let subtitleColor = isSelected
-            ? (colorScheme == .dark ? Color.black.opacity(0.7) : Color.white.opacity(0.7))
-            : Color.gray
 
         return Button(action: {
             HapticManager.shared.softImpact()
@@ -414,15 +411,9 @@ struct FormatSelectionSheet: View {
             isPresented = false
         }) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(format.displayName)
-                        .font(.headline)
-                        .foregroundColor(textColor)
-
-                    Text(format.fileExtension.uppercased())
-                        .font(.caption)
-                        .foregroundColor(subtitleColor)
-                }
+                Text(format.displayName)
+                    .font(.headline)
+                    .foregroundColor(textColor)
 
                 Spacer()
 
