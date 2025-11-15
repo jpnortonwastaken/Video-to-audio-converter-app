@@ -22,67 +22,70 @@ struct ConverterView: View {
                     headerView
                         .padding(.top, geometry.safeAreaInsets.top)
 
-                    // Fixed-height content container (TESTING: Red border)
-                    ZStack {
-                        if let selectedImage = viewModel.selectedImage {
-                            // Image Preview (inside fixed container)
-                            imagePreviewView(image: selectedImage)
-                                .scaleEffect(showImage ? 1.0 : 0.3)
-                                .opacity(showImage ? 1.0 : 0.0)
-                        } else {
-                            // Input Options (inside fixed container)
-                            VStack(spacing: 16) {
-                                // Title
-                                Text("Convert to any format")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(colorScheme == .dark ? .white : .black)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.bottom, 8)
+                    // Content area
+                    VStack(alignment: .leading, spacing: 16) {
+                        // Title (outside red border)
+                        if viewModel.selectedImage == nil {
+                            Text("Convert to any format")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
 
-                                // Photos Option
-                                inputOptionCard(
-                                    title: "Photos",
-                                    subtitle: "Choose from Photos",
-                                    icon: "photo.on.rectangle",
-                                    backgroundColor: Color.pink.opacity(0.1),
-                                    iconColor: .pink
-                                ) {
-                                    viewModel.selectFromPhotos()
-                                }
-
-                                // Files and Paste Row
-                                HStack(spacing: 16) {
-                                    // Files Option
-                                    smallInputOptionCard(
-                                        title: "Files",
-                                        subtitle: "Pick from Files",
-                                        icon: "folder.fill",
-                                        backgroundColor: Color.blue.opacity(0.1),
-                                        iconColor: .blue
+                        // Fixed-height content container (TESTING: Red border)
+                        ZStack {
+                            if let selectedImage = viewModel.selectedImage {
+                                // Image Preview (inside fixed container)
+                                imagePreviewView(image: selectedImage)
+                                    .scaleEffect(showImage ? 1.0 : 0.3)
+                                    .opacity(showImage ? 1.0 : 0.0)
+                            } else {
+                                // Input Options (inside fixed container)
+                                VStack(spacing: 16) {
+                                    // Photos Option
+                                    inputOptionCard(
+                                        title: "Photos",
+                                        subtitle: "Choose from Photos",
+                                        icon: "photo.on.rectangle",
+                                        backgroundColor: Color.pink.opacity(0.1),
+                                        iconColor: .pink
                                     ) {
-                                        viewModel.selectFromFiles()
+                                        viewModel.selectFromPhotos()
                                     }
 
-                                    // Paste Option
-                                    smallInputOptionCard(
-                                        title: "Paste",
-                                        subtitle: "Paste an image",
-                                        icon: "doc.on.clipboard.fill",
-                                        backgroundColor: Color.orange.opacity(0.1),
-                                        iconColor: .orange
-                                    ) {
-                                        viewModel.pasteImage()
+                                    // Files and Paste Row
+                                    HStack(spacing: 16) {
+                                        // Files Option
+                                        smallInputOptionCard(
+                                            title: "Files",
+                                            subtitle: "Pick from Files",
+                                            icon: "folder.fill",
+                                            backgroundColor: Color.blue.opacity(0.1),
+                                            iconColor: .blue
+                                        ) {
+                                            viewModel.selectFromFiles()
+                                        }
+
+                                        // Paste Option
+                                        smallInputOptionCard(
+                                            title: "Paste",
+                                            subtitle: "Paste an image",
+                                            icon: "doc.on.clipboard.fill",
+                                            backgroundColor: Color.orange.opacity(0.1),
+                                            iconColor: .orange
+                                        ) {
+                                            viewModel.pasteImage()
+                                        }
                                     }
                                 }
                             }
                         }
+                        .frame(height: 350) // Fixed height to prevent movement
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(height: 390) // Fixed height to prevent movement
-                    .frame(maxWidth: .infinity)
                     .padding(.horizontal, 24)
                     .padding(.top, 20)
-                    .border(Color.red, width: 2) // TESTING: Red border
 
                     Spacer(minLength: 0)
 
@@ -296,7 +299,7 @@ struct ConverterView: View {
             HStack {
                 if viewModel.isConverting {
                     ProgressView()
-                        .tint(.white)
+                        .tint(colorScheme == .dark ? .black : .white)
                 } else {
                     Text("Convert")
                         .font(.headline)
@@ -307,9 +310,9 @@ struct ConverterView: View {
             .frame(height: 56)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.black)
+                    .fill(colorScheme == .dark ? Color.white : Color.black)
             )
-            .foregroundColor(.white)
+            .foregroundColor(colorScheme == .dark ? .black : .white)
             .opacity(viewModel.selectedImage == nil || viewModel.isConverting ? 0.5 : 1.0)
         }
         .disabled(viewModel.selectedImage == nil || viewModel.isConverting)
@@ -322,8 +325,9 @@ struct ConverterView: View {
             // Image
             Image(uiImage: image)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxHeight: 400)
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 350, height: 350)
+                .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: 16))
 
             // X button
@@ -342,7 +346,7 @@ struct ConverterView: View {
             }
             .padding(12)
         }
-        .frame(maxWidth: .infinity, maxHeight: 400)
+        .frame(width: 350, height: 350)
     }
 
     // MARK: - File Selection Handler

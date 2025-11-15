@@ -31,6 +31,7 @@ enum TabItem: String, CaseIterable {
 
 struct CustomTabBar: View {
     @Binding var selectedTab: TabItem
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         HStack(spacing: 0) {
@@ -42,11 +43,11 @@ struct CustomTabBar: View {
                     VStack(spacing: 4) {
                         Image(systemName: tab.icon)
                             .font(.system(size: 20, weight: .medium))
-                            .foregroundColor(selectedTab == tab ? .white : .gray)
+                            .foregroundColor(selectedTab == tab ? (colorScheme == .light ? .black : .white) : .gray)
 
                         Text(tab.title)
                             .font(.caption)
-                            .foregroundColor(selectedTab == tab ? .white : .gray)
+                            .foregroundColor(selectedTab == tab ? (colorScheme == .light ? .black : .white) : .gray)
                             .contentTransition(.numericText())
                     }
                     .frame(maxWidth: .infinity)
@@ -59,8 +60,13 @@ struct CustomTabBar: View {
         .padding(.horizontal, 40)
         .padding(.top, 12)
         .background(
-            Color.black
+            (colorScheme == .light ? Color.white : Color(.systemGray6))
                 .ignoresSafeArea(edges: .bottom)
+                .overlay(alignment: .top) {
+                    Rectangle()
+                        .fill((colorScheme == .light ? Color.black.opacity(0.1) : Color.white.opacity(0.1)))
+                        .frame(height: 1)
+                }
         )
     }
 }
