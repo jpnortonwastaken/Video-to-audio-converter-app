@@ -390,6 +390,7 @@ struct FormatSelectionSheet: View {
                     }
                     .background(Color.red.opacity(0.3))
                 }
+                .padding(.horizontal, 24)
             }
             .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
             .navigationBarHidden(true)
