@@ -370,6 +370,10 @@ struct FormatSelectionSheet: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
+                // Whitespace above scrollview
+                Spacer()
+                    .frame(height: 40)
+
                 // Format Options
                 ScrollView {
                     VStack(spacing: 0) {
