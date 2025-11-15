@@ -155,6 +155,7 @@ struct ConverterView: View {
                 isPresented: $showFormatSheet
             )
             .presentationDetents([.fraction(0.75)])
+            .presentationDragIndicator(.visible)
         }
     }
 
@@ -369,19 +370,6 @@ struct FormatSelectionSheet: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // Header
-                HStack {
-                    Text("Select Format")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
-
-                    Spacer()
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 24)
-                .padding(.bottom, 16)
-
                 // Format Options
                 ScrollView {
                     VStack(spacing: 12) {
@@ -420,6 +408,8 @@ struct FormatSelectionSheet: View {
                         }
                     }
                     .padding(.horizontal, 24)
+                    .padding(.top, 20)
+                    .padding(.bottom, 24)
                 }
             }
             .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
