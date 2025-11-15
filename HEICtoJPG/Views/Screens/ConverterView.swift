@@ -387,10 +387,7 @@ struct FormatSelectionSheet: View {
                                 formatOptionButton(for: format)
                             }
                         }
-                        .padding(.horizontal, 24)
                     }
-                    .padding(.top, 32)
-                    .padding(.bottom, 24)
                     .background(Color.red.opacity(0.3))
                 }
             }
