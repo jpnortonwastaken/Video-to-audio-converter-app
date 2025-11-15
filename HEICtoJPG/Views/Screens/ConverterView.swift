@@ -370,77 +370,69 @@ struct FormatSelectionSheet: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // Whitespace above scrollview
-                Spacer()
-                    .frame(height: 40)
-
                 // Format Options
                 ScrollView {
                     VStack(spacing: 0) {
                         // Spacing below drag indicator
                         Spacer()
                             .frame(height: 8)
-                            .background(Color.red)
 
                         VStack(spacing: 12) {
                             ForEach(ImageFormat.allCases) { format in
-                                formatOptionButton(for: format)
+                            Button(action: {
+                                HapticManager.shared.softImpact()
+                                selectedFormat = format
+                                isPresented = false
+                            }) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(format.displayName)
+                                            .font(.headline)
+                                            .foregroundColor(
+                                                selectedFormat == format
+                                                    ? (colorScheme == .dark ? .black : .white)
+                                                    : (colorScheme == .dark ? .white : .black)
+                                            )
+
+                                        Text(format.fileExtension.uppercased())
+                                            .font(.caption)
+                                            .foregroundColor(
+                                                selectedFormat == format
+                                                    ? (colorScheme == .dark ? .black.opacity(0.7) : .white.opacity(0.7))
+                                                    : .gray
+                                            )
+                                    }
+
+                                    Spacer()
+
+                                    if selectedFormat == format {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .font(.title3)
+                                            .foregroundColor(colorScheme == .dark ? .black : .white)
+                                    }
+                                }
+                                .padding(20)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(
+                                            selectedFormat == format
+                                                ? (colorScheme == .dark ? Color.white : Color.black)
+                                                : Color(.systemGray6)
+                                        )
+                                )
+                            }
+                            .buttonStyle(ScaleDownButtonStyle())
                             }
                         }
+                        .padding(.horizontal, 24)
                     }
-                    .background(Color.red.opacity(0.3))
+                    .padding(.top, 32)
+                    .padding(.bottom, 24)
                 }
-                .padding(.horizontal, 24)
             }
             .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
             .navigationBarHidden(true)
         }
-    }
-
-    // MARK: - Helper Views
-    private func formatOptionButton(for format: ImageFormat) -> some View {
-        Button(action: {
-            HapticManager.shared.softImpact()
-            selectedFormat = format
-            isPresented = false
-        }) {
-            formatOptionContent(for: format)
-        }
-        .buttonStyle(ScaleDownButtonStyle())
-    }
-
-    private func formatOptionContent(for format: ImageFormat) -> some View {
-        let isSelected = selectedFormat == format
-        let borderColor = isSelected ? (colorScheme == .dark ? Color.white : Color.black) : Color.clear
-
-        return HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(format.displayName)
-                    .font(.headline)
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
-
-                Text(format.fileExtension.uppercased())
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
-
-            Spacer()
-
-            if isSelected {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.title3)
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
-            }
-        }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(borderColor, lineWidth: 2)
-        )
     }
 }
 
