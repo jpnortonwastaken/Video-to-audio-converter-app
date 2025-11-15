@@ -80,10 +80,12 @@ struct ConverterView: View {
                             }
                             .padding(.horizontal, 24)
                         }
+
                     }
                     .padding(.top, 20)
+                    .frame(maxWidth: .infinity, alignment: .top)
 
-                    Spacer()
+                    Spacer(minLength: 0)
 
                     // Format Selector and Convert Button (Pinned to Bottom)
                     VStack(spacing: 16) {
