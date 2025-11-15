@@ -423,7 +423,8 @@ struct FormatSelectionSheet: View {
                         .foregroundColor(colorScheme == .dark ? .black : .white)
                 }
             }
-            .padding(20)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 24)
             .background(
                 RoundedRectangle(cornerRadius: 20)
                     .fill(backgroundColor)
