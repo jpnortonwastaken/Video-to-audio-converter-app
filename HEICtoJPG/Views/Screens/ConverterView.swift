@@ -387,7 +387,7 @@ struct FormatSelectionSheet: View {
                     .padding(.bottom, 24)
                 }
             }
-            .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
+            .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
             .navigationBarHidden(true)
         }
     }
