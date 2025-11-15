@@ -154,7 +154,7 @@ struct ConverterView: View {
                 selectedFormat: $viewModel.selectedFormat,
                 isPresented: $showFormatSheet
             )
-            .presentationDetents([.medium])
+            .presentationDetents([.fraction(0.75)])
         }
     }
 
