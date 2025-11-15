@@ -379,60 +379,7 @@ struct FormatSelectionSheet: View {
 
                         VStack(spacing: 12) {
                             ForEach(ImageFormat.allCases) { format in
-                            Button(action: {
-                                HapticManager.shared.softImpact()
-                                selectedFormat = format
-                                isPresented = false
-                            }) {
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(format.displayName)
-                                            .font(.headline)
-                                            .foregroundColor(
-                                                selectedFormat == format
-                                                    ? (colorScheme == .dark ? .black : .white)
-                                                    : (colorScheme == .dark ? .white : .black)
-                                            )
-
-                                        Text(format.fileExtension.uppercased())
-                                            .font(.caption)
-                                            .foregroundColor(
-                                                selectedFormat == format
-                                                    ? (colorScheme == .dark ? .black.opacity(0.7) : .white.opacity(0.7))
-                                                    : .gray
-                                            )
-                                    }
-
-                                    Spacer()
-
-                                    if selectedFormat == format {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .font(.title3)
-                                            .foregroundColor(colorScheme == .dark ? .black : .white)
-                                    }
-                                }
-                                .padding(20)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .fill(
-                                            selectedFormat == format
-                                                ? (colorScheme == .dark ? Color.white : Color.black)
-                                                : (colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
-                                        )
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 20)
-                                                .stroke(
-                                                    selectedFormat == format
-                                                        ? Color.clear
-                                                        : (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)),
-                                                    lineWidth: 0.5
-                                                )
-                                        )
-                                        .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
-                                        .shadow(color: Color.black.opacity(0.03), radius: 32, x: 0, y: 16)
-                                )
-                            }
-                            .buttonStyle(ScaleDownButtonStyle())
+                                formatCard(for: format)
                             }
                         }
                         .padding(.horizontal, 24)
@@ -444,6 +391,61 @@ struct FormatSelectionSheet: View {
             .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
             .navigationBarHidden(true)
         }
+    }
+
+    // MARK: - Format Card
+    private func formatCard(for format: ImageFormat) -> some View {
+        let isSelected = selectedFormat == format
+        let backgroundColor = isSelected
+            ? (colorScheme == .dark ? Color.white : Color.black)
+            : (colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
+        let strokeColor = isSelected
+            ? Color.clear
+            : (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4))
+        let textColor = isSelected
+            ? (colorScheme == .dark ? Color.black : Color.white)
+            : (colorScheme == .dark ? Color.white : Color.black)
+        let subtitleColor = isSelected
+            ? (colorScheme == .dark ? Color.black.opacity(0.7) : Color.white.opacity(0.7))
+            : Color.gray
+
+        return Button(action: {
+            HapticManager.shared.softImpact()
+            selectedFormat = format
+            isPresented = false
+        }) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(format.displayName)
+                        .font(.headline)
+                        .foregroundColor(textColor)
+
+                    Text(format.fileExtension.uppercased())
+                        .font(.caption)
+                        .foregroundColor(subtitleColor)
+                }
+
+                Spacer()
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.title3)
+                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                }
+            }
+            .padding(20)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(backgroundColor)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(strokeColor, lineWidth: 0.5)
+                    )
+                    .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
+                    .shadow(color: Color.black.opacity(0.03), radius: 32, x: 0, y: 16)
+            )
+        }
+        .buttonStyle(ScaleDownButtonStyle())
     }
 }
 
