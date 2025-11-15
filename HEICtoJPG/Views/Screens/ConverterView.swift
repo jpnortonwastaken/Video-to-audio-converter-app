@@ -322,10 +322,8 @@ struct ConverterView: View {
             Image(uiImage: image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: .infinity)
-                .frame(height: 336) // Same total height as the three buttons
+                .frame(maxHeight: 400)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                .clipped()
 
             // X button
             Button(action: {
@@ -343,6 +341,7 @@ struct ConverterView: View {
             }
             .padding(12)
         }
+        .frame(maxWidth: .infinity, maxHeight: 400)
     }
 
     // MARK: - File Selection Handler
