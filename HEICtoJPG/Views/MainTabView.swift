@@ -12,17 +12,17 @@ struct MainTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            TabView(selection: $selectedTab) {
-                ConverterView()
-                    .tag(TabItem.home)
-
-                ProgressView()
-                    .tag(TabItem.progress)
-
-                SettingsView()
-                    .tag(TabItem.settings)
+            Group {
+                switch selectedTab {
+                case .home:
+                    ConverterView()
+                case .progress:
+                    ProgressView()
+                case .settings:
+                    SettingsView()
+                }
             }
-            .toolbar(.hidden, for: .tabBar)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             CustomTabBar(selectedTab: $selectedTab)
         }
