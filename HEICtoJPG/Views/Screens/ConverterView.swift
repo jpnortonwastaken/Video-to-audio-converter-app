@@ -408,7 +408,7 @@ struct FormatSelectionSheet: View {
                         }
                     }
                     .padding(.horizontal, 24)
-                    .padding(.top, 20)
+                    .padding(.top, 32)
                     .padding(.bottom, 24)
                 }
             }
