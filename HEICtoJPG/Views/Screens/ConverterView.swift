@@ -371,49 +371,52 @@ struct FormatSelectionSheet: View {
         NavigationView {
             VStack(spacing: 0) {
                 // Format Options
-                VStack(spacing: 12) {
-                    ForEach(ImageFormat.allCases) { format in
-                        Button(action: {
-                            HapticManager.shared.softImpact()
-                            selectedFormat = format
-                            isPresented = false
-                        }) {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(format.displayName)
-                                        .font(.headline)
-                                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                ScrollView {
+                    VStack(spacing: 0) {
+                        // Spacing below drag indicator
+                        Spacer()
+                            .frame(height: 8)
 
-                                    Text(format.fileExtension.uppercased())
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
+                        VStack(spacing: 12) {
+                            ForEach(ImageFormat.allCases) { format in
+                            Button(action: {
+                                HapticManager.shared.softImpact()
+                                selectedFormat = format
+                                isPresented = false
+                            }) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(format.displayName)
+                                            .font(.headline)
+                                            .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                                        Text(format.fileExtension.uppercased())
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
+
+                                    Spacer()
+
+                                    if selectedFormat == format {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .font(.title3)
+                                            .foregroundColor(.blue)
+                                    }
                                 }
-
-                                Spacer()
-
-                                if selectedFormat == format {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.title3)
-                                        .foregroundColor(.blue)
-                                }
+                                .padding(20)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
+                                )
                             }
-                            .padding(20)
-                            .background(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6))
-                            )
+                            .buttonStyle(ScaleDownButtonStyle())
+                            }
                         }
-                        .buttonStyle(ScaleDownButtonStyle())
+                        .padding(.horizontal, 24)
                     }
+                    .padding(.top, 32)
+                    .padding(.bottom, 24)
                 }
-                .padding(20)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(colorScheme == .dark ? Color(.systemGray5) : Color.white)
-                )
-                .padding(.horizontal, 24)
-                .padding(.top, 32)
-                .padding(.bottom, 24)
             }
             .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
             .navigationBarHidden(true)
