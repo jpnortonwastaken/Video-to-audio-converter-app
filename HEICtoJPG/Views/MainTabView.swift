@@ -11,18 +11,19 @@ struct MainTabView: View {
     @State private var selectedTab: TabItem = .home
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            ConverterView()
-                .tag(TabItem.home)
+        VStack(spacing: 0) {
+            TabView(selection: $selectedTab) {
+                ConverterView()
+                    .tag(TabItem.home)
 
-            ProgressView()
-                .tag(TabItem.progress)
+                ProgressView()
+                    .tag(TabItem.progress)
 
-            SettingsView()
-                .tag(TabItem.settings)
-        }
-        .toolbar(.hidden, for: .tabBar)
-        .overlay(alignment: .bottom) {
+                SettingsView()
+                    .tag(TabItem.settings)
+            }
+            .toolbar(.hidden, for: .tabBar)
+
             CustomTabBar(selectedTab: $selectedTab)
         }
     }
