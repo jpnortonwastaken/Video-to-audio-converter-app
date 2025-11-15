@@ -100,11 +100,11 @@ struct ConverterView: View {
                     .padding(20)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(colorScheme == .dark ? Color(.systemGray5) : Color.white)
+                            .fill(colorScheme == .dark ? Color.clear : Color.white)
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
-                            .stroke(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5), lineWidth: 1)
+                            .stroke(colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray5), lineWidth: 1)
                     )
                     .padding(.horizontal, 24)
                     .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
