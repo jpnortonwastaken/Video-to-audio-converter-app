@@ -50,7 +50,7 @@ struct ConverterView: View {
                                         icon: "photo.on.rectangle",
                                         backgroundColor: Color.pink.opacity(0.1),
                                         iconColor: .pink,
-                                        textColor: Color(red: 0.8, green: 0.2, blue: 0.4)
+                                        textColor: Color(red: 0.5, green: 0.1, blue: 0.25)
                                     ) {
                                         viewModel.selectFromPhotos()
                                     }
@@ -64,7 +64,7 @@ struct ConverterView: View {
                                             icon: "folder.fill",
                                             backgroundColor: Color.blue.opacity(0.1),
                                             iconColor: .blue,
-                                            textColor: Color(red: 0.0, green: 0.3, blue: 0.8)
+                                            textColor: Color(red: 0.0, green: 0.2, blue: 0.5)
                                         ) {
                                             viewModel.selectFromFiles()
                                         }
@@ -76,7 +76,7 @@ struct ConverterView: View {
                                             icon: "doc.on.clipboard.fill",
                                             backgroundColor: Color.orange.opacity(0.1),
                                             iconColor: .orange,
-                                            textColor: Color(red: 0.85, green: 0.45, blue: 0.0)
+                                            textColor: Color(red: 0.6, green: 0.3, blue: 0.0)
                                         ) {
                                             viewModel.pasteImage()
                                         }
