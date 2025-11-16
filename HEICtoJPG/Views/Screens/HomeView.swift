@@ -164,6 +164,10 @@ struct HomeView: View {
                                 RoundedRectangle(cornerRadius: 6)
                                     .fill(colorForFormat(item.fromFormat).opacity(0.2))
                             )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(colorForFormat(item.fromFormat), lineWidth: 1)
+                            )
 
                         Image(systemName: "arrow.right")
                             .font(.caption)
@@ -178,6 +182,10 @@ struct HomeView: View {
                             .background(
                                 RoundedRectangle(cornerRadius: 6)
                                     .fill(colorForFormat(item.toFormat.displayName).opacity(0.2))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(colorForFormat(item.toFormat.displayName), lineWidth: 1)
                             )
                     }
 
