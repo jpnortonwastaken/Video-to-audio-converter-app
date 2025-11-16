@@ -11,6 +11,8 @@ struct HomeView: View {
     @Environment(\.colorScheme) private var colorScheme
     @StateObject private var historyService = ConversionHistoryService.shared
     @State private var selectedHistoryItem: ConversionHistoryItem?
+    @State private var itemToDelete: ConversionHistoryItem?
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         NavigationView {
@@ -47,6 +49,20 @@ struct HomeView: View {
                 convertedImageData: item.convertedImageData,
                 format: item.toFormat
             )
+        }
+        .alert("Delete Conversion", isPresented: $showDeleteConfirmation) {
+            Button("Cancel", role: .cancel) {
+                itemToDelete = nil
+            }
+            Button("Delete", role: .destructive) {
+                if let item = itemToDelete {
+                    HapticManager.shared.softImpact()
+                    historyService.deleteItem(item)
+                    itemToDelete = nil
+                }
+            }
+        } message: {
+            Text("Are you sure you want to delete this conversion from your history?")
         }
     }
 
@@ -172,7 +188,8 @@ struct HomeView: View {
         .contextMenu {
             Button(role: .destructive) {
                 HapticManager.shared.softImpact()
-                historyService.deleteItem(item)
+                itemToDelete = item
+                showDeleteConfirmation = true
             } label: {
                 Label("Delete", systemImage: "trash")
             }
