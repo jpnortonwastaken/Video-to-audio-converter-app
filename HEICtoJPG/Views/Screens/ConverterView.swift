@@ -408,10 +408,7 @@ struct FormatSelectionSheet: View {
         let isSelected = selectedFormat == format
         let backgroundColor = isSelected
             ? (colorScheme == .dark ? Color.white : Color.black)
-            : (colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
-        let strokeColor = isSelected
-            ? Color.clear
-            : (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4))
+            : Color(.systemGray5)
         let textColor = isSelected
             ? (colorScheme == .dark ? Color.black : Color.white)
             : (colorScheme == .dark ? Color.white : Color.black)
@@ -439,10 +436,6 @@ struct FormatSelectionSheet: View {
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(backgroundColor)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(strokeColor, lineWidth: 0.5)
-                    )
                     .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
                     .shadow(color: Color.black.opacity(0.03), radius: 32, x: 0, y: 16)
             )
