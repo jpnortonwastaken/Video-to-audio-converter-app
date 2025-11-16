@@ -331,6 +331,7 @@ struct ConverterView: View {
     // MARK: - Convert Button
     private var convertButton: some View {
         Button(action: {
+            HapticManager.shared.softImpact()
             Task {
                 await viewModel.convertImage()
             }
