@@ -20,7 +20,9 @@ class ConverterViewModel: ObservableObject {
     @Published var showFilePicker = false
     @Published var showFormatPicker = false
     @Published var errorMessage: String?
-    @Published var convertedImage: UIImage?
+    @Published var convertedImageData: Data?
+    @Published var showResultView = false
+    @Published var originalImageFormat: String = "HEIC"
 
     // MARK: - Photo Picker
     @Published var selectedPhotoItem: PhotosPickerItem?
@@ -78,13 +80,19 @@ class ConverterViewModel: ObservableObject {
                 to: selectedFormat
             )
 
-            if let converted = UIImage(data: convertedData) {
-                convertedImage = converted
-                // Save to photo library or share
-                saveConvertedImage(convertedData)
-            }
+            // Store the converted data
+            convertedImageData = convertedData
+
+            // Save to history
+            saveConversionToHistory(
+                originalImage: selectedImage,
+                convertedData: convertedData
+            )
 
             HapticManager.shared.success()
+
+            // Show result view
+            showResultView = true
         } catch {
             errorMessage = "Conversion failed: \(error.localizedDescription)"
             HapticManager.shared.error()
@@ -93,15 +101,30 @@ class ConverterViewModel: ObservableObject {
         isConverting = false
     }
 
-    private func saveConvertedImage(_ data: Data) {
-        // TODO: Implement save to photo library
-        // This will be implemented when we add the save functionality
+    private func saveConversionToHistory(originalImage: UIImage, convertedData: Data) {
+        // Get original image data
+        guard let originalData = originalImage.pngData() else {
+            return
+        }
+
+        // Create history item
+        let historyItem = ConversionHistoryItem(
+            originalImageData: originalData,
+            convertedImageData: convertedData,
+            fromFormat: originalImageFormat,
+            toFormat: selectedFormat,
+            fileSize: Int64(convertedData.count)
+        )
+
+        // Save to history service
+        ConversionHistoryService.shared.addConversion(historyItem)
     }
 
     func reset() {
         selectedImage = nil
-        convertedImage = nil
+        convertedImageData = nil
         selectedPhotoItem = nil
         errorMessage = nil
+        showResultView = false
     }
 }

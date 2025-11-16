@@ -9,56 +9,196 @@ import SwiftUI
 
 struct HomeView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var historyService = ConversionHistoryService.shared
+    @State private var selectedHistoryItem: ConversionHistoryItem?
+    @State private var showClearConfirmation = false
 
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // Home Header
+                // History Header
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(AppConstants.appName)
+                        Text("History")
                             .font(.largeTitle)
                             .fontWeight(.bold)
                     }
 
                     Spacer()
+
+                    if !historyService.items.isEmpty {
+                        Button(action: {
+                            HapticManager.shared.softImpact()
+                            showClearConfirmation = true
+                        }) {
+                            Text("Clear")
+                                .font(.body)
+                                .foregroundColor(.red)
+                        }
+                    }
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 8)
+                .padding(.bottom, 12)
                 .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
 
-                // Home Content
-                ScrollView {
-                    VStack(spacing: 20) {
-                        Spacer()
-                            .frame(height: 100)
-
-                        // Welcome Section
-                        VStack(spacing: 12) {
-                            Image(systemName: "house.fill")
-                                .font(.system(size: 60))
-                                .foregroundColor(.blue)
-
-                            Text("Welcome!")
-                                .font(.system(size: 32, weight: .bold))
-                                .contentTransition(.numericText())
-                        }
-
-                        Spacer()
-                            .frame(height: 100)
-                    }
-                    .padding(24)
-                    .padding(.top, 20)
-                    .padding(.bottom, 100)
+                // History Content
+                if historyService.items.isEmpty {
+                    emptyStateView
+                } else {
+                    historyListView
                 }
-                .gradientFadeMask()
-                .scrollIndicators(.hidden)
-                .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
             }
             .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
             .navigationBarHidden(true)
-            .navigationTitle("Home")
+            .navigationTitle("History")
             .navigationBarTitleDisplayMode(.large)
+        }
+        .sheet(item: $selectedHistoryItem) { item in
+            ConversionResultView(
+                convertedImageData: item.convertedImageData,
+                format: item.toFormat
+            )
+        }
+        .alert("Clear History", isPresented: $showClearConfirmation) {
+            Button("Cancel", role: .cancel) {
+                HapticManager.shared.softImpact()
+            }
+            Button("Clear All", role: .destructive) {
+                HapticManager.shared.softImpact()
+                historyService.clearAll()
+            }
+        } message: {
+            Text("Are you sure you want to clear all conversion history? This cannot be undone.")
+        }
+    }
+
+    // MARK: - Empty State
+    private var emptyStateView: some View {
+        ScrollView {
+            VStack(spacing: 20) {
+                Spacer()
+                    .frame(height: 100)
+
+                VStack(spacing: 16) {
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.system(size: 60))
+                        .foregroundColor(.gray)
+
+                    Text("No Conversions Yet")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                    Text("Convert an image to see it here")
+                        .font(.body)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                }
+
+                Spacer()
+                    .frame(height: 100)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(24)
+        }
+        .gradientFadeMask()
+        .scrollIndicators(.hidden)
+        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+    }
+
+    // MARK: - History List
+    private var historyListView: some View {
+        ScrollView {
+            LazyVStack(spacing: 12) {
+                ForEach(historyService.items) { item in
+                    historyCard(for: item)
+                }
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 8)
+            .padding(.bottom, 100)
+        }
+        .gradientFadeMask()
+        .scrollIndicators(.hidden)
+        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+    }
+
+    // MARK: - History Card
+    private func historyCard(for item: ConversionHistoryItem) -> some View {
+        Button(action: {
+            HapticManager.shared.softImpact()
+            selectedHistoryItem = item
+        }) {
+            HStack(spacing: 16) {
+                // Thumbnail
+                if let image = UIImage(data: item.convertedImageData) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 80, height: 80)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+
+                // Info
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 8) {
+                        Text(item.fromFormat)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(Color.blue.opacity(0.2))
+                            )
+
+                        Image(systemName: "arrow.right")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+
+                        Text(item.toFormat.displayName)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(Color.green.opacity(0.2))
+                            )
+                    }
+
+                    Text(item.formattedDate)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+
+                    Text(item.formattedFileSize)
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.body)
+                    .foregroundColor(.gray)
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+            )
+        }
+        .buttonStyle(ScaleDownButtonStyle())
+        .contextMenu {
+            Button(role: .destructive) {
+                HapticManager.shared.softImpact()
+                historyService.deleteItem(item)
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
         }
     }
 }

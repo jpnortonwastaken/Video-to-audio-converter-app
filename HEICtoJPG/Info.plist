@@ -10,5 +10,7 @@
 	<string>HEIC to JPG</string>
 	<key>SKIncludeConsumableInAppPurchaseHistory</key>
 	<true/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need access to save converted images to your photo library.</string>
 </dict>
 </plist>

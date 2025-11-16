@@ -8,7 +8,7 @@
 import Foundation
 import UniformTypeIdentifiers
 
-enum ImageFormat: String, CaseIterable, Identifiable {
+enum ImageFormat: String, CaseIterable, Identifiable, Codable {
     case jpg = "JPG"
     case jpeg = "JPEG"
     case pdf = "PDF"

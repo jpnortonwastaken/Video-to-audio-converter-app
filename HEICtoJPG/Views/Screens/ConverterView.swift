@@ -169,6 +169,45 @@ struct ConverterView: View {
             .presentationDetents([.fraction(0.75)])
             .presentationDragIndicator(.visible)
         }
+        .fullScreenCover(isPresented: $viewModel.showResultView) {
+            if let convertedData = viewModel.convertedImageData {
+                ConversionResultView(
+                    convertedImageData: convertedData,
+                    format: viewModel.selectedFormat
+                )
+                .onDisappear {
+                    viewModel.reset()
+                }
+            }
+        }
+        .overlay {
+            if viewModel.isConverting {
+                convertingOverlay
+            }
+        }
+    }
+
+    // MARK: - Converting Overlay
+    private var convertingOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.5)
+                .ignoresSafeArea()
+
+            VStack(spacing: 20) {
+                ProgressView()
+                    .scaleEffect(1.5)
+                    .tint(.white)
+
+                Text("Converting...")
+                    .font(.headline)
+                    .foregroundColor(.white)
+            }
+            .padding(40)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+            )
+        }
     }
 
     // MARK: - Header
