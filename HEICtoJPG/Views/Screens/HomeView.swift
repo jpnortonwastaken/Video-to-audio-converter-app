@@ -109,7 +109,7 @@ struct HomeView: View {
                 }
             }
             .padding(.horizontal, 24)
-            .padding(.top, 20)
+            .padding(.top, 28)
             .padding(.bottom, 100)
         }
         .gradientFadeMask()
