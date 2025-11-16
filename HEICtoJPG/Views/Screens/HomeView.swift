@@ -28,7 +28,7 @@ struct HomeView: View {
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 8)
-                .padding(.bottom, 12)
+                .padding(.bottom, 0)
                 .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
 
                 // History Content
@@ -102,7 +102,7 @@ struct HomeView: View {
                 }
             }
             .padding(.horizontal, 24)
-            .padding(.top, 28)
+            .padding(.top, 12)
             .padding(.bottom, 100)
         }
         .gradientFadeMask()
