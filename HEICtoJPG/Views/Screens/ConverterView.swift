@@ -225,8 +225,8 @@ struct ConverterView: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                iconColor.opacity(0.2),
-                                iconColor.opacity(0.05)
+                                iconColor.opacity(0.05),
+                                iconColor.opacity(0.2)
                             ],
                             startPoint: .top,
                             endPoint: .bottom
@@ -274,8 +274,8 @@ struct ConverterView: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                iconColor.opacity(0.2),
-                                iconColor.opacity(0.05)
+                                iconColor.opacity(0.05),
+                                iconColor.opacity(0.2)
                             ],
                             startPoint: .top,
                             endPoint: .bottom
