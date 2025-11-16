@@ -67,9 +67,8 @@ struct ConversionResultView: View {
                             .padding(.top, 20)
                     }
                 }
-                .padding(.bottom, 24)
 
-                Spacer()
+                Spacer(minLength: 16)
 
                 // File Info and Action Buttons
                 VStack(spacing: 16) {
@@ -174,7 +173,6 @@ struct ConversionResultView: View {
                 .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
             }
             .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
-            .ignoresSafeArea()
         }
         .navigationBarHidden(true)
         .sheet(isPresented: $showShareSheet) {
@@ -218,9 +216,7 @@ struct ConversionResultView: View {
                         .background(Color(.systemGray5))
                         .clipShape(Circle())
                 }
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
-                .buttonStyle(ScaleDownButtonStyle())
+                .buttonStyle(BounceButtonStyle())
 
                 Spacer()
             }
@@ -230,7 +226,6 @@ struct ConversionResultView: View {
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(colorScheme == .dark ? .white : .black)
-                .allowsHitTesting(false)
         }
         .padding(.horizontal, 24)
         .padding(.top, 8)
