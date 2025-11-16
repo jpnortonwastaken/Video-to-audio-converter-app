@@ -12,6 +12,7 @@ struct ConverterView: View {
     @StateObject private var viewModel = ConverterViewModel()
     @Environment(\.colorScheme) private var colorScheme
     @State private var showImage = false
+    @State private var showButtons = false
     @State private var showFormatSheet = false
 
     var body: some View {
@@ -85,6 +86,8 @@ struct ConverterView: View {
                                         }
                                     }
                                 }
+                                .scaleEffect(showButtons ? 1.0 : 0.7)
+                                .opacity(showButtons ? 1.0 : 0.0)
                             }
                         }
                         .frame(height: 350) // Fixed height to prevent movement
@@ -135,6 +138,14 @@ struct ConverterView: View {
         ) { result in
             handleFileSelection(result)
         }
+        .onAppear {
+            // Trigger initial bounce-in animation for buttons
+            if viewModel.selectedImage == nil {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                    showButtons = true
+                }
+            }
+        }
         .onChange(of: viewModel.selectedPhotoItem) { _, _ in
             Task {
                 await viewModel.loadPhotoPickerItem()
@@ -142,14 +153,21 @@ struct ConverterView: View {
         }
         .onChange(of: viewModel.selectedImage) { _, newValue in
             if newValue != nil {
-                // Reset animation state
+                // Image selected: hide buttons, show image
+                showButtons = false
                 showImage = false
                 // Trigger bouncy animation with spring
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
                     showImage = true
                 }
             } else {
+                // Image removed: hide image, show buttons
                 showImage = false
+                showButtons = false
+                // Trigger bouncy animation for buttons with spring
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                    showButtons = true
+                }
             }
         }
         .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
