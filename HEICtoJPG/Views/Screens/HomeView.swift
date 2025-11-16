@@ -138,7 +138,8 @@ struct HomeView: View {
     private func historyCard(for item: ConversionHistoryItem) -> some View {
         NavigationLink(destination: ConversionResultView(
             convertedImageData: item.convertedImageData,
-            format: item.toFormat
+            format: item.toFormat,
+            displayMode: .fullImage
         )) {
             HStack(spacing: 16) {
                 // Thumbnail

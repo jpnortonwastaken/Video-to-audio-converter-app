@@ -8,9 +8,15 @@
 import SwiftUI
 import Photos
 
+enum ConversionResultDisplayMode {
+    case thumbnail  // Square thumbnail with rounded corners (for direct conversions)
+    case fullImage  // Full aspect ratio image (for history items)
+}
+
 struct ConversionResultView: View {
     let convertedImageData: Data
     let format: ImageFormat
+    let displayMode: ConversionResultDisplayMode
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @State private var showShareSheet = false
@@ -23,6 +29,13 @@ struct ConversionResultView: View {
         UIImage(data: convertedImageData)
     }
 
+    // Default initializer with thumbnail mode
+    init(convertedImageData: Data, format: ImageFormat, displayMode: ConversionResultDisplayMode = .thumbnail) {
+        self.convertedImageData = convertedImageData
+        self.format = format
+        self.displayMode = displayMode
+    }
+
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
@@ -32,12 +45,25 @@ struct ConversionResultView: View {
 
                 // Converted Image Preview
                 if let image = convertedImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: .infinity)
-                        .padding(.horizontal, 24)
-                        .padding(.top, 20)
+                    switch displayMode {
+                    case .thumbnail:
+                        // Square thumbnail with rounded corners (like ConverterView)
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 350, height: 350)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .padding(.top, 20)
+
+                    case .fullImage:
+                        // Full aspect ratio image (for history items)
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity)
+                            .padding(.horizontal, 24)
+                            .padding(.top, 20)
+                    }
                 }
 
                 Spacer()
