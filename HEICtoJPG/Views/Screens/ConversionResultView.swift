@@ -31,98 +31,87 @@ struct ConversionResultView: View {
                     .padding(.top, geometry.safeAreaInsets.top)
 
                 // Converted Image Preview
-                ScrollView {
-                    VStack(spacing: 24) {
-                        if let image = convertedImage {
-                            VStack(spacing: 16) {
-                                // Image Preview
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(maxWidth: .infinity)
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4), lineWidth: 0.5)
-                                    )
-
-                                // File Info
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("Format")
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
-                                        Text(format.displayName)
-                                            .font(.headline)
-                                            .foregroundColor(colorScheme == .dark ? .white : .black)
-                                    }
-
-                                    Spacer()
-
-                                    VStack(alignment: .trailing, spacing: 4) {
-                                        Text("Size")
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
-                                        Text(formatFileSize(convertedImageData.count))
-                                            .font(.headline)
-                                            .foregroundColor(colorScheme == .dark ? .white : .black)
-                                    }
-                                }
-                                .padding(16)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-                                )
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.top, 20)
-                    .padding(.bottom, 160)
+                if let image = convertedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 24)
+                        .padding(.top, 20)
                 }
-                .gradientFadeMask()
 
                 Spacer()
 
-                // Action Buttons
-                VStack(spacing: 12) {
-                    // Share Button
-                    Button(action: shareImage) {
-                        HStack {
-                            Image(systemName: "square.and.arrow.up")
+                // File Info and Action Buttons
+                VStack(spacing: 16) {
+                    // File Info
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Format")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            Text(format.displayName)
                                 .font(.headline)
-                            Text("Share")
-                                .font(.headline)
-                                .fontWeight(.semibold)
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
                         }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(
-                            RoundedRectangle(cornerRadius: 14)
-                                .fill(colorScheme == .dark ? Color.white : Color.black)
-                        )
-                        .foregroundColor(colorScheme == .dark ? .black : .white)
-                    }
-                    .buttonStyle(ScaleDownButtonStyle())
 
-                    // Save to Photos Button
-                    Button(action: saveToPhotos) {
-                        HStack {
-                            Image(systemName: "square.and.arrow.down")
+                        Spacer()
+
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Text("Size")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            Text(formatFileSize(convertedImageData.count))
                                 .font(.headline)
-                            Text("Save to Photos")
-                                .font(.headline)
-                                .fontWeight(.semibold)
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
                         }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(
-                            RoundedRectangle(cornerRadius: 14)
-                                .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-                        )
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
                     }
-                    .buttonStyle(ScaleDownButtonStyle())
+                    .padding(16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                    )
+
+                    // Share and Save Buttons (side by side)
+                    HStack(spacing: 12) {
+                        // Share Button
+                        Button(action: shareImage) {
+                            HStack {
+                                Image(systemName: "square.and.arrow.up")
+                                    .font(.headline)
+                                Text("Share")
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(colorScheme == .dark ? Color.white : Color.black)
+                            )
+                            .foregroundColor(colorScheme == .dark ? .black : .white)
+                        }
+                        .buttonStyle(ScaleDownButtonStyle())
+
+                        // Save to Photos Button
+                        Button(action: saveToPhotos) {
+                            HStack {
+                                Image(systemName: "square.and.arrow.down")
+                                    .font(.headline)
+                                Text("Save")
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(colorScheme == .dark ? Color.white : Color.black)
+                            )
+                            .foregroundColor(colorScheme == .dark ? .black : .white)
+                        }
+                        .buttonStyle(ScaleDownButtonStyle())
+                    }
 
                     // Done Button
                     Button(action: {
