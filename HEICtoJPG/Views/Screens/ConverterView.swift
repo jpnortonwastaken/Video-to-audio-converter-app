@@ -282,7 +282,7 @@ struct ConverterView: View {
             }
             .padding(20)
             .background(
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: 14)
                     .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
             )
         }
@@ -309,7 +309,7 @@ struct ConverterView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 56)
             .background(
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: 14)
                     .fill(colorScheme == .dark ? Color.white : Color.black)
             )
             .foregroundColor(colorScheme == .dark ? .black : .white)
@@ -437,10 +437,10 @@ struct FormatSelectionSheet: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 24)
             .background(
-                RoundedRectangle(cornerRadius: 28)
+                RoundedRectangle(cornerRadius: 16)
                     .fill(backgroundColor)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 28)
+                        RoundedRectangle(cornerRadius: 16)
                             .stroke(strokeColor, lineWidth: 0.5)
                     )
                     .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
