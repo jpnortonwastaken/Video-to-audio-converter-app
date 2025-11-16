@@ -313,7 +313,6 @@ struct ConverterView: View {
                     .fill(colorScheme == .dark ? Color.white : Color.black)
             )
             .foregroundColor(colorScheme == .dark ? .black : .white)
-            .opacity(viewModel.selectedImage == nil || viewModel.isConverting ? 0.5 : 1.0)
         }
         .disabled(viewModel.selectedImage == nil || viewModel.isConverting)
         .buttonStyle(ScaleDownButtonStyle())
