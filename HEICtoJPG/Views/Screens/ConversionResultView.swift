@@ -226,6 +226,7 @@ struct ConversionResultView: View {
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(colorScheme == .dark ? .white : .black)
+                .allowsHitTesting(false)
         }
         .padding(.horizontal, 24)
         .padding(.top, 8)
