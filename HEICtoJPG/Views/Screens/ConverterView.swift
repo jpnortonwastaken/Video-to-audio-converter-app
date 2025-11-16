@@ -276,7 +276,7 @@ struct ConverterView: View {
                         .foregroundColor(colorScheme == .dark ? .white : .black)
 
                     Image(systemName: "chevron.down")
-                        .font(.caption)
+                        .font(.body)
                         .foregroundColor(.gray)
                 }
             }
