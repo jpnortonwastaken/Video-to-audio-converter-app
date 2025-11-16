@@ -50,7 +50,8 @@ struct ConverterView: View {
                                         icon: "photo.on.rectangle",
                                         backgroundColor: Color.pink.opacity(0.1),
                                         iconColor: .pink,
-                                        textColor: colorScheme == .dark ? Color(red: 1.0, green: 0.7, blue: 0.85) : Color(red: 0.5, green: 0.1, blue: 0.25)
+                                        textColor: colorScheme == .dark ? Color(red: 1.0, green: 0.7, blue: 0.85) : Color(red: 0.5, green: 0.1, blue: 0.25),
+                                        colorScheme: colorScheme
                                     ) {
                                         viewModel.selectFromPhotos()
                                     }
@@ -64,7 +65,8 @@ struct ConverterView: View {
                                             icon: "folder.fill",
                                             backgroundColor: Color.blue.opacity(0.1),
                                             iconColor: .blue,
-                                            textColor: colorScheme == .dark ? Color(red: 0.6, green: 0.8, blue: 1.0) : Color(red: 0.0, green: 0.2, blue: 0.5)
+                                            textColor: colorScheme == .dark ? Color(red: 0.6, green: 0.8, blue: 1.0) : Color(red: 0.0, green: 0.2, blue: 0.5),
+                                            colorScheme: colorScheme
                                         ) {
                                             viewModel.selectFromFiles()
                                         }
@@ -76,7 +78,8 @@ struct ConverterView: View {
                                             icon: "doc.on.clipboard.fill",
                                             backgroundColor: Color.orange.opacity(0.1),
                                             iconColor: .orange,
-                                            textColor: colorScheme == .dark ? Color(red: 1.0, green: 0.75, blue: 0.5) : Color(red: 0.6, green: 0.3, blue: 0.0)
+                                            textColor: colorScheme == .dark ? Color(red: 1.0, green: 0.75, blue: 0.5) : Color(red: 0.6, green: 0.3, blue: 0.0),
+                                            colorScheme: colorScheme
                                         ) {
                                             viewModel.pasteImage()
                                         }
@@ -202,6 +205,7 @@ struct ConverterView: View {
         backgroundColor: Color,
         iconColor: Color,
         textColor: Color,
+        colorScheme: ColorScheme,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
@@ -236,7 +240,7 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor, lineWidth: 2)
+                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), lineWidth: 1)
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
@@ -250,6 +254,7 @@ struct ConverterView: View {
         backgroundColor: Color,
         iconColor: Color,
         textColor: Color,
+        colorScheme: ColorScheme,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
@@ -285,7 +290,7 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor, lineWidth: 2)
+                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), lineWidth: 1)
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
