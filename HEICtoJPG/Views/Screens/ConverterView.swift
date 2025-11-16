@@ -190,13 +190,28 @@ struct ConverterView: View {
     // MARK: - Converting Overlay
     private var convertingOverlay: some View {
         ZStack {
-            Color.black.opacity(0.5)
+            Color.black.opacity(0.7)
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                ProgressView()
-                    .scaleEffect(1.5)
-                    .tint(.white)
+            VStack(spacing: 24) {
+                // Custom loading animation
+                ZStack {
+                    Circle()
+                        .stroke(Color.white.opacity(0.3), lineWidth: 4)
+                        .frame(width: 60, height: 60)
+
+                    Circle()
+                        .trim(from: 0, to: 0.7)
+                        .stroke(Color.white, lineWidth: 4)
+                        .frame(width: 60, height: 60)
+                        .rotationEffect(Angle(degrees: viewModel.isConverting ? 360 : 0))
+                        .animation(
+                            viewModel.isConverting ?
+                                .linear(duration: 1).repeatForever(autoreverses: false) :
+                                .default,
+                            value: viewModel.isConverting
+                        )
+                }
 
                 Text("Converting...")
                     .font(.headline)
@@ -205,7 +220,7 @@ struct ConverterView: View {
             .padding(40)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                    .fill(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5))
             )
         }
     }

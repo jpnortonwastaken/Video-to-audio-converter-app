@@ -35,27 +35,6 @@ struct ConversionResultView: View {
                     VStack(spacing: 24) {
                         if let image = convertedImage {
                             VStack(spacing: 16) {
-                                // Success Message
-                                HStack(spacing: 12) {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.title2)
-                                        .foregroundColor(.green)
-
-                                    Text("Converted to \(format.displayName)")
-                                        .font(.headline)
-                                        .foregroundColor(colorScheme == .dark ? .white : .black)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(16)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color.green.opacity(0.1))
-                                )
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color.green.opacity(0.3), lineWidth: 1)
-                                )
-
                                 // Image Preview
                                 Image(uiImage: image)
                                     .resizable()
