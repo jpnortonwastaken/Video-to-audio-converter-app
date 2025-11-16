@@ -10,7 +10,6 @@ import SwiftUI
 struct HomeView: View {
     @Environment(\.colorScheme) private var colorScheme
     @StateObject private var historyService = ConversionHistoryService.shared
-    @State private var selectedHistoryItem: ConversionHistoryItem?
     @State private var itemToDelete: ConversionHistoryItem?
     @State private var showDeleteConfirmation = false
 
@@ -43,12 +42,6 @@ struct HomeView: View {
             .navigationBarHidden(true)
             .navigationTitle("History")
             .navigationBarTitleDisplayMode(.large)
-        }
-        .sheet(item: $selectedHistoryItem) { item in
-            ConversionResultView(
-                convertedImageData: item.convertedImageData,
-                format: item.toFormat
-            )
         }
         .alert("Delete Conversion", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {
@@ -143,10 +136,10 @@ struct HomeView: View {
 
     // MARK: - History Card
     private func historyCard(for item: ConversionHistoryItem) -> some View {
-        Button(action: {
-            HapticManager.shared.softImpact()
-            selectedHistoryItem = item
-        }) {
+        NavigationLink(destination: ConversionResultView(
+            convertedImageData: item.convertedImageData,
+            format: item.toFormat
+        )) {
             HStack(spacing: 16) {
                 // Thumbnail
                 if let image = UIImage(data: item.convertedImageData) {
@@ -208,6 +201,9 @@ struct HomeView: View {
                     .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
             )
         }
+        .simultaneousGesture(TapGesture().onEnded {
+            HapticManager.shared.softImpact()
+        })
         .buttonStyle(ScaleDownButtonStyle())
         .contextMenu {
             Button(role: .destructive) {
