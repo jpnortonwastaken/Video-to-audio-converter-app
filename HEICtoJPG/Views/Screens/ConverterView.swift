@@ -282,7 +282,7 @@ struct ConverterView: View {
             }
             .padding(20)
             .background(
-                RoundedRectangle(cornerRadius: 24)
+                RoundedRectangle(cornerRadius: 20)
                     .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
             )
         }
@@ -309,7 +309,7 @@ struct ConverterView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 56)
             .background(
-                RoundedRectangle(cornerRadius: 24)
+                RoundedRectangle(cornerRadius: 20)
                     .fill(colorScheme == .dark ? Color.white : Color.black)
             )
             .foregroundColor(colorScheme == .dark ? .black : .white)
