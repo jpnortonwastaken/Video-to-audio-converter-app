@@ -145,7 +145,7 @@ struct ConversionResultView: View {
         }
         .navigationBarHidden(true)
         .sheet(isPresented: $showShareSheet) {
-            if let image = convertedImage {
+            if convertedImage != nil {
                 ShareSheet(items: [createShareableFile()])
             }
         }
@@ -213,18 +213,38 @@ struct ConversionResultView: View {
             return
         }
 
-        // Request photo library permission
-        PHPhotoLibrary.requestAuthorization { status in
+        // Request photo library permission (using modern API)
+        PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
             DispatchQueue.main.async {
-                if status == .authorized {
-                    // Save image to photo library
-                    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-                    HapticManager.shared.success()
-                    successMessage = "Image saved to Photos"
-                    showSuccessMessage = true
-                } else {
+                switch status {
+                case .authorized, .limited:
+                    // Save image to photo library using modern API
+                    PHPhotoLibrary.shared().performChanges({
+                        PHAssetCreationRequest.creationRequestForAsset(from: image)
+                    }) { success, error in
+                        DispatchQueue.main.async {
+                            if success {
+                                HapticManager.shared.success()
+                                successMessage = "Image saved to Photos"
+                                showSuccessMessage = true
+                            } else {
+                                HapticManager.shared.error()
+                                errorMessage = error?.localizedDescription ?? "Failed to save image"
+                                showError = true
+                            }
+                        }
+                    }
+                case .denied, .restricted:
                     HapticManager.shared.error()
                     errorMessage = "Permission denied. Please enable photo library access in Settings."
+                    showError = true
+                case .notDetermined:
+                    HapticManager.shared.error()
+                    errorMessage = "Permission not determined. Please try again."
+                    showError = true
+                @unknown default:
+                    HapticManager.shared.error()
+                    errorMessage = "Unknown authorization status"
                     showError = true
                 }
             }
