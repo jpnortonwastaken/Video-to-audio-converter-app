@@ -49,7 +49,8 @@ struct ConverterView: View {
                                         subtitle: "Choose from Photos",
                                         icon: "photo.on.rectangle",
                                         backgroundColor: Color.pink.opacity(0.1),
-                                        iconColor: .pink
+                                        iconColor: .pink,
+                                        textColor: Color(red: 0.8, green: 0.2, blue: 0.4)
                                     ) {
                                         viewModel.selectFromPhotos()
                                     }
@@ -62,7 +63,8 @@ struct ConverterView: View {
                                             subtitle: "Pick from Files",
                                             icon: "folder.fill",
                                             backgroundColor: Color.blue.opacity(0.1),
-                                            iconColor: .blue
+                                            iconColor: .blue,
+                                            textColor: Color(red: 0.0, green: 0.3, blue: 0.8)
                                         ) {
                                             viewModel.selectFromFiles()
                                         }
@@ -73,7 +75,8 @@ struct ConverterView: View {
                                             subtitle: "Paste an image",
                                             icon: "doc.on.clipboard.fill",
                                             backgroundColor: Color.orange.opacity(0.1),
-                                            iconColor: .orange
+                                            iconColor: .orange,
+                                            textColor: Color(red: 0.85, green: 0.45, blue: 0.0)
                                         ) {
                                             viewModel.pasteImage()
                                         }
@@ -104,7 +107,7 @@ struct ConverterView: View {
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 28)
-                            .stroke(colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray5), lineWidth: 1)
+                            .stroke(colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4), lineWidth: 0.5)
                     )
                     .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
                     .shadow(color: Color.black.opacity(0.03), radius: 32, x: 0, y: 16)
@@ -197,6 +200,7 @@ struct ConverterView: View {
         icon: String,
         backgroundColor: Color,
         iconColor: Color,
+        textColor: Color,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
@@ -208,17 +212,21 @@ struct ConverterView: View {
                 Text(title)
                     .font(.title2)
                     .fontWeight(.semibold)
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                    .foregroundColor(textColor)
 
                 Text(subtitle)
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(textColor.opacity(0.6))
             }
             .frame(maxWidth: .infinity)
             .frame(height: 160)
             .background(
                 RoundedRectangle(cornerRadius: 20)
                     .fill(backgroundColor)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(iconColor, lineWidth: 2)
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
@@ -231,6 +239,7 @@ struct ConverterView: View {
         icon: String,
         backgroundColor: Color,
         iconColor: Color,
+        textColor: Color,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
@@ -242,11 +251,11 @@ struct ConverterView: View {
                 Text(title)
                     .font(.headline)
                     .fontWeight(.semibold)
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                    .foregroundColor(textColor)
 
                 Text(subtitle)
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(textColor.opacity(0.6))
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
@@ -254,6 +263,10 @@ struct ConverterView: View {
             .background(
                 RoundedRectangle(cornerRadius: 20)
                     .fill(backgroundColor)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(iconColor, lineWidth: 2)
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
@@ -283,10 +296,7 @@ struct ConverterView: View {
                 }
             }
             .padding(20)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-            )
+            .background(Color.clear)
         }
         .buttonStyle(ScaleDownButtonStyle())
     }
