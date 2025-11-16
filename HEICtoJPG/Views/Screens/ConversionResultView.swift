@@ -68,7 +68,7 @@ struct ConversionResultView: View {
                     }
                 }
 
-                Spacer()
+                Spacer(minLength: 32)
 
                 // File Info and Action Buttons
                 VStack(spacing: 16) {
