@@ -226,7 +226,7 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor, lineWidth: 2)
+                    .stroke(iconColor, lineWidth: 1)
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
@@ -266,7 +266,7 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor, lineWidth: 2)
+                    .stroke(iconColor, lineWidth: 1)
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
