@@ -39,8 +39,7 @@ struct ConversionResultView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
                 VStack(spacing: 0) {
                     // Converted Image Preview
                 if let image = convertedImage {
@@ -190,7 +189,6 @@ struct ConversionResultView: View {
                     }
                 }
             }
-        }
         }
         .sheet(isPresented: $showShareSheet) {
             if convertedImage != nil {

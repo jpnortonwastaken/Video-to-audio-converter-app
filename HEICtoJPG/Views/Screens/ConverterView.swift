@@ -181,15 +181,17 @@ struct ConverterView: View {
         }
         .fullScreenCover(isPresented: $viewModel.showResultView) {
             if let convertedData = viewModel.convertedImageData {
-                ConversionResultView(
-                    convertedImageData: convertedData,
-                    format: viewModel.selectedFormat,
-                    onDismiss: {
-                        viewModel.showResultView = false
+                NavigationStack {
+                    ConversionResultView(
+                        convertedImageData: convertedData,
+                        format: viewModel.selectedFormat,
+                        onDismiss: {
+                            viewModel.showResultView = false
+                        }
+                    )
+                    .onDisappear {
+                        viewModel.reset()
                     }
-                )
-                .onDisappear {
-                    viewModel.reset()
                 }
             }
         }
