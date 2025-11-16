@@ -215,7 +215,7 @@ struct ConverterView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 160)
             .background(
-                RoundedRectangle(cornerRadius: 24)
+                RoundedRectangle(cornerRadius: 20)
                     .fill(backgroundColor)
             )
         }
@@ -250,7 +250,7 @@ struct ConverterView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 160)
             .background(
-                RoundedRectangle(cornerRadius: 24)
+                RoundedRectangle(cornerRadius: 20)
                     .fill(backgroundColor)
             )
         }
@@ -328,7 +328,7 @@ struct ConverterView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 350, height: 350)
                 .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 24))
+                .clipShape(RoundedRectangle(cornerRadius: 20))
 
             // X button
             Button(action: {
