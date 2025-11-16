@@ -11,7 +11,6 @@ struct HomeView: View {
     @Environment(\.colorScheme) private var colorScheme
     @StateObject private var historyService = ConversionHistoryService.shared
     @State private var selectedHistoryItem: ConversionHistoryItem?
-    @State private var showClearConfirmation = false
 
     var body: some View {
         NavigationView {
@@ -25,17 +24,6 @@ struct HomeView: View {
                     }
 
                     Spacer()
-
-                    if !historyService.items.isEmpty {
-                        Button(action: {
-                            HapticManager.shared.softImpact()
-                            showClearConfirmation = true
-                        }) {
-                            Text("Clear")
-                                .font(.body)
-                                .foregroundColor(.red)
-                        }
-                    }
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 8)
@@ -59,17 +47,6 @@ struct HomeView: View {
                 convertedImageData: item.convertedImageData,
                 format: item.toFormat
             )
-        }
-        .alert("Clear History", isPresented: $showClearConfirmation) {
-            Button("Cancel", role: .cancel) {
-                HapticManager.shared.softImpact()
-            }
-            Button("Clear All", role: .destructive) {
-                HapticManager.shared.softImpact()
-                historyService.clearAll()
-            }
-        } message: {
-            Text("Are you sure you want to clear all conversion history? This cannot be undone.")
         }
     }
 
