@@ -87,17 +87,17 @@ struct TabButtonStyle: ButtonStyle {
     }
 }
 
-// Button style for buttons - scale down on press
+// Button style for buttons - scale down on press with bouncy spring
 struct ScaleDownButtonStyle: ButtonStyle {
-    var scaleAmount: CGFloat = 0.94
+    var scaleAmount: CGFloat = 0.92
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? scaleAmount : 1.0)
             .animation(
                 configuration.isPressed
-                    ? .spring(response: 0.3, dampingFraction: 0.65)
-                    : .spring(response: 0.4, dampingFraction: 0.6),
+                    ? .spring(response: 0.3, dampingFraction: 0.5)
+                    : .spring(response: 0.45, dampingFraction: 0.45),
                 value: configuration.isPressed
             )
     }
