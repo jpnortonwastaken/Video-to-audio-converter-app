@@ -314,7 +314,10 @@ struct ConverterView: View {
                 }
             }
             .padding(20)
-            .background(Color.clear)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+            )
         }
         .buttonStyle(ScaleDownButtonStyle())
     }
