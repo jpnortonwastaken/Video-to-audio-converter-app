@@ -217,7 +217,9 @@ struct ConversionResultView: View {
                         .background(Color(.systemGray5))
                         .clipShape(Circle())
                 }
-                .buttonStyle(BounceButtonStyle())
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+                .buttonStyle(ScaleDownButtonStyle())
 
                 Spacer()
             }
