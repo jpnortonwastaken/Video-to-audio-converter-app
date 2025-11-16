@@ -222,7 +222,16 @@ struct ConverterView: View {
             .frame(height: 160)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(backgroundColor)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                iconColor.opacity(0.2),
+                                iconColor.opacity(0.05)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
@@ -262,7 +271,16 @@ struct ConverterView: View {
             .frame(height: 160)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(backgroundColor)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                iconColor.opacity(0.2),
+                                iconColor.opacity(0.05)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
