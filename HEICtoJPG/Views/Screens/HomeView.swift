@@ -117,6 +117,30 @@ struct HomeView: View {
         .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
     }
 
+    // MARK: - Helper Functions
+    private func colorForFormat(_ format: String) -> Color {
+        switch format.uppercased() {
+        case "HEIC":
+            return .blue
+        case "JPG", "JPEG":
+            return .red
+        case "PNG":
+            return .green
+        case "PDF":
+            return .orange
+        case "GIF":
+            return .purple
+        case "TIFF":
+            return .indigo
+        case "WEBP":
+            return .teal
+        case "BMP":
+            return .pink
+        default:
+            return .gray
+        }
+    }
+
     // MARK: - History Card
     private func historyCard(for item: ConversionHistoryItem) -> some View {
         Button(action: {
@@ -144,7 +168,7 @@ struct HomeView: View {
                             .padding(.vertical, 4)
                             .background(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .fill(Color.blue.opacity(0.2))
+                                    .fill(colorForFormat(item.fromFormat).opacity(0.2))
                             )
 
                         Image(systemName: "arrow.right")
@@ -159,7 +183,7 @@ struct HomeView: View {
                             .padding(.vertical, 4)
                             .background(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .fill(Color.red.opacity(0.2))
+                                    .fill(colorForFormat(item.toFormat.displayName).opacity(0.2))
                             )
                     }
 
