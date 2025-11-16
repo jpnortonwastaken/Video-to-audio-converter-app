@@ -99,11 +99,11 @@ struct ConverterView: View {
                     }
                     .padding(20)
                     .background(
-                        RoundedRectangle(cornerRadius: 20)
+                        RoundedRectangle(cornerRadius: 28)
                             .fill(colorScheme == .dark ? Color.clear : Color.white)
                     )
                     .overlay(
-                        RoundedRectangle(cornerRadius: 20)
+                        RoundedRectangle(cornerRadius: 28)
                             .stroke(colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray5), lineWidth: 1)
                     )
                     .padding(.horizontal, 24)
@@ -215,7 +215,7 @@ struct ConverterView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 160)
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 24)
                     .fill(backgroundColor)
             )
         }
@@ -250,7 +250,7 @@ struct ConverterView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 160)
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 24)
                     .fill(backgroundColor)
             )
         }
@@ -282,7 +282,7 @@ struct ConverterView: View {
             }
             .padding(20)
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 24)
                     .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
             )
         }
@@ -309,7 +309,7 @@ struct ConverterView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 56)
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 24)
                     .fill(colorScheme == .dark ? Color.white : Color.black)
             )
             .foregroundColor(colorScheme == .dark ? .black : .white)
@@ -328,7 +328,7 @@ struct ConverterView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 350, height: 350)
                 .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .clipShape(RoundedRectangle(cornerRadius: 24))
 
             // X button
             Button(action: {
@@ -437,10 +437,10 @@ struct FormatSelectionSheet: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 24)
             .background(
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: 28)
                     .fill(backgroundColor)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 20)
+                        RoundedRectangle(cornerRadius: 28)
                             .stroke(strokeColor, lineWidth: 0.5)
                     )
                     .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
