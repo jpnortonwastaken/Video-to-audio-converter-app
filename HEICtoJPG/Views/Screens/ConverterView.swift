@@ -436,8 +436,6 @@ struct FormatSelectionSheet: View {
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(backgroundColor)
-                    .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
-                    .shadow(color: Color.black.opacity(0.03), radius: 32, x: 0, y: 16)
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
