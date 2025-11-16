@@ -39,13 +39,10 @@ struct ConversionResultView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                // Header
-                headerView
-                    .padding(.top, geometry.safeAreaInsets.top)
-
-                // Converted Image Preview
+        NavigationStack {
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    // Converted Image Preview
                 if let image = convertedImage {
                     switch displayMode {
                     case .thumbnail:
@@ -55,7 +52,7 @@ struct ConversionResultView: View {
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 350, height: 350)
                             .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .padding(.top, 20)
+                            .padding(.top, 8)
 
                     case .fullImage:
                         // Full aspect ratio image (for history items)
@@ -64,7 +61,7 @@ struct ConversionResultView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity)
                             .padding(.horizontal, 24)
-                            .padding(.top, 20)
+                            .padding(.top, 8)
                     }
                 }
 
@@ -173,8 +170,28 @@ struct ConversionResultView: View {
                 .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
             }
             .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+            .navigationTitle("Conversion Complete")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    if onDismiss != nil {
+                        Button(action: {
+                            HapticManager.shared.softImpact()
+                            if let onDismiss = onDismiss {
+                                onDismiss()
+                            } else {
+                                dismiss()
+                            }
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.primary)
+                        }
+                    }
+                }
+            }
         }
-        .navigationBarHidden(true)
+        }
         .sheet(isPresented: $showShareSheet) {
             if convertedImage != nil {
                 ShareSheet(items: [createShareableFile()])
@@ -194,44 +211,6 @@ struct ConversionResultView: View {
         } message: {
             Text(errorMessage)
         }
-    }
-
-    // MARK: - Header
-    private var headerView: some View {
-        ZStack {
-            // Back button on left
-            HStack {
-                Button(action: {
-                    HapticManager.shared.softImpact()
-                    if let onDismiss = onDismiss {
-                        onDismiss()
-                    } else {
-                        dismiss()
-                    }
-                }) {
-                    Image(systemName: "arrow.backward")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.primary)
-                        .frame(width: 32, height: 32)
-                        .background(Color(.systemGray5))
-                        .clipShape(Circle())
-                }
-                .buttonStyle(BounceButtonStyle())
-
-                Spacer()
-            }
-
-            // Centered title
-            Text("Conversion Complete")
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(colorScheme == .dark ? .white : .black)
-                .allowsHitTesting(false)
-        }
-        .padding(.horizontal, 24)
-        .padding(.top, 8)
-        .padding(.bottom, 8)
-        .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
     }
 
     // MARK: - Actions
