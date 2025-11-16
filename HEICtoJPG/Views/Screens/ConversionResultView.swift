@@ -17,6 +17,7 @@ struct ConversionResultView: View {
     let convertedImageData: Data
     let format: ImageFormat
     let displayMode: ConversionResultDisplayMode
+    let onDismiss: (() -> Void)?
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @State private var showShareSheet = false
@@ -30,10 +31,11 @@ struct ConversionResultView: View {
     }
 
     // Default initializer with thumbnail mode
-    init(convertedImageData: Data, format: ImageFormat, displayMode: ConversionResultDisplayMode = .thumbnail) {
+    init(convertedImageData: Data, format: ImageFormat, displayMode: ConversionResultDisplayMode = .thumbnail, onDismiss: (() -> Void)? = nil) {
         self.convertedImageData = convertedImageData
         self.format = format
         self.displayMode = displayMode
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -137,7 +139,11 @@ struct ConversionResultView: View {
                     // Done Button
                     Button(action: {
                         HapticManager.shared.softImpact()
-                        dismiss()
+                        if let onDismiss = onDismiss {
+                            onDismiss()
+                        } else {
+                            dismiss()
+                        }
                     }) {
                         Text("Done")
                             .font(.headline)
@@ -198,7 +204,11 @@ struct ConversionResultView: View {
             HStack {
                 Button(action: {
                     HapticManager.shared.softImpact()
-                    dismiss()
+                    if let onDismiss = onDismiss {
+                        onDismiss()
+                    } else {
+                        dismiss()
+                    }
                 }) {
                     Image(systemName: "arrow.backward")
                         .font(.system(size: 16, weight: .semibold))

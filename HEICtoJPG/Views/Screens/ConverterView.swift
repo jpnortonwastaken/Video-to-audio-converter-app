@@ -173,7 +173,10 @@ struct ConverterView: View {
             if let convertedData = viewModel.convertedImageData {
                 ConversionResultView(
                     convertedImageData: convertedData,
-                    format: viewModel.selectedFormat
+                    format: viewModel.selectedFormat,
+                    onDismiss: {
+                        viewModel.showResultView = false
+                    }
                 )
                 .onDisappear {
                     viewModel.reset()
