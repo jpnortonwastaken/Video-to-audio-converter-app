@@ -66,11 +66,6 @@ struct ConversionResultView: View {
                                 .foregroundColor(colorScheme == .dark ? .white : .black)
                         }
                     }
-                    .padding(16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-                    )
 
                     // Share and Save Buttons (side by side)
                     HStack(spacing: 12) {
