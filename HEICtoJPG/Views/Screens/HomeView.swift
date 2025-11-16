@@ -197,7 +197,7 @@ struct HomeView: View {
             }
             .padding(16)
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 20)
                     .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
             )
         }
