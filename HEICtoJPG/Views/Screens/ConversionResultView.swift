@@ -172,22 +172,30 @@ struct ConversionResultView: View {
 
     // MARK: - Header
     private var headerView: some View {
-        HStack(spacing: 12) {
-            Button(action: {
-                HapticManager.shared.softImpact()
-                dismiss()
-            }) {
-                Image(systemName: "chevron.left")
-                    .font(.title3)
-                    .foregroundColor(.blue)
+        ZStack {
+            // Back button on left
+            HStack {
+                Button(action: {
+                    HapticManager.shared.softImpact()
+                    dismiss()
+                }) {
+                    Image(systemName: "arrow.backward")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.primary)
+                        .frame(width: 32, height: 32)
+                        .background(Color(.systemGray5))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(BounceButtonStyle())
+
+                Spacer()
             }
 
+            // Centered title
             Text("Conversion Complete")
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(colorScheme == .dark ? .white : .black)
-
-            Spacer()
         }
         .padding(.horizontal, 24)
         .padding(.top, 8)
