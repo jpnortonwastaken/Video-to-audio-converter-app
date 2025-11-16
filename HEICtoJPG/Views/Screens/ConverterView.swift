@@ -12,7 +12,7 @@ struct ConverterView: View {
     @StateObject private var viewModel = ConverterViewModel()
     @Environment(\.colorScheme) private var colorScheme
     @State private var showImage = false
-    @State private var showButtons = false
+    @State private var showButtons = true
     @State private var showFormatSheet = false
 
     var body: some View {
@@ -137,14 +137,6 @@ struct ConverterView: View {
             allowsMultipleSelection: false
         ) { result in
             handleFileSelection(result)
-        }
-        .onAppear {
-            // Trigger initial bounce-in animation for buttons
-            if viewModel.selectedImage == nil {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
-                    showButtons = true
-                }
-            }
         }
         .onChange(of: viewModel.selectedPhotoItem) { _, _ in
             Task {
