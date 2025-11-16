@@ -159,7 +159,7 @@ struct HomeView: View {
                             .padding(.vertical, 4)
                             .background(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .fill(Color.green.opacity(0.2))
+                                    .fill(Color.red.opacity(0.2))
                             )
                     }
 
