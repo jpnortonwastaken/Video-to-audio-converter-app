@@ -23,7 +23,7 @@ enum TabItem: String, CaseIterable {
     var icon: String {
         switch self {
         case .home: return "arrow.triangle.2.circlepath"
-        case .progress: return "clock.arrow.circlepath"
+        case .progress: return "list.bullet.below.rectangle"
         case .settings: return "gearshape.fill"
         }
     }
