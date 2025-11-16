@@ -408,7 +408,7 @@ struct FormatSelectionSheet: View {
         let isSelected = selectedFormat == format
         let backgroundColor = isSelected
             ? (colorScheme == .dark ? Color.white : Color.black)
-            : Color(.systemGray5)
+            : (colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
         let textColor = isSelected
             ? (colorScheme == .dark ? Color.black : Color.white)
             : (colorScheme == .dark ? Color.white : Color.black)
