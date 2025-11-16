@@ -67,8 +67,9 @@ struct ConversionResultView: View {
                             .padding(.top, 20)
                     }
                 }
+                .padding(.bottom, 24)
 
-                Spacer(minLength: 16)
+                Spacer()
 
                 // File Info and Action Buttons
                 VStack(spacing: 16) {
