@@ -15,7 +15,7 @@ struct MainTabView: View {
             ConverterView()
                 .tag(TabItem.home)
 
-            ProgressView()
+            HomeView()
                 .tag(TabItem.progress)
 
             SettingsView()
