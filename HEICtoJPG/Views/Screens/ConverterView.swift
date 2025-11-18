@@ -15,6 +15,17 @@ struct ConverterView: View {
     @State private var showButtons = true
     @State private var showFormatSheet = false
 
+    // Debug Menu State
+    @State private var showDebugMenu = false
+    @State private var inputButtonsLineWidth: CGFloat = 2
+    @State private var inputButtonsDashLength: CGFloat = 5
+    @State private var inputButtonsGapLength: CGFloat = 5
+    @State private var inputButtonsUseDottedLine = true
+    @State private var containerLineWidth: CGFloat = 2
+    @State private var containerDashLength: CGFloat = 5
+    @State private var containerGapLength: CGFloat = 5
+    @State private var containerUseDottedLine = true
+
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
@@ -113,7 +124,12 @@ struct ConverterView: View {
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 28)
-                            .stroke(colorScheme == .dark ? Color(.systemGray3).opacity(0.3) : Color(.systemGray4).opacity(0.3), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5, 5]))
+                            .stroke(
+                                colorScheme == .dark ? Color(.systemGray3).opacity(0.3) : Color(.systemGray4).opacity(0.3),
+                                style: containerUseDottedLine
+                                    ? StrokeStyle(lineWidth: containerLineWidth, lineCap: .round, dash: [containerDashLength, containerGapLength])
+                                    : StrokeStyle(lineWidth: containerLineWidth)
+                            )
                     )
                     .compositingGroup()
                     .padding(.horizontal, 24)
@@ -197,6 +213,27 @@ struct ConverterView: View {
             if viewModel.isConverting {
                 convertingOverlay
             }
+        }
+        .overlay(alignment: .topTrailing) {
+            // Debug Menu Button
+            Button(action: {
+                HapticManager.shared.softImpact()
+                showDebugMenu = true
+            }) {
+                Image(systemName: "gearshape.fill")
+                    .font(.roundedSystem(size: 20))
+                    .foregroundColor(.white)
+                    .frame(width: 44, height: 44)
+                    .background(Circle().fill(Color.blue))
+                    .shadow(radius: 4)
+            }
+            .padding(.top, 60)
+            .padding(.trailing, 20)
+        }
+        .sheet(isPresented: $showDebugMenu) {
+            debugMenuView
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
     }
 
@@ -307,7 +344,12 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5, 5]))
+                    .stroke(
+                        iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3),
+                        style: inputButtonsUseDottedLine
+                            ? StrokeStyle(lineWidth: inputButtonsLineWidth, lineCap: .round, dash: [inputButtonsDashLength, inputButtonsGapLength])
+                            : StrokeStyle(lineWidth: inputButtonsLineWidth)
+                    )
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
@@ -357,7 +399,12 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5, 5]))
+                    .stroke(
+                        iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3),
+                        style: inputButtonsUseDottedLine
+                            ? StrokeStyle(lineWidth: inputButtonsLineWidth, lineCap: .round, dash: [inputButtonsDashLength, inputButtonsGapLength])
+                            : StrokeStyle(lineWidth: inputButtonsLineWidth)
+                    )
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
@@ -473,6 +520,88 @@ struct ConverterView: View {
 
         case .failure(let error):
             viewModel.errorMessage = "Failed to load file: \(error.localizedDescription)"
+        }
+    }
+
+    // MARK: - Debug Menu View
+    private var debugMenuView: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Input Buttons (Photos/Files/Paste)")) {
+                    Toggle("Use Dotted Line", isOn: $inputButtonsUseDottedLine)
+                        .tint(.blue)
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Line Width: \(String(format: "%.1f", inputButtonsLineWidth))")
+                            .font(.roundedSubheadline())
+                        Slider(value: $inputButtonsLineWidth, in: 0.5...10, step: 0.5)
+                    }
+
+                    if inputButtonsUseDottedLine {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Dash Length: \(String(format: "%.1f", inputButtonsDashLength))")
+                                .font(.roundedSubheadline())
+                            Slider(value: $inputButtonsDashLength, in: 1...20, step: 1)
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Gap Length: \(String(format: "%.1f", inputButtonsGapLength))")
+                                .font(.roundedSubheadline())
+                            Slider(value: $inputButtonsGapLength, in: 1...20, step: 1)
+                        }
+                    }
+                }
+
+                Section(header: Text("Format/Convert Container")) {
+                    Toggle("Use Dotted Line", isOn: $containerUseDottedLine)
+                        .tint(.blue)
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Line Width: \(String(format: "%.1f", containerLineWidth))")
+                            .font(.roundedSubheadline())
+                        Slider(value: $containerLineWidth, in: 0.5...10, step: 0.5)
+                    }
+
+                    if containerUseDottedLine {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Dash Length: \(String(format: "%.1f", containerDashLength))")
+                                .font(.roundedSubheadline())
+                            Slider(value: $containerDashLength, in: 1...20, step: 1)
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Gap Length: \(String(format: "%.1f", containerGapLength))")
+                                .font(.roundedSubheadline())
+                            Slider(value: $containerGapLength, in: 1...20, step: 1)
+                        }
+                    }
+                }
+
+                Section {
+                    Button("Reset to Defaults") {
+                        HapticManager.shared.softImpact()
+                        inputButtonsLineWidth = 2
+                        inputButtonsDashLength = 5
+                        inputButtonsGapLength = 5
+                        inputButtonsUseDottedLine = true
+                        containerLineWidth = 2
+                        containerDashLength = 5
+                        containerGapLength = 5
+                        containerUseDottedLine = true
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
+            .navigationTitle("Border Debug Menu")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        HapticManager.shared.softImpact()
+                        showDebugMenu = false
+                    }
+                }
+            }
         }
     }
 }
