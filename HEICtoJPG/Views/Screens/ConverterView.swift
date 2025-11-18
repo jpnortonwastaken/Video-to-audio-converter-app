@@ -113,7 +113,7 @@ struct ConverterView: View {
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 28)
-                            .stroke(colorScheme == .dark ? Color(.systemGray3).opacity(0.3) : Color(.systemGray4).opacity(0.3), lineWidth: 2)
+                            .stroke(colorScheme == .dark ? Color(.systemGray3).opacity(0.3) : Color(.systemGray4).opacity(0.3), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5, 5]))
                     )
                     .compositingGroup()
                     .padding(.horizontal, 24)
