@@ -96,9 +96,24 @@ struct HomeView: View {
     // MARK: - History List
     private var historyListView: some View {
         ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(historyService.items) { item in
+            LazyVStack(spacing: 0) {
+                ForEach(Array(historyService.items.enumerated()), id: \.element.id) { index, item in
                     historyCard(for: item)
+
+                    // Add dashed separator between cards (but not after the last one)
+                    if index < historyService.items.count - 1 {
+                        Rectangle()
+                            .fill(Color.clear)
+                            .frame(height: 1)
+                            .overlay(
+                                Rectangle()
+                                    .stroke(
+                                        (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.5),
+                                        style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [5, 5])
+                                    )
+                            )
+                            .padding(.vertical, 16)
+                    }
                 }
             }
             .padding(.horizontal, 24)
@@ -204,11 +219,7 @@ struct HomeView: View {
                     .font(.roundedBody())
                     .foregroundColor(.gray)
             }
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
-            )
+            .padding(.vertical, 16)
         }
         .simultaneousGesture(TapGesture().onEnded {
             HapticManager.shared.softImpact()
