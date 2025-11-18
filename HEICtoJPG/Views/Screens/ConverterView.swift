@@ -113,11 +113,9 @@ struct ConverterView: View {
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 28)
-                            .stroke(colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4), lineWidth: 0.5)
+                            .stroke(colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4), lineWidth: 2)
                     )
                     .compositingGroup()
-                    .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
-                    .shadow(color: Color.black.opacity(0.03), radius: 32, x: 0, y: 16)
                     .padding(.horizontal, 24)
                     .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
                 }
@@ -309,7 +307,7 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), lineWidth: 1)
+                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), lineWidth: 2)
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
@@ -359,7 +357,7 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), lineWidth: 1)
+                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), lineWidth: 2)
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
