@@ -17,13 +17,15 @@ struct ConverterView: View {
 
     // Debug Menu State
     @State private var showDebugMenu = false
-    @State private var inputButtonsLineWidth: CGFloat = 2
-    @State private var inputButtonsDashLength: CGFloat = 5
-    @State private var inputButtonsGapLength: CGFloat = 5
+    @State private var inputButtonsLineWidth: CGFloat = 2.5
+    @State private var inputButtonsDashLength: CGFloat = 7
+    @State private var inputButtonsGapLength: CGFloat = 8
+    @State private var inputButtonsOpacity: Double = 0.35
     @State private var inputButtonsUseDottedLine = true
-    @State private var containerLineWidth: CGFloat = 2
-    @State private var containerDashLength: CGFloat = 5
-    @State private var containerGapLength: CGFloat = 5
+    @State private var containerLineWidth: CGFloat = 2.5
+    @State private var containerDashLength: CGFloat = 7
+    @State private var containerGapLength: CGFloat = 8
+    @State private var containerOpacity: Double = 0.3
     @State private var containerUseDottedLine = true
 
     var body: some View {
@@ -125,7 +127,7 @@ struct ConverterView: View {
                     .overlay(
                         RoundedRectangle(cornerRadius: 28)
                             .stroke(
-                                colorScheme == .dark ? Color(.systemGray3).opacity(0.3) : Color(.systemGray4).opacity(0.3),
+                                (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(containerOpacity),
                                 style: containerUseDottedLine
                                     ? StrokeStyle(lineWidth: containerLineWidth, lineCap: .round, dash: [containerDashLength, containerGapLength])
                                     : StrokeStyle(lineWidth: containerLineWidth)
@@ -345,7 +347,7 @@ struct ConverterView: View {
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(
-                        iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3),
+                        iconColor.opacity(inputButtonsOpacity),
                         style: inputButtonsUseDottedLine
                             ? StrokeStyle(lineWidth: inputButtonsLineWidth, lineCap: .round, dash: [inputButtonsDashLength, inputButtonsGapLength])
                             : StrokeStyle(lineWidth: inputButtonsLineWidth)
@@ -400,7 +402,7 @@ struct ConverterView: View {
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(
-                        iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3),
+                        iconColor.opacity(inputButtonsOpacity),
                         style: inputButtonsUseDottedLine
                             ? StrokeStyle(lineWidth: inputButtonsLineWidth, lineCap: .round, dash: [inputButtonsDashLength, inputButtonsGapLength])
                             : StrokeStyle(lineWidth: inputButtonsLineWidth)
@@ -537,6 +539,12 @@ struct ConverterView: View {
                         Slider(value: $inputButtonsLineWidth, in: 0.5...10, step: 0.5)
                     }
 
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Opacity: \(String(format: "%.2f", inputButtonsOpacity))")
+                            .font(.roundedSubheadline())
+                        Slider(value: $inputButtonsOpacity, in: 0.0...1.0, step: 0.05)
+                    }
+
                     if inputButtonsUseDottedLine {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Dash Length: \(String(format: "%.1f", inputButtonsDashLength))")
@@ -562,6 +570,12 @@ struct ConverterView: View {
                         Slider(value: $containerLineWidth, in: 0.5...10, step: 0.5)
                     }
 
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Opacity: \(String(format: "%.2f", containerOpacity))")
+                            .font(.roundedSubheadline())
+                        Slider(value: $containerOpacity, in: 0.0...1.0, step: 0.05)
+                    }
+
                     if containerUseDottedLine {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Dash Length: \(String(format: "%.1f", containerDashLength))")
@@ -580,13 +594,15 @@ struct ConverterView: View {
                 Section {
                     Button("Reset to Defaults") {
                         HapticManager.shared.softImpact()
-                        inputButtonsLineWidth = 2
-                        inputButtonsDashLength = 5
-                        inputButtonsGapLength = 5
+                        inputButtonsLineWidth = 2.5
+                        inputButtonsDashLength = 7
+                        inputButtonsGapLength = 8
+                        inputButtonsOpacity = 0.35
                         inputButtonsUseDottedLine = true
-                        containerLineWidth = 2
-                        containerDashLength = 5
-                        containerGapLength = 5
+                        containerLineWidth = 2.5
+                        containerDashLength = 7
+                        containerGapLength = 8
+                        containerOpacity = 0.3
                         containerUseDottedLine = true
                     }
                     .foregroundColor(.blue)
