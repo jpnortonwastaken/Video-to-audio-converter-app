@@ -26,7 +26,7 @@ struct NameEditorView: View {
             ZStack {
                 // Title (centered)
                 Text("Edit Name")
-                    .font(.headline)
+                    .font(.roundedHeadline())
                     .fontWeight(.semibold)
 
                 // Close button (left)
@@ -36,7 +36,7 @@ struct NameEditorView: View {
                         dismiss()
                     }) {
                         Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.roundedSystem(size: 14, weight: .semibold))
                             .foregroundColor(.secondary)
                             .frame(width: 32, height: 32)
                             .background(
@@ -56,12 +56,12 @@ struct NameEditorView: View {
             // Content
             VStack(alignment: .leading, spacing: 12) {
                 Text("Name")
-                    .font(.subheadline)
+                    .font(.roundedSubheadline())
                     .fontWeight(.medium)
                     .foregroundColor(.secondary)
 
                 TextField("Enter your name", text: $name)
-                    .font(.body)
+                    .font(.roundedBody())
                     .padding(16)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
@@ -84,7 +84,7 @@ struct NameEditorView: View {
                     saveName()
                 }) {
                     Text("Save")
-                        .font(.headline)
+                        .font(.roundedHeadline())
                         .foregroundColor(Color(.systemBackground))
                         .contentTransition(.numericText())
                         .frame(maxWidth: .infinity)

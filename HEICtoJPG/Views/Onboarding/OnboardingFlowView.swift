@@ -52,7 +52,7 @@ struct WelcomeScreenView: View {
 
                 // Title
                 Text(AppConstants.appName)
-                    .font(.system(size: 28, weight: .semibold))
+                    .font(.roundedSystem(size: 28, weight: .semibold))
                     .foregroundColor(.secondary)
                     .padding(.bottom, 8)
                     .opacity(showTitle ? 1 : 0)
@@ -61,7 +61,7 @@ struct WelcomeScreenView: View {
 
                 // Welcome message
                 Text("Welcome. Let's build your apps fast.")
-                    .font(.system(size: 28, weight: .semibold))
+                    .font(.roundedSystem(size: 28, weight: .semibold))
                     .foregroundColor(.primary)
                     .opacity(showMessage ? 1 : 0)
                     .offset(y: showMessage ? 0 : 20)
@@ -77,7 +77,7 @@ struct WelcomeScreenView: View {
                 showOnboardingFlow = true
             }) {
                 Text("Get Started")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.roundedSystem(size: 17, weight: .semibold))
                     .foregroundColor(colorScheme == .dark ? .black : .white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 56)

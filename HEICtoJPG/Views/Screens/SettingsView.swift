@@ -19,7 +19,7 @@ struct SettingsView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Settings")
-                            .font(.largeTitle)
+                            .font(.roundedLargeTitle())
                             .fontWeight(.bold)
                     }
 
@@ -109,30 +109,30 @@ struct SettingsView: View {
 
                             VStack(spacing: 8) {
                                 Text(AppConstants.appDisplayName)
-                                    .font(.body)
+                                    .font(.roundedBody())
                                     .fontWeight(.medium)
                                     .foregroundColor(.primary)
                                     .contentTransition(.numericText())
 
                                 Text("Version \(AppConstants.appVersion)")
-                                    .font(.caption)
+                                    .font(.roundedCaption())
                                     .foregroundColor(.secondary)
                                     .contentTransition(.numericText())
 
                                 HStack(spacing: 4) {
                                     Image(systemName: "heart.fill")
-                                        .font(.caption)
+                                        .font(.roundedCaption())
                                         .foregroundColor(.red)
 
                                     Text("Built with Love")
-                                        .font(.caption)
+                                        .font(.roundedCaption())
                                         .foregroundColor(.secondary)
                                         .contentTransition(.numericText())
                                 }
 
                                 // APP BY JP with sheen animation
                                 Text("APP BY JP")
-                                    .font(.caption)
+                                    .font(.roundedCaption())
                                     .fontWeight(.semibold)
                                     .foregroundColor(colorScheme == .dark ? .secondary.opacity(0.3) : .secondary)
                                     .contentTransition(.numericText())
@@ -173,7 +173,7 @@ struct SettingsSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
-                .font(.headline)
+                .font(.roundedHeadline())
                 .fontWeight(.semibold)
                 .foregroundColor(.secondary)
                 .textCase(.uppercase)
@@ -218,14 +218,14 @@ struct SettingsCard: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
-                        .font(.body)
+                        .font(.roundedBody())
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
                         .contentTransition(.numericText())
 
                     if !subtitle.isEmpty {
                         Text(subtitle)
-                            .font(.caption)
+                            .font(.roundedCaption())
                             .foregroundColor(.secondary)
                             .contentTransition(.numericText())
                     }
@@ -235,11 +235,11 @@ struct SettingsCard: View {
 
                 if let trailingIcon = trailingIcon {
                     Image(systemName: trailingIcon)
-                        .font(.body)
+                        .font(.roundedBody())
                         .foregroundColor(.secondary)
                 } else if showChevron {
                     Image(systemName: "chevron.right")
-                        .font(.body)
+                        .font(.roundedBody())
                         .foregroundColor(.secondary)
                 }
             }
@@ -267,14 +267,14 @@ struct ToggleSettingsCard: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.body)
+                    .font(.roundedBody())
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
                     .contentTransition(.numericText())
 
                 if !subtitle.isEmpty {
                     Text(subtitle)
-                        .font(.caption)
+                        .font(.roundedCaption())
                         .foregroundColor(.secondary)
                         .contentTransition(.numericText())
                 }
@@ -306,7 +306,7 @@ struct AppearanceSettingsCard: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text("Appearance")
-                    .font(.body)
+                    .font(.roundedBody())
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
                     .contentTransition(.numericText())
@@ -332,13 +332,13 @@ struct AppearanceSettingsCard: View {
             } label: {
                 HStack(spacing: 4) {
                     Text(appearancePreference.displayName)
-                        .font(.body)
+                        .font(.roundedBody())
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
                         .contentTransition(.numericText())
 
                     Image(systemName: "chevron.up.chevron.down")
-                        .font(.callout)
+                        .font(.roundedCallout())
                         .foregroundColor(.secondary)
                 }
                 .padding(.horizontal, 12)

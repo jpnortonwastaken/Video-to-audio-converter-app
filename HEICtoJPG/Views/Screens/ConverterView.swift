@@ -28,7 +28,7 @@ struct ConverterView: View {
                         // Title (outside red border)
                         if viewModel.selectedImage == nil {
                             Text("Convert to any format")
-                                .font(.title2)
+                                .font(.roundedTitle2())
                                 .fontWeight(.semibold)
                                 .foregroundColor(colorScheme == .dark ? .white : .black)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -227,7 +227,7 @@ struct ConverterView: View {
                 }
 
                 Text("Converting...")
-                    .font(.headline)
+                    .font(.roundedHeadline())
                     .foregroundColor(.white)
             }
             .padding(40)
@@ -251,7 +251,7 @@ struct ConverterView: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(AppConstants.appName)
-                        .font(.largeTitle)
+                        .font(.roundedLargeTitle())
                         .fontWeight(.bold)
                 }
 
@@ -278,16 +278,16 @@ struct ConverterView: View {
         Button(action: action) {
             VStack(spacing: 12) {
                 Image(systemName: icon)
-                    .font(.system(size: 50))
+                    .font(.roundedSystem(size: 50))
                     .foregroundColor(iconColor)
 
                 Text(title)
-                    .font(.title2)
+                    .font(.roundedTitle2())
                     .fontWeight(.semibold)
                     .foregroundColor(textColor)
 
                 Text(subtitle)
-                    .font(.subheadline)
+                    .font(.roundedSubheadline())
                     .foregroundColor(textColor.opacity(0.6))
             }
             .frame(maxWidth: .infinity)
@@ -327,16 +327,16 @@ struct ConverterView: View {
         Button(action: action) {
             VStack(spacing: 12) {
                 Image(systemName: icon)
-                    .font(.system(size: 40))
+                    .font(.roundedSystem(size: 40))
                     .foregroundColor(iconColor)
 
                 Text(title)
-                    .font(.headline)
+                    .font(.roundedHeadline())
                     .fontWeight(.semibold)
                     .foregroundColor(textColor)
 
                 Text(subtitle)
-                    .font(.caption)
+                    .font(.roundedCaption())
                     .foregroundColor(textColor.opacity(0.6))
                     .multilineTextAlignment(.center)
             }
@@ -371,18 +371,18 @@ struct ConverterView: View {
         }) {
             HStack {
                 Text("Format")
-                    .font(.headline)
+                    .font(.roundedHeadline())
                     .foregroundColor(colorScheme == .dark ? .white : .black)
 
                 Spacer()
 
                 HStack(spacing: 8) {
                     Text(viewModel.selectedFormat.displayName)
-                        .font(.headline)
+                        .font(.roundedHeadline())
                         .foregroundColor(colorScheme == .dark ? .white : .black)
 
                     Image(systemName: "chevron.down")
-                        .font(.body)
+                        .font(.roundedBody())
                         .foregroundColor(.gray)
                 }
             }
@@ -409,7 +409,7 @@ struct ConverterView: View {
                         .tint(colorScheme == .dark ? .black : .white)
                 } else {
                     Text("Convert")
-                        .font(.headline)
+                        .font(.roundedHeadline())
                         .fontWeight(.semibold)
                 }
             }
@@ -442,7 +442,7 @@ struct ConverterView: View {
                 viewModel.reset()
             }) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.roundedSystem(size: 14, weight: .bold))
                     .foregroundColor(.white)
                     .frame(width: 28, height: 28)
                     .background(
@@ -526,14 +526,14 @@ struct FormatSelectionSheet: View {
         }) {
             HStack {
                 Text(format.displayName)
-                    .font(.headline)
+                    .font(.roundedHeadline())
                     .foregroundColor(textColor)
 
                 Spacer()
 
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.title3)
+                        .font(.roundedTitle3())
                         .foregroundColor(colorScheme == .dark ? .black : .white)
                 }
             }

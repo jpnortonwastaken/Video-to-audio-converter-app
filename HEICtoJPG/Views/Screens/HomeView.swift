@@ -20,7 +20,7 @@ struct HomeView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("History")
-                            .font(.largeTitle)
+                            .font(.roundedLargeTitle())
                             .fontWeight(.bold)
                     }
 
@@ -68,16 +68,16 @@ struct HomeView: View {
 
                 VStack(spacing: 16) {
                     Image(systemName: "clock.arrow.circlepath")
-                        .font(.system(size: 60))
+                        .font(.roundedSystem(size: 60))
                         .foregroundColor(.gray)
 
                     Text("No Conversions Yet")
-                        .font(.title2)
+                        .font(.roundedTitle2())
                         .fontWeight(.semibold)
                         .foregroundColor(colorScheme == .dark ? .white : .black)
 
                     Text("Convert an image to see it here")
-                        .font(.body)
+                        .font(.roundedBody())
                         .foregroundColor(.gray)
                         .multilineTextAlignment(.center)
                 }
@@ -155,7 +155,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 8) {
                         Text(item.fromFormat)
-                            .font(.caption)
+                            .font(.roundedCaption())
                             .fontWeight(.medium)
                             .foregroundColor(colorScheme == .dark ? .white : .black)
                             .padding(.horizontal, 8)
@@ -170,11 +170,11 @@ struct HomeView: View {
                             )
 
                         Image(systemName: "arrow.right")
-                            .font(.caption)
+                            .font(.roundedCaption())
                             .foregroundColor(.gray)
 
                         Text(item.toFormat.displayName)
-                            .font(.caption)
+                            .font(.roundedCaption())
                             .fontWeight(.medium)
                             .foregroundColor(colorScheme == .dark ? .white : .black)
                             .padding(.horizontal, 8)
@@ -190,18 +190,18 @@ struct HomeView: View {
                     }
 
                     Text(item.formattedDate)
-                        .font(.subheadline)
+                        .font(.roundedSubheadline())
                         .foregroundColor(.gray)
 
                     Text(item.formattedFileSize)
-                        .font(.caption)
+                        .font(.roundedCaption())
                         .foregroundColor(.gray)
                 }
 
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.body)
+                    .font(.roundedBody())
                     .foregroundColor(.gray)
             }
             .padding(16)

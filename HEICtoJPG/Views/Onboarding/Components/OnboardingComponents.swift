@@ -48,7 +48,7 @@ struct SelectionCard: View {
                     if isSystemIcon {
                         // SF Symbol - adapts to light/dark mode
                         Image(systemName: icon)
-                            .font(.system(size: 20))
+                            .font(.roundedSystem(size: 20))
                             .foregroundColor(iconColor ?? .primary)
                             .frame(width: 28)
                     } else {
@@ -70,7 +70,7 @@ struct SelectionCard: View {
                 }
 
                 Text(title)
-                    .font(.system(size: 17))
+                    .font(.roundedSystem(size: 17))
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
 
@@ -114,7 +114,7 @@ struct OnboardingContinueButton: View {
             action()
         }) {
             Text(title)
-                .font(.system(size: 17, weight: .semibold))
+                .font(.roundedSystem(size: 17, weight: .semibold))
                 .foregroundColor(isEnabled ? Color(.systemBackground) : Color(.systemBackground).opacity(0.5))
                 .contentTransition(.numericText())
                 .frame(maxWidth: .infinity)

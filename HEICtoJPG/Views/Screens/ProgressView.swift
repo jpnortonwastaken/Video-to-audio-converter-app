@@ -17,7 +17,7 @@ struct ProgressView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Progress")
-                            .font(.largeTitle)
+                            .font(.roundedLargeTitle())
                             .fontWeight(.bold)
                     }
 
@@ -36,15 +36,15 @@ struct ProgressView: View {
                         // Progress Section
                         VStack(spacing: 12) {
                             Image(systemName: "chart.bar.fill")
-                                .font(.system(size: 60))
+                                .font(.roundedSystem(size: 60))
                                 .foregroundColor(.green)
 
                             Text("Progress")
-                                .font(.system(size: 32, weight: .bold))
+                                .font(.roundedSystem(size: 32, weight: .bold))
                                 .contentTransition(.numericText())
 
                             Text("Track your progress here")
-                                .font(.system(size: 16))
+                                .font(.roundedSystem(size: 16))
                                 .foregroundColor(.secondary)
                                 .contentTransition(.numericText())
                         }

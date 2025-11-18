@@ -42,11 +42,11 @@ struct CustomTabBar: View {
                 }) {
                     VStack(spacing: 4) {
                         Image(systemName: tab.icon)
-                            .font(.system(size: 20, weight: .medium))
+                            .font(.roundedSystem(size: 20, weight: .medium))
                             .foregroundColor(selectedTab == tab ? (colorScheme == .light ? .black : .white) : .gray)
 
                         Text(tab.title)
-                            .font(.caption)
+                            .font(.roundedCaption())
                             .foregroundColor(selectedTab == tab ? (colorScheme == .light ? .black : .white) : .gray)
                             .contentTransition(.numericText())
                     }

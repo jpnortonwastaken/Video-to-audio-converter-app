@@ -21,7 +21,7 @@ struct HEICtoJPGContent: View {
             VStack(spacing: 24) {
                 // Icon
                 Image(systemName: "photo.fill")
-                    .font(.system(size: 80))
+                    .font(.roundedSystem(size: 80))
                     .foregroundColor(.blue)
                     .opacity(isVisible ? 1 : 0)
                     .scaleEffect(isVisible ? 1 : 0.8)
@@ -29,7 +29,7 @@ struct HEICtoJPGContent: View {
 
                 // Description
                 Text("Convert your iPhone photos from HEIC to JPG format with ease.")
-                    .font(.system(size: 17))
+                    .font(.roundedSystem(size: 17))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
@@ -60,7 +60,7 @@ struct MultipleFormatsContent: View {
             VStack(spacing: 24) {
                 // Icon
                 Image(systemName: "rectangle.3.group.fill")
-                    .font(.system(size: 80))
+                    .font(.roundedSystem(size: 80))
                     .foregroundColor(.green)
                     .opacity(isVisible ? 1 : 0)
                     .scaleEffect(isVisible ? 1 : 0.8)
@@ -70,7 +70,7 @@ struct MultipleFormatsContent: View {
                 HStack(spacing: 12) {
                     ForEach(Array(formats.enumerated()), id: \.element) { index, format in
                         Text(format)
-                            .font(.system(size: 15, weight: .semibold))
+                            .font(.roundedSystem(size: 15, weight: .semibold))
                             .foregroundColor(.primary)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
@@ -86,7 +86,7 @@ struct MultipleFormatsContent: View {
 
                 // Description
                 Text("Convert images between multiple formats to suit your needs.")
-                    .font(.system(size: 17))
+                    .font(.roundedSystem(size: 17))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
@@ -116,7 +116,7 @@ struct ConversionHistoryContent: View {
             VStack(spacing: 24) {
                 // Icon
                 Image(systemName: "clock.arrow.circlepath")
-                    .font(.system(size: 80))
+                    .font(.roundedSystem(size: 80))
                     .foregroundColor(.orange)
                     .opacity(isVisible ? 1 : 0)
                     .scaleEffect(isVisible ? 1 : 0.8)
@@ -124,7 +124,7 @@ struct ConversionHistoryContent: View {
 
                 // Description
                 Text("Keep track of all your conversions in one convenient place.")
-                    .font(.system(size: 17))
+                    .font(.roundedSystem(size: 17))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
@@ -157,7 +157,7 @@ struct ReviewContent: View {
                 HStack(spacing: 4) {
                     ForEach(0..<5) { _ in
                         Image(systemName: "star.fill")
-                            .font(.system(size: 40))
+                            .font(.roundedSystem(size: 40))
                             .foregroundColor(.yellow)
                     }
                 }
@@ -168,7 +168,7 @@ struct ReviewContent: View {
                 // Supporting text
                 VStack(spacing: 12) {
                     Text("Please Rate Us")
-                        .font(.system(size: 19, weight: .semibold))
+                        .font(.roundedSystem(size: 19, weight: .semibold))
                         .foregroundColor(.primary)
                         .multilineTextAlignment(.center)
                         .opacity(isVisible ? 1 : 0)
@@ -176,7 +176,7 @@ struct ReviewContent: View {
                         .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
 
                     Text("Your feedback helps us grow and continue improving for everyone.")
-                        .font(.system(size: 15))
+                        .font(.roundedSystem(size: 15))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 20)
@@ -223,7 +223,7 @@ struct PaywallContent: View {
             VStack(spacing: 32) {
                 // Icon
                 Image(systemName: "bolt.fill")
-                    .font(.system(size: 80))
+                    .font(.roundedSystem(size: 80))
                     .foregroundColor(.yellow)
                     .opacity(isVisible ? 1 : 0)
                     .scaleEffect(isVisible ? 1 : 0.8)
@@ -232,14 +232,14 @@ struct PaywallContent: View {
                 // Main message
                 VStack(spacing: 16) {
                     Text("Get Started Converting Now")
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.roundedSystem(size: 28, weight: .bold))
                         .multilineTextAlignment(.center)
                         .opacity(isVisible ? 1 : 0)
                         .offset(y: isVisible ? 0 : 20)
                         .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
 
                     Text("Unlock unlimited conversions and premium features")
-                        .font(.system(size: 17))
+                        .font(.roundedSystem(size: 17))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 20)

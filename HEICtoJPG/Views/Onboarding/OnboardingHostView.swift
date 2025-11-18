@@ -38,14 +38,14 @@ struct OnboardingHostView: View {
             if stepConfig.showTitleSection {
                 VStack(alignment: .center, spacing: 8) {
                     Text(stepConfig.title)
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.roundedSystem(size: 28, weight: .bold))
                         .foregroundColor(.primary)
                         .contentTransition(.numericText(countsDown: true))
                         .multilineTextAlignment(.center)
 
                     if let subtitle = stepConfig.subtitle {
                         Text(subtitle)
-                            .font(.system(size: 15))
+                            .font(.roundedSystem(size: 15))
                             .foregroundColor(.secondary)
                             .contentTransition(.numericText(countsDown: true))
                             .multilineTextAlignment(.center)
@@ -82,7 +82,7 @@ struct OnboardingHostView: View {
                     }
                 }) {
                     Image(systemName: "arrow.backward")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.roundedSystem(size: 16, weight: .semibold))
                         .foregroundColor(.primary)
                         .frame(width: 32, height: 32)
                         .background(Color(.systemGray5))

@@ -25,7 +25,7 @@ struct FeedbackView: View {
             ZStack {
                 // Title (centered)
                 Text("Send Feedback")
-                    .font(.headline)
+                    .font(.roundedHeadline())
                     .fontWeight(.semibold)
 
                 // Close button (left)
@@ -35,7 +35,7 @@ struct FeedbackView: View {
                         dismiss()
                     }) {
                         Image(systemName: "xmark")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.roundedSystem(size: 14, weight: .semibold))
                             .foregroundColor(.secondary)
                             .frame(width: 32, height: 32)
                             .background(
@@ -55,14 +55,14 @@ struct FeedbackView: View {
             // Content
             VStack(alignment: .leading, spacing: 12) {
                 Text("Your Feedback")
-                    .font(.subheadline)
+                    .font(.roundedSubheadline())
                     .fontWeight(.medium)
                     .foregroundColor(.secondary)
 
                 ZStack(alignment: .topLeading) {
                     TextEditor(text: $feedbackText)
                         .focused($isFocused)
-                        .font(.body)
+                        .font(.roundedBody())
                         .scrollContentBackground(.hidden)
                         .padding(12)
                         .background(
@@ -76,7 +76,7 @@ struct FeedbackView: View {
 
                     if feedbackText.isEmpty {
                         Text("Share your thoughts, suggestions, or report any issues...")
-                            .font(.body)
+                            .font(.roundedBody())
                             .foregroundColor(.secondary.opacity(0.5))
                             .padding(.horizontal, 16)
                             .padding(.vertical, 20)
@@ -103,7 +103,7 @@ struct FeedbackView: View {
                             Text("Send Feedback")
                         }
                     }
-                    .font(.headline)
+                    .font(.roundedHeadline())
                     .foregroundColor(Color(.systemBackground))
                     .frame(maxWidth: .infinity)
                     .padding()

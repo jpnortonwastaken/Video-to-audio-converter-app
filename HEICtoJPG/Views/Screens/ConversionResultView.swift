@@ -72,10 +72,10 @@ struct ConversionResultView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Format")
-                                .font(.caption)
+                                .font(.roundedCaption())
                                 .foregroundColor(.gray)
                             Text(format.displayName)
-                                .font(.headline)
+                                .font(.roundedHeadline())
                                 .foregroundColor(colorScheme == .dark ? .white : .black)
                         }
 
@@ -83,10 +83,10 @@ struct ConversionResultView: View {
 
                         VStack(alignment: .trailing, spacing: 4) {
                             Text("Size")
-                                .font(.caption)
+                                .font(.roundedCaption())
                                 .foregroundColor(.gray)
                             Text(formatFileSize(convertedImageData.count))
-                                .font(.headline)
+                                .font(.roundedHeadline())
                                 .foregroundColor(colorScheme == .dark ? .white : .black)
                         }
                     }
@@ -97,9 +97,9 @@ struct ConversionResultView: View {
                         Button(action: shareImage) {
                             HStack {
                                 Image(systemName: "square.and.arrow.up")
-                                    .font(.headline)
+                                    .font(.roundedHeadline())
                                 Text("Share")
-                                    .font(.headline)
+                                    .font(.roundedHeadline())
                                     .fontWeight(.semibold)
                             }
                             .frame(maxWidth: .infinity)
@@ -116,9 +116,9 @@ struct ConversionResultView: View {
                         Button(action: saveToPhotos) {
                             HStack {
                                 Image(systemName: "square.and.arrow.down")
-                                    .font(.headline)
+                                    .font(.roundedHeadline())
                                 Text("Save")
-                                    .font(.headline)
+                                    .font(.roundedHeadline())
                                     .fontWeight(.semibold)
                             }
                             .frame(maxWidth: .infinity)
@@ -142,7 +142,7 @@ struct ConversionResultView: View {
                         }
                     }) {
                         Text("Done")
-                            .font(.headline)
+                            .font(.roundedHeadline())
                             .frame(maxWidth: .infinity)
                             .frame(height: 56)
                             .background(
@@ -183,7 +183,7 @@ struct ConversionResultView: View {
                             }
                         }) {
                             Image(systemName: "xmark")
-                                .font(.system(size: 16, weight: .semibold))
+                                .font(.roundedSystem(size: 16, weight: .semibold))
                                 .foregroundColor(.primary)
                         }
                     }
