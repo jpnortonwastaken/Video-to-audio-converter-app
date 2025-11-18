@@ -224,10 +224,9 @@ struct ConverterView: View {
             }) {
                 Image(systemName: "gearshape.fill")
                     .font(.roundedSystem(size: 20))
-                    .foregroundColor(.white)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
                     .frame(width: 44, height: 44)
-                    .background(Circle().fill(Color.blue))
-                    .shadow(radius: 4)
+                    .background(Circle().fill(Color(.systemGray5)))
             }
             .padding(.top, 60)
             .padding(.trailing, 20)
