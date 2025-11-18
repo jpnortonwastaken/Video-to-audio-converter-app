@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "AppFast Icon-2.png",
+      "filename" : "Logo.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,7 +12,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "AppFast Icon.png",
+      "filename" : "Logo-1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
