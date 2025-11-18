@@ -307,7 +307,7 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), style: StrokeStyle(lineWidth: 2, dash: [5, 5]))
+                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5, 5]))
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
@@ -357,7 +357,7 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), style: StrokeStyle(lineWidth: 2, dash: [5, 5]))
+                    .stroke(iconColor.opacity(colorScheme == .dark ? 0.4 : 0.3), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5, 5]))
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
