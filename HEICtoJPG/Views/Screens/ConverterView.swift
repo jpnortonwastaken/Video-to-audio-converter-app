@@ -20,7 +20,7 @@ struct ConverterView: View {
     @State private var inputButtonsLineWidth: CGFloat = 2.5
     @State private var inputButtonsDashLength: CGFloat = 7
     @State private var inputButtonsGapLength: CGFloat = 8
-    @State private var inputButtonsOpacity: Double = 0.35
+    @State private var inputButtonsOpacity: Double = 0.15
     @State private var inputButtonsUseDottedLine = true
     @State private var containerLineWidth: CGFloat = 2.5
     @State private var containerDashLength: CGFloat = 7
@@ -596,7 +596,7 @@ struct ConverterView: View {
                         inputButtonsLineWidth = 2.5
                         inputButtonsDashLength = 7
                         inputButtonsGapLength = 8
-                        inputButtonsOpacity = 0.35
+                        inputButtonsOpacity = 0.15
                         inputButtonsUseDottedLine = true
                         containerLineWidth = 2.5
                         containerDashLength = 7
