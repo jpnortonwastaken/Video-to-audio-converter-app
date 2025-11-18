@@ -15,18 +15,17 @@ struct ConverterView: View {
     @State private var showButtons = true
     @State private var showFormatSheet = false
 
-    // Debug Menu State
-    @State private var showDebugMenu = false
-    @State private var inputButtonsLineWidth: CGFloat = 2.5
-    @State private var inputButtonsDashLength: CGFloat = 7
-    @State private var inputButtonsGapLength: CGFloat = 8
-    @State private var inputButtonsOpacity: Double = 0.15
-    @State private var inputButtonsUseDottedLine = true
-    @State private var containerLineWidth: CGFloat = 2.5
-    @State private var containerDashLength: CGFloat = 7
-    @State private var containerGapLength: CGFloat = 8
-    @State private var containerOpacity: Double = 0.3
-    @State private var containerUseDottedLine = true
+    // Border style constants
+    private let inputButtonsLineWidth: CGFloat = 2.5
+    private let inputButtonsDashLength: CGFloat = 7
+    private let inputButtonsGapLength: CGFloat = 8
+    private let inputButtonsOpacity: Double = 0.35
+    private let inputButtonsUseDottedLine = true
+    private let containerLineWidth: CGFloat = 2.5
+    private let containerDashLength: CGFloat = 7
+    private let containerGapLength: CGFloat = 8
+    private let containerOpacity: Double = 0.3
+    private let containerUseDottedLine = true
 
     var body: some View {
         NavigationView {
@@ -215,26 +214,6 @@ struct ConverterView: View {
             if viewModel.isConverting {
                 convertingOverlay
             }
-        }
-        .overlay(alignment: .topTrailing) {
-            // Debug Menu Button
-            Button(action: {
-                HapticManager.shared.softImpact()
-                showDebugMenu = true
-            }) {
-                Image(systemName: "gearshape.fill")
-                    .font(.roundedSystem(size: 20))
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
-                    .frame(width: 44, height: 44)
-                    .background(Circle().fill(Color(.systemGray5)))
-            }
-            .padding(.top, 60)
-            .padding(.trailing, 20)
-        }
-        .sheet(isPresented: $showDebugMenu) {
-            debugMenuView
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
         }
     }
 
@@ -521,102 +500,6 @@ struct ConverterView: View {
 
         case .failure(let error):
             viewModel.errorMessage = "Failed to load file: \(error.localizedDescription)"
-        }
-    }
-
-    // MARK: - Debug Menu View
-    private var debugMenuView: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Input Buttons (Photos/Files/Paste)")) {
-                    Toggle("Use Dotted Line", isOn: $inputButtonsUseDottedLine)
-                        .tint(.blue)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Line Width: \(String(format: "%.1f", inputButtonsLineWidth))")
-                            .font(.roundedSubheadline())
-                        Slider(value: $inputButtonsLineWidth, in: 0.5...10, step: 0.5)
-                    }
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Opacity: \(String(format: "%.2f", inputButtonsOpacity))")
-                            .font(.roundedSubheadline())
-                        Slider(value: $inputButtonsOpacity, in: 0.0...1.0, step: 0.05)
-                    }
-
-                    if inputButtonsUseDottedLine {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Dash Length: \(String(format: "%.1f", inputButtonsDashLength))")
-                                .font(.roundedSubheadline())
-                            Slider(value: $inputButtonsDashLength, in: 1...20, step: 1)
-                        }
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Gap Length: \(String(format: "%.1f", inputButtonsGapLength))")
-                                .font(.roundedSubheadline())
-                            Slider(value: $inputButtonsGapLength, in: 1...20, step: 1)
-                        }
-                    }
-                }
-
-                Section(header: Text("Format/Convert Container")) {
-                    Toggle("Use Dotted Line", isOn: $containerUseDottedLine)
-                        .tint(.blue)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Line Width: \(String(format: "%.1f", containerLineWidth))")
-                            .font(.roundedSubheadline())
-                        Slider(value: $containerLineWidth, in: 0.5...10, step: 0.5)
-                    }
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Opacity: \(String(format: "%.2f", containerOpacity))")
-                            .font(.roundedSubheadline())
-                        Slider(value: $containerOpacity, in: 0.0...1.0, step: 0.05)
-                    }
-
-                    if containerUseDottedLine {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Dash Length: \(String(format: "%.1f", containerDashLength))")
-                                .font(.roundedSubheadline())
-                            Slider(value: $containerDashLength, in: 1...20, step: 1)
-                        }
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Gap Length: \(String(format: "%.1f", containerGapLength))")
-                                .font(.roundedSubheadline())
-                            Slider(value: $containerGapLength, in: 1...20, step: 1)
-                        }
-                    }
-                }
-
-                Section {
-                    Button("Reset to Defaults") {
-                        HapticManager.shared.softImpact()
-                        inputButtonsLineWidth = 2.5
-                        inputButtonsDashLength = 7
-                        inputButtonsGapLength = 8
-                        inputButtonsOpacity = 0.15
-                        inputButtonsUseDottedLine = true
-                        containerLineWidth = 2.5
-                        containerDashLength = 7
-                        containerGapLength = 8
-                        containerOpacity = 0.3
-                        containerUseDottedLine = true
-                    }
-                    .foregroundColor(.blue)
-                }
-            }
-            .navigationTitle("Border Debug Menu")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        HapticManager.shared.softImpact()
-                        showDebugMenu = false
-                    }
-                }
-            }
         }
     }
 }
