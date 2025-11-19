@@ -102,17 +102,18 @@ struct HomeView: View {
 
                     // Add dashed separator between cards (but not after the last one)
                     if index < historyService.items.count - 1 {
-                        Rectangle()
-                            .fill(Color.clear)
-                            .frame(height: 1)
-                            .overlay(
-                                Rectangle()
-                                    .stroke(
-                                        (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.3),
-                                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
-                                    )
+                        GeometryReader { geometry in
+                            Path { path in
+                                path.move(to: CGPoint(x: 0, y: 0))
+                                path.addLine(to: CGPoint(x: geometry.size.width, y: 0))
+                            }
+                            .stroke(
+                                (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.3),
+                                style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
                             )
-                            .padding(.vertical, 16)
+                        }
+                        .frame(height: 2.5)
+                        .padding(.vertical, 16)
                     }
                 }
             }
