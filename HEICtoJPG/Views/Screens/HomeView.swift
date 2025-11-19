@@ -210,7 +210,7 @@ struct HomeView: View {
                         .foregroundColor(.gray)
 
                     Text(item.formattedFileSize)
-                        .font(.roundedCaption())
+                        .font(.roundedSubheadline())
                         .foregroundColor(.gray)
                 }
 
@@ -220,7 +220,8 @@ struct HomeView: View {
                     .font(.roundedBody())
                     .foregroundColor(.gray)
             }
-            .padding(.vertical, 16)
+            .padding(.vertical, 8)
+            .background(Color.white.opacity(0.001))
         }
         .simultaneousGesture(TapGesture().onEnded {
             HapticManager.shared.softImpact()
