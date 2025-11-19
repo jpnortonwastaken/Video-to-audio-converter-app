@@ -182,7 +182,10 @@ struct HomeView: View {
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .stroke(colorForFormat(item.fromFormat).opacity(0.4), lineWidth: 1)
+                                    .stroke(
+                                        colorForFormat(item.fromFormat).opacity(0.4),
+                                        style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [3, 3])
+                                    )
                             )
 
                         Image(systemName: "arrow.right")
@@ -201,7 +204,10 @@ struct HomeView: View {
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .stroke(colorForFormat(item.toFormat.displayName).opacity(0.4), lineWidth: 1)
+                                    .stroke(
+                                        colorForFormat(item.toFormat.displayName).opacity(0.4),
+                                        style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [3, 3])
+                                    )
                             )
                     }
 
