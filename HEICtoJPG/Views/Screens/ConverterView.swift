@@ -220,19 +220,26 @@ struct ConverterView: View {
     // MARK: - Converting Overlay
     private var convertingOverlay: some View {
         ZStack {
-            Color.black.opacity(0.7)
+            (colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                .opacity(0.95)
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
                 // Custom loading animation
                 ZStack {
                     Circle()
-                        .stroke(Color.white.opacity(0.3), lineWidth: 4)
+                        .stroke(
+                            (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.3),
+                            lineWidth: 4
+                        )
                         .frame(width: 60, height: 60)
 
                     Circle()
                         .trim(from: 0, to: 0.7)
-                        .stroke(Color.white, lineWidth: 4)
+                        .stroke(
+                            colorScheme == .dark ? Color.white : Color.black,
+                            lineWidth: 4
+                        )
                         .frame(width: 60, height: 60)
                         .rotationEffect(Angle(degrees: viewModel.isConverting ? 360 : 0))
                         .animation(
@@ -245,12 +252,19 @@ struct ConverterView: View {
 
                 Text("Converting...")
                     .font(.roundedHeadline())
-                    .foregroundColor(.white)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
             }
             .padding(40)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5))
+                    .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(
+                        (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.3),
+                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
+                    )
             )
         }
     }
