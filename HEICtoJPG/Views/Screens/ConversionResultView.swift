@@ -160,11 +160,12 @@ struct ConversionResultView: View {
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 28)
-                        .stroke(colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4), lineWidth: 0.5)
+                        .stroke(
+                            (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.3),
+                            style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
+                        )
                 )
                 .compositingGroup()
-                .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
-                .shadow(color: Color.black.opacity(0.03), radius: 32, x: 0, y: 16)
                 .padding(.horizontal, 24)
                 .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
             }
