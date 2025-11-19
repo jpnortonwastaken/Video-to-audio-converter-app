@@ -108,8 +108,8 @@ struct HomeView: View {
                             .overlay(
                                 Rectangle()
                                     .stroke(
-                                        (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.5),
-                                        style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [5, 5])
+                                        (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.3),
+                                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
                                     )
                             )
                             .padding(.vertical, 16)
