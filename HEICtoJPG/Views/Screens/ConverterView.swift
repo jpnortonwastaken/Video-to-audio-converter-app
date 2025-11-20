@@ -15,6 +15,7 @@ struct ConverterView: View {
     @State private var showButtons = true
     @State private var showFormatSheet = false
     @State private var isAnimating = false
+    @State private var showConvertingContainer = false
 
     // Border style constants
     private let inputButtonsLineWidth: CGFloat = 2.5
@@ -268,6 +269,16 @@ struct ConverterView: View {
                         style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
                     )
             )
+            .scaleEffect(showConvertingContainer ? 1.0 : 0.3)
+            .opacity(showConvertingContainer ? 1.0 : 0.0)
+            .onAppear {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                    showConvertingContainer = true
+                }
+            }
+            .onDisappear {
+                showConvertingContainer = false
+            }
         }
     }
 
