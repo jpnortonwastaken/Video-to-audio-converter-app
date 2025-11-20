@@ -186,12 +186,6 @@ struct SettingsSection<Content: View>: View {
             .background(
                 RoundedRectangle(cornerRadius: 20)
                     .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4), lineWidth: 0.5)
-                    )
-                    .shadow(color: Color.black.opacity(0.06), radius: 16, x: 0, y: 8)
-                    .shadow(color: Color.black.opacity(0.03), radius: 32, x: 0, y: 16)
             )
         }
     }
