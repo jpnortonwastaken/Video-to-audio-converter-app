@@ -269,10 +269,9 @@ struct ConverterView: View {
                         style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
                     )
             )
-            .scaleEffect(showConvertingContainer ? 1.0 : 0.3)
-            .opacity(showConvertingContainer ? 1.0 : 0.0)
-            .onAppear {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+            .scaleEffect(showConvertingContainer ? 1.0 : 0.8)
+            .task {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                     showConvertingContainer = true
                 }
             }
