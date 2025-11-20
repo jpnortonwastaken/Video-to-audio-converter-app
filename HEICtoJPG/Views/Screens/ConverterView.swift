@@ -15,6 +15,7 @@ struct ConverterView: View {
     @State private var showButtons = true
     @State private var showFormatSheet = false
     @State private var rotationDegrees: Double = 0
+    @State private var showConvertingAnimation = false
 
     // Border style constants
     private let inputButtonsLineWidth: CGFloat = 2.5
@@ -261,13 +262,21 @@ struct ConverterView: View {
                         style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
                     )
             )
+            .scaleEffect(showConvertingAnimation ? 1.0 : 0.5)
+            .opacity(showConvertingAnimation ? 1.0 : 0.0)
             .onAppear {
+                // Start rotation animation
                 withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
                     rotationDegrees = 360
+                }
+                // Start bounce-in animation
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.6)) {
+                    showConvertingAnimation = true
                 }
             }
             .onDisappear {
                 rotationDegrees = 0
+                showConvertingAnimation = false
             }
         }
     }
