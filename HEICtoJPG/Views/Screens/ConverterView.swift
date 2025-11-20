@@ -14,6 +14,7 @@ struct ConverterView: View {
     @State private var showImage = false
     @State private var showButtons = true
     @State private var showFormatSheet = false
+    @State private var rotationDegrees: Double = 0
 
     // Border style constants
     private let inputButtonsLineWidth: CGFloat = 2.5
@@ -241,13 +242,7 @@ struct ConverterView: View {
                             lineWidth: 4
                         )
                         .frame(width: 60, height: 60)
-                        .rotationEffect(Angle(degrees: viewModel.isConverting ? 360 : 0))
-                        .animation(
-                            viewModel.isConverting ?
-                                .linear(duration: 1).repeatForever(autoreverses: false) :
-                                .default,
-                            value: viewModel.isConverting
-                        )
+                        .rotationEffect(Angle(degrees: rotationDegrees))
                 }
 
                 Text("Converting...")
@@ -266,6 +261,14 @@ struct ConverterView: View {
                         style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
                     )
             )
+            .onAppear {
+                withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
+                    rotationDegrees = 360
+                }
+            }
+            .onDisappear {
+                rotationDegrees = 0
+            }
         }
     }
 
