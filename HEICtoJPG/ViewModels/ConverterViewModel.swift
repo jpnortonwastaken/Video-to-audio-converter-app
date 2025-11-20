@@ -73,9 +73,6 @@ class ConverterViewModel: ObservableObject {
         isConverting = true
         HapticManager.shared.softImpact()
 
-        // Track when conversion started
-        let conversionStart = Date()
-
         do {
             let converter = ImageConverter()
             let convertedData = try await converter.convert(
@@ -93,13 +90,6 @@ class ConverterViewModel: ObservableObject {
             )
 
             HapticManager.shared.success()
-
-            // Ensure overlay shows for at least 0.8 seconds for animation to be visible
-            let conversionDuration = Date().timeIntervalSince(conversionStart)
-            let minimumDisplayTime: TimeInterval = 0.8
-            if conversionDuration < minimumDisplayTime {
-                try await Task.sleep(nanoseconds: UInt64((minimumDisplayTime - conversionDuration) * 1_000_000_000))
-            }
 
             // Show result view
             showResultView = true

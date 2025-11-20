@@ -14,8 +14,7 @@ struct ConverterView: View {
     @State private var showImage = false
     @State private var showButtons = true
     @State private var showFormatSheet = false
-    @State private var rotationDegrees: Double = 0
-    @State private var showConvertingAnimation = false
+    @State private var isAnimating = false
 
     // Border style constants
     private let inputButtonsLineWidth: CGFloat = 2.5
@@ -212,21 +211,6 @@ struct ConverterView: View {
                 }
             }
         }
-        .onChange(of: viewModel.isConverting) { _, isConverting in
-            if isConverting {
-                // Start rotation animation
-                withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
-                    rotationDegrees = 360
-                }
-                // Start bounce-in animation
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.6)) {
-                    showConvertingAnimation = true
-                }
-            } else {
-                rotationDegrees = 0
-                showConvertingAnimation = false
-            }
-        }
         .overlay {
             if viewModel.isConverting {
                 convertingOverlay
@@ -258,7 +242,14 @@ struct ConverterView: View {
                             lineWidth: 4
                         )
                         .frame(width: 60, height: 60)
-                        .rotationEffect(Angle(degrees: rotationDegrees))
+                        .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
+                        .animation(.linear(duration: 1).repeatForever(autoreverses: false), value: isAnimating)
+                        .onAppear {
+                            isAnimating = true
+                        }
+                        .onDisappear {
+                            isAnimating = false
+                        }
                 }
 
                 Text("Converting...")
@@ -277,8 +268,6 @@ struct ConverterView: View {
                         style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
                     )
             )
-            .scaleEffect(showConvertingAnimation ? 1.0 : 0.5)
-            .opacity(showConvertingAnimation ? 1.0 : 0.0)
         }
     }
 
