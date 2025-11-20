@@ -212,6 +212,21 @@ struct ConverterView: View {
                 }
             }
         }
+        .onChange(of: viewModel.isConverting) { _, isConverting in
+            if isConverting {
+                // Start rotation animation
+                withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
+                    rotationDegrees = 360
+                }
+                // Start bounce-in animation
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.6)) {
+                    showConvertingAnimation = true
+                }
+            } else {
+                rotationDegrees = 0
+                showConvertingAnimation = false
+            }
+        }
         .overlay {
             if viewModel.isConverting {
                 convertingOverlay
@@ -264,20 +279,6 @@ struct ConverterView: View {
             )
             .scaleEffect(showConvertingAnimation ? 1.0 : 0.5)
             .opacity(showConvertingAnimation ? 1.0 : 0.0)
-            .onAppear {
-                // Start rotation animation
-                withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
-                    rotationDegrees = 360
-                }
-                // Start bounce-in animation
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.6)) {
-                    showConvertingAnimation = true
-                }
-            }
-            .onDisappear {
-                rotationDegrees = 0
-                showConvertingAnimation = false
-            }
         }
     }
 
