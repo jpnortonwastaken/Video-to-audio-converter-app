@@ -185,7 +185,14 @@ struct SettingsSection<Content: View>: View {
             }
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
+                    .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(
+                        (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.3),
+                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
+                    )
             )
         }
     }
