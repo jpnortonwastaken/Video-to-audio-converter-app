@@ -12,6 +12,7 @@ struct HomeView: View {
     @StateObject private var historyService = ConversionHistoryService.shared
     @State private var itemToDelete: ConversionHistoryItem?
     @State private var showDeleteConfirmation = false
+    @State private var showDeleteAllConfirmation = false
 
     var body: some View {
         NavigationView {
@@ -25,6 +26,20 @@ struct HomeView: View {
                     }
 
                     Spacer()
+
+                    // Delete All Button (only show when there are items)
+                    if !historyService.items.isEmpty {
+                        Button(action: {
+                            HapticManager.shared.softImpact()
+                            showDeleteAllConfirmation = true
+                        }) {
+                            Image(systemName: "trash")
+                                .font(.roundedTitle3())
+                                .foregroundColor(.red)
+                                .frame(width: 44, height: 44)
+                        }
+                        .buttonStyle(ScaleDownButtonStyle())
+                    }
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 8)
@@ -56,6 +71,15 @@ struct HomeView: View {
             }
         } message: {
             Text("Are you sure you want to delete this conversion from your history?")
+        }
+        .alert("Delete All History", isPresented: $showDeleteAllConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete All", role: .destructive) {
+                HapticManager.shared.softImpact()
+                historyService.clearAll()
+            }
+        } message: {
+            Text("Are you sure you want to delete all conversions from your history? This action cannot be undone.")
         }
     }
 
