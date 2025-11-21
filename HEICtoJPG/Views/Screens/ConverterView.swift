@@ -29,12 +29,13 @@ struct ConverterView: View {
     private let containerUseDottedLine = true
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                // Header
-                headerView
+        NavigationView {
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    // Header
+                    headerView
 
-                // Content area
+                    // Content area
                     VStack(alignment: .leading, spacing: 16) {
                         // Title (outside red border)
                         if viewModel.selectedImage == nil {
@@ -134,9 +135,11 @@ struct ConverterView: View {
                     .compositingGroup()
                     .padding(.horizontal, 24)
                     .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
+                }
+                .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+                .ignoresSafeArea()
             }
-            .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
-            .ignoresSafeArea()
+            .navigationBarHidden(true)
         }
         .photosPicker(
             isPresented: $viewModel.showPhotoPicker,
@@ -287,7 +290,7 @@ struct ConverterView: View {
                 Spacer()
             }
             .padding(.horizontal, 24)
-            .padding(.top, 16)
+            .padding(.top, 8)
             .padding(.bottom, 8)
         }
         .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
