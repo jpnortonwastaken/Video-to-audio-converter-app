@@ -105,10 +105,9 @@ struct ConverterView: View {
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 20)
+                    .padding(.bottom, 32)
 
-                    Spacer(minLength: 16)
-
-                    // Format Selector and Convert Button (Pinned to Bottom)
+                    // Format Selector and Convert Button
                     VStack(spacing: 16) {
                         // Format Selector
                         formatSelectorView
@@ -132,7 +131,10 @@ struct ConverterView: View {
                     )
                     .compositingGroup()
                     .padding(.horizontal, 24)
-                    .padding(.bottom, 20)
+
+                    Spacer()
+            }
+            .padding(.bottom, 20)
         }
         .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
         .photosPicker(
