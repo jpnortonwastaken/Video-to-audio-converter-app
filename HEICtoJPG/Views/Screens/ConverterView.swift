@@ -30,13 +30,12 @@ struct ConverterView: View {
 
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                VStack(spacing: 0) {
-                    // Header
-                    headerView
+            VStack(spacing: 0) {
+                // Header
+                headerView
 
-                    // Content area
-                    VStack(alignment: .leading, spacing: 16) {
+                // Content area
+                VStack(alignment: .leading, spacing: 16) {
                         // Title (outside red border)
                         if viewModel.selectedImage == nil {
                             Text("Convert to any format")
@@ -134,11 +133,9 @@ struct ConverterView: View {
                     )
                     .compositingGroup()
                     .padding(.horizontal, 24)
-                    .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
-                }
-                .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
-                .ignoresSafeArea()
+                    .padding(.bottom, 20)
             }
+            .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
             .navigationBarHidden(true)
         }
         .photosPicker(
