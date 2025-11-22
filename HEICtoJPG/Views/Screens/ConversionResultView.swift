@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Photos
+import PDFKit
 
 enum ConversionResultDisplayMode {
     case thumbnail  // Square thumbnail with rounded corners (for direct conversions)
@@ -27,7 +28,36 @@ struct ConversionResultView: View {
     @State private var errorMessage = ""
 
     var convertedImage: UIImage? {
-        UIImage(data: convertedImageData)
+        // Special handling for PDF format
+        if format == .pdf {
+            return renderPDFAsImage(data: convertedImageData)
+        }
+
+        // For other formats, create UIImage directly from data
+        return UIImage(data: convertedImageData)
+    }
+
+    // Helper function to render PDF data as a UIImage for preview
+    private func renderPDFAsImage(data: Data) -> UIImage? {
+        guard let pdfDocument = PDFDocument(data: data),
+              let pdfPage = pdfDocument.page(at: 0) else {
+            return nil
+        }
+
+        let pageRect = pdfPage.bounds(for: .mediaBox)
+        let renderer = UIGraphicsImageRenderer(size: pageRect.size)
+
+        let image = renderer.image { context in
+            UIColor.white.set()
+            context.fill(pageRect)
+
+            context.cgContext.translateBy(x: 0, y: pageRect.size.height)
+            context.cgContext.scaleBy(x: 1.0, y: -1.0)
+
+            pdfPage.draw(with: .mediaBox, to: context.cgContext)
+        }
+
+        return image
     }
 
     // Default initializer with thumbnail mode

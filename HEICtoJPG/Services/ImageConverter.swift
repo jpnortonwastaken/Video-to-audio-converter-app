@@ -88,9 +88,20 @@ actor ImageConverter {
 
     private func convertToPDF(_ image: UIImage) throws -> Data {
         let pdfData = NSMutableData()
-        let pdfConsumer = CGDataConsumer(data: pdfData as CFMutableData)!
 
-        var mediaBox = CGRect(origin: .zero, size: image.size)
+        guard let pdfConsumer = CGDataConsumer(data: pdfData as CFMutableData) else {
+            throw ConversionError.conversionFailed
+        }
+
+        guard let cgImage = image.cgImage else {
+            throw ConversionError.invalidImage
+        }
+
+        // Use the actual pixel dimensions of the image, not the point size
+        // This ensures the PDF has the correct dimensions regardless of @2x/@3x scale
+        let width = CGFloat(cgImage.width)
+        let height = CGFloat(cgImage.height)
+        var mediaBox = CGRect(x: 0, y: 0, width: width, height: height)
 
         guard let pdfContext = CGContext(consumer: pdfConsumer, mediaBox: &mediaBox, nil) else {
             throw ConversionError.conversionFailed
@@ -98,11 +109,10 @@ actor ImageConverter {
 
         pdfContext.beginPage(mediaBox: &mediaBox)
 
-        guard let cgImage = image.cgImage else {
-            throw ConversionError.invalidImage
-        }
-
+        // Draw the image - CGContext draws from bottom-left origin (correct for PDF)
+        // The mediaBox is already set with the correct dimensions
         pdfContext.draw(cgImage, in: mediaBox)
+
         pdfContext.endPage()
         pdfContext.closePDF()
 
