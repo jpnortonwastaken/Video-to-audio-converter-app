@@ -189,9 +189,11 @@ struct HomeView: View {
                         .frame(height: 2.5)
                         .padding(.vertical, 16)
                         .opacity(animateItems ? 1 : 0)
+                        .scaleEffect(animateItems ? 1 : 0.9)
+                        .offset(y: animateItems ? 0 : -10)
                         .animation(
                             .spring(response: 0.6, dampingFraction: 0.8)
-                                .delay(Double(index) * 0.05),
+                                .delay(Double(index) * 0.05 + 0.025),
                             value: animateItems
                         )
                     }
