@@ -25,6 +25,7 @@ enum AppearancePreference: String, CaseIterable {
 @main
 struct HEICtoJPGApp: App {
     @StateObject private var onboardingManager = OnboardingViewModel()
+    @AppStorage("appearance_preference") private var appearancePreference: AppearancePreference = .system
 
     init() {
         // Warm up haptics early to eliminate first-use delay
@@ -39,10 +40,30 @@ struct HEICtoJPGApp: App {
             if !onboardingManager.showOnboarding {
                 MainTabView()
                     .environmentObject(onboardingManager)
+                    .onAppear {
+                        applyStoredAppearance()
+                    }
             } else {
                 OnboardingFlowView()
                     .environmentObject(onboardingManager)
+                    .onAppear {
+                        applyStoredAppearance()
+                    }
             }
+        }
+    }
+
+    private func applyStoredAppearance() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else { return }
+
+        switch appearancePreference {
+        case .light:
+            window.overrideUserInterfaceStyle = .light
+        case .dark:
+            window.overrideUserInterfaceStyle = .dark
+        case .system:
+            window.overrideUserInterfaceStyle = .unspecified
         }
     }
 }
