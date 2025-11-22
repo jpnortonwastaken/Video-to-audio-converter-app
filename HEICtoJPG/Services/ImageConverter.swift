@@ -62,34 +62,24 @@ actor ImageConverter {
             return cgImage
         }
 
-        // Calculate the size accounting for orientation
-        let size = image.size
+        // Use UIGraphicsImageRenderer for proper coordinate system handling
+        // This ensures top-left origin (UIKit) instead of bottom-left (CGContext)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1.0 // Use 1:1 scale to preserve exact dimensions
+        format.opaque = false // Preserve transparency if present
 
-        // Create a bitmap context with the correct size
-        guard let colorSpace = cgImage.colorSpace ?? CGColorSpaceCreateDeviceRGB() as CGColorSpace?,
-              let context = CGContext(
-                data: nil,
-                width: Int(size.width),
-                height: Int(size.height),
-                bitsPerComponent: cgImage.bitsPerComponent,
-                bytesPerRow: 0,
-                space: colorSpace,
-                bitmapInfo: cgImage.bitmapInfo.rawValue
-              ) else {
+        let renderer = UIGraphicsImageRenderer(size: image.size, format: format)
+
+        let normalizedUIImage = renderer.image { context in
+            // UIImage.draw automatically applies the orientation transformation
+            image.draw(in: CGRect(origin: .zero, size: image.size))
+        }
+
+        guard let normalizedCGImage = normalizedUIImage.cgImage else {
             throw ConversionError.conversionFailed
         }
 
-        // Draw the image with the correct orientation
-        // UIImage.draw will handle the orientation transformation
-        UIGraphicsPushContext(context)
-        image.draw(in: CGRect(origin: .zero, size: size))
-        UIGraphicsPopContext()
-
-        guard let normalizedImage = context.makeImage() else {
-            throw ConversionError.conversionFailed
-        }
-
-        return normalizedImage
+        return normalizedCGImage
     }
 
     private func convertToJPEG(_ image: UIImage) throws -> Data {
