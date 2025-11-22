@@ -120,11 +120,54 @@ class ConverterViewModel: ObservableObject {
         guard let selectedPhotoItem else { return }
 
         do {
+            // First, detect the original format from supportedContentTypes
+            // This must be done BEFORE loading the data, as iOS may transcode HEIC to JPEG
+            if let contentType = selectedPhotoItem.supportedContentTypes.first {
+                originalImageFormat = formatFromUTType(contentType)
+            }
+
+            // Now load the data (may be transcoded, but we already know the original format)
             if let data = try await selectedPhotoItem.loadTransferable(type: Data.self) {
-                loadImageFromData(data)
+                // Don't detect format from data here, we already got it from contentType
+                if let image = UIImage(data: data) {
+                    selectedImage = image
+                }
             }
         } catch {
             errorMessage = "Failed to load image: \(error.localizedDescription)"
+        }
+    }
+
+    // Helper to convert UTType to format string
+    private func formatFromUTType(_ utType: UTType) -> String {
+        switch utType {
+        case .heic, .heif:
+            return "HEIC"
+        case .jpeg:
+            return "JPEG"
+        case .png:
+            return "PNG"
+        case .gif:
+            return "GIF"
+        case .bmp:
+            return "BMP"
+        case .tiff:
+            return "TIFF"
+        case .webP:
+            return "WEBP"
+        case .pdf:
+            return "PDF"
+        default:
+            // Fallback: check identifier string
+            let identifier = utType.identifier.lowercased()
+            if identifier.contains("heic") || identifier.contains("heif") {
+                return "HEIC"
+            } else if identifier.contains("jpeg") || identifier.contains("jpg") {
+                return "JPEG"
+            } else if identifier.contains("png") {
+                return "PNG"
+            }
+            return "Unknown"
         }
     }
 
