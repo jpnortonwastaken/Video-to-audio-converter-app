@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PDFKit
 
 struct HomeView: View {
     @Environment(\.colorScheme) private var colorScheme
@@ -174,6 +175,40 @@ struct HomeView: View {
         }
     }
 
+    // Helper to get thumbnail image from conversion data
+    private func getThumbnailImage(from item: ConversionHistoryItem) -> UIImage? {
+        // Special handling for PDF format
+        if item.toFormat == .pdf {
+            return renderPDFAsThumbnail(data: item.convertedImageData)
+        }
+
+        // For other formats, create UIImage directly from data
+        return UIImage(data: item.convertedImageData)
+    }
+
+    // Helper function to render PDF data as a UIImage thumbnail
+    private func renderPDFAsThumbnail(data: Data) -> UIImage? {
+        guard let pdfDocument = PDFDocument(data: data),
+              let pdfPage = pdfDocument.page(at: 0) else {
+            return nil
+        }
+
+        let pageRect = pdfPage.bounds(for: .mediaBox)
+        let renderer = UIGraphicsImageRenderer(size: pageRect.size)
+
+        let image = renderer.image { context in
+            UIColor.white.set()
+            context.fill(pageRect)
+
+            context.cgContext.translateBy(x: 0, y: pageRect.size.height)
+            context.cgContext.scaleBy(x: 1.0, y: -1.0)
+
+            pdfPage.draw(with: .mediaBox, to: context.cgContext)
+        }
+
+        return image
+    }
+
     // MARK: - History Card
     private func historyCard(for item: ConversionHistoryItem) -> some View {
         NavigationLink(destination: ConversionResultView(
@@ -183,7 +218,7 @@ struct HomeView: View {
         )) {
             HStack(spacing: 16) {
                 // Thumbnail
-                if let image = UIImage(data: item.convertedImageData) {
+                if let image = getThumbnailImage(from: item) {
                     Image(uiImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
