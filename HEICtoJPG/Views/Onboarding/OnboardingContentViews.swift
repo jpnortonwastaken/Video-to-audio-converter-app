@@ -215,6 +215,7 @@ struct PaywallContent: View {
     @EnvironmentObject var viewModel: OnboardingViewModel
     @Environment(\.colorScheme) private var colorScheme
     @State private var isVisible = false
+    @State private var continueButtonTask: DispatchWorkItem?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -254,6 +255,15 @@ struct PaywallContent: View {
         .onAppear {
             isVisible = true
 
+            // Create a cancellable work item for the continue button timer
+            let workItem = DispatchWorkItem {
+                viewModel.canProceedFromPaywall = true
+            }
+            continueButtonTask = workItem
+
+            // After 1 second, enable the continue button
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: workItem)
+
             // Only show paywall once during onboarding session
             guard !viewModel.hasShownPaywall else { return }
 
@@ -270,6 +280,11 @@ struct PaywallContent: View {
 
                 Superwall.shared.register(placement: "campaign_trigger", handler: handler)
             }
+        }
+        .onDisappear {
+            // Cancel the timer if user navigates away before it fires
+            continueButtonTask?.cancel()
+            continueButtonTask = nil
         }
     }
 }

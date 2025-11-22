@@ -251,7 +251,7 @@ private struct StepConfiguration {
             self.progress = 1.0
             self.showContinueButton = true
             self.continueButtonTitle = "Continue"
-            self.canProceed = true
+            self.canProceed = viewModel.canProceedFromPaywall
             self.customAction = {
                 viewModel.completeOnboarding()
             }

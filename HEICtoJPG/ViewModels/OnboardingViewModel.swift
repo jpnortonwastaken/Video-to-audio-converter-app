@@ -28,6 +28,7 @@ class OnboardingViewModel: ObservableObject {
     @Published var showOnboarding: Bool
     @Published var hasRequestedReview = false
     @Published var canProceedFromReview = false
+    @Published var canProceedFromPaywall = false
     @Published var hasShownPaywall = false
 
     private let hasCompletedOnboardingKey = "hasCompletedOnboarding"
@@ -43,6 +44,11 @@ class OnboardingViewModel: ObservableObject {
             canProceedFromReview = false
         }
 
+        // Reset paywall button state when leaving paywall step
+        if currentStep == .paywall {
+            canProceedFromPaywall = false
+        }
+
         guard let nextStepRaw = OnboardingStep(rawValue: currentStep.rawValue + 1) else {
             completeOnboarding()
             return
@@ -55,6 +61,11 @@ class OnboardingViewModel: ObservableObject {
         // Reset review button state when leaving review step
         if currentStep == .review {
             canProceedFromReview = false
+        }
+
+        // Reset paywall button state when leaving paywall step
+        if currentStep == .paywall {
+            canProceedFromPaywall = false
         }
 
         guard currentStep.rawValue > 0,
@@ -97,6 +108,7 @@ class OnboardingViewModel: ObservableObject {
         showOnboarding = true
         hasRequestedReview = false
         canProceedFromReview = false
+        canProceedFromPaywall = false
         hasShownPaywall = false
     }
 }
