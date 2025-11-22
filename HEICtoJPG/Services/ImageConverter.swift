@@ -62,11 +62,17 @@ actor ImageConverter {
             return cgImage
         }
 
+        // Validate image size
+        guard image.size.width > 0 && image.size.height > 0 else {
+            throw ConversionError.invalidImage
+        }
+
         // Use UIGraphicsImageRenderer for proper coordinate system handling
         // This ensures top-left origin (UIKit) instead of bottom-left (CGContext)
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1.0 // Use 1:1 scale to preserve exact dimensions
         format.opaque = false // Preserve transparency if present
+        format.preferredRange = .standard
 
         let renderer = UIGraphicsImageRenderer(size: image.size, format: format)
 

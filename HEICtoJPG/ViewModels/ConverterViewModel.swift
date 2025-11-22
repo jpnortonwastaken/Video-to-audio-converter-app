@@ -124,14 +124,28 @@ class ConverterViewModel: ObservableObject {
             // This must be done BEFORE loading the data, as iOS may transcode HEIC to JPEG
             if let contentType = selectedPhotoItem.supportedContentTypes.first {
                 originalImageFormat = formatFromUTType(contentType)
+            } else {
+                // Fallback if no content type is available
+                originalImageFormat = "Unknown"
             }
 
             // Now load the data (may be transcoded, but we already know the original format)
-            if let data = try await selectedPhotoItem.loadTransferable(type: Data.self) {
-                // Don't detect format from data here, we already got it from contentType
-                if let image = UIImage(data: data) {
-                    selectedImage = image
+            if let data = try await selectedPhotoItem.loadTransferable(type: Data.self), !data.isEmpty {
+                // Verify we can create a UIImage from the data
+                guard let image = UIImage(data: data) else {
+                    errorMessage = "Failed to create image from data"
+                    return
                 }
+
+                // Verify the image has valid dimensions and cgImage
+                guard image.size.width > 0, image.size.height > 0, image.cgImage != nil else {
+                    errorMessage = "Invalid image data"
+                    return
+                }
+
+                selectedImage = image
+            } else {
+                errorMessage = "Failed to load image data"
             }
         } catch {
             errorMessage = "Failed to load image: \(error.localizedDescription)"
