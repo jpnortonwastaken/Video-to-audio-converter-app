@@ -137,8 +137,9 @@ class ConverterViewModel: ObservableObject {
                     return
                 }
 
-                // Verify the image has valid dimensions and cgImage
-                guard image.size.width > 0, image.size.height > 0, image.cgImage != nil else {
+                // Verify the image has valid dimensions
+                // NOTE: Don't check cgImage here as it forces expensive decode of full bitmap
+                guard image.size.width > 0, image.size.height > 0 else {
                     errorMessage = "Invalid image data"
                     return
                 }
