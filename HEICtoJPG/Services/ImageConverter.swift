@@ -50,6 +50,48 @@ actor ImageConverter {
         }
     }
 
+    /// Normalizes image orientation by redrawing it with the orientation baked in
+    /// This ensures EXIF orientation metadata is properly applied to the pixel data
+    private func normalizeOrientation(_ image: UIImage) throws -> CGImage {
+        guard let cgImage = image.cgImage else {
+            throw ConversionError.invalidImage
+        }
+
+        // If orientation is already up, no need to redraw
+        if image.imageOrientation == .up {
+            return cgImage
+        }
+
+        // Calculate the size accounting for orientation
+        let size = image.size
+
+        // Create a bitmap context with the correct size
+        guard let colorSpace = cgImage.colorSpace ?? CGColorSpaceCreateDeviceRGB() as CGColorSpace?,
+              let context = CGContext(
+                data: nil,
+                width: Int(size.width),
+                height: Int(size.height),
+                bitsPerComponent: cgImage.bitsPerComponent,
+                bytesPerRow: 0,
+                space: colorSpace,
+                bitmapInfo: cgImage.bitmapInfo.rawValue
+              ) else {
+            throw ConversionError.conversionFailed
+        }
+
+        // Draw the image with the correct orientation
+        // UIImage.draw will handle the orientation transformation
+        UIGraphicsPushContext(context)
+        image.draw(in: CGRect(origin: .zero, size: size))
+        UIGraphicsPopContext()
+
+        guard let normalizedImage = context.makeImage() else {
+            throw ConversionError.conversionFailed
+        }
+
+        return normalizedImage
+    }
+
     private func convertToJPEG(_ image: UIImage) throws -> Data {
         guard let data = image.jpegData(compressionQuality: 0.9) else {
             throw ConversionError.conversionFailed
@@ -65,11 +107,11 @@ actor ImageConverter {
     }
 
     private func convertToHEIC(_ image: UIImage) throws -> Data {
-        // HEIC conversion using UIImage
-        let ciImage = CIImage(image: image)
-        guard let ciImage = ciImage else {
-            throw ConversionError.invalidImage
-        }
+        // Normalize orientation to ensure image is not sideways
+        let cgImage = try normalizeOrientation(image)
+
+        // HEIC conversion using CIImage from the normalized CGImage
+        let ciImage = CIImage(cgImage: cgImage)
 
         let context = CIContext()
         let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -93,9 +135,8 @@ actor ImageConverter {
             throw ConversionError.conversionFailed
         }
 
-        guard let cgImage = image.cgImage else {
-            throw ConversionError.invalidImage
-        }
+        // Normalize orientation to ensure image is not sideways
+        let cgImage = try normalizeOrientation(image)
 
         // Use the actual pixel dimensions of the image, not the point size
         // This ensures the PDF has the correct dimensions regardless of @2x/@3x scale
@@ -121,10 +162,12 @@ actor ImageConverter {
 
     private func convertToGIF(_ image: UIImage) throws -> Data {
         let data = NSMutableData()
-        guard let destination = CGImageDestinationCreateWithData(data, UTType.gif.identifier as CFString, 1, nil),
-              let cgImage = image.cgImage else {
+        guard let destination = CGImageDestinationCreateWithData(data, UTType.gif.identifier as CFString, 1, nil) else {
             throw ConversionError.conversionFailed
         }
+
+        // Normalize orientation to ensure image is not sideways
+        let cgImage = try normalizeOrientation(image)
 
         CGImageDestinationAddImage(destination, cgImage, nil)
 
@@ -137,10 +180,12 @@ actor ImageConverter {
 
     private func convertToTIFF(_ image: UIImage) throws -> Data {
         let data = NSMutableData()
-        guard let destination = CGImageDestinationCreateWithData(data, UTType.tiff.identifier as CFString, 1, nil),
-              let cgImage = image.cgImage else {
+        guard let destination = CGImageDestinationCreateWithData(data, UTType.tiff.identifier as CFString, 1, nil) else {
             throw ConversionError.conversionFailed
         }
+
+        // Normalize orientation to ensure image is not sideways
+        let cgImage = try normalizeOrientation(image)
 
         CGImageDestinationAddImage(destination, cgImage, nil)
 
@@ -153,10 +198,12 @@ actor ImageConverter {
 
     private func convertToBMP(_ image: UIImage) throws -> Data {
         let data = NSMutableData()
-        guard let destination = CGImageDestinationCreateWithData(data, UTType.bmp.identifier as CFString, 1, nil),
-              let cgImage = image.cgImage else {
+        guard let destination = CGImageDestinationCreateWithData(data, UTType.bmp.identifier as CFString, 1, nil) else {
             throw ConversionError.conversionFailed
         }
+
+        // Normalize orientation to ensure image is not sideways
+        let cgImage = try normalizeOrientation(image)
 
         CGImageDestinationAddImage(destination, cgImage, nil)
 
