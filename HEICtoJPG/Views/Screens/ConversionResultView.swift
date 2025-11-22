@@ -26,11 +26,13 @@ struct ConversionResultView: View {
     @State private var successMessage = ""
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var renderedPDFImage: UIImage? = nil
+    @State private var isRenderingPDF = false
 
     var convertedImage: UIImage? {
         // Special handling for PDF format
         if format == .pdf {
-            return renderPDFAsImage(data: convertedImageData)
+            return renderedPDFImage
         }
 
         // For other formats, create UIImage directly from data
@@ -38,26 +40,36 @@ struct ConversionResultView: View {
     }
 
     // Helper function to render PDF data as a UIImage for preview
-    private func renderPDFAsImage(data: Data) -> UIImage? {
-        guard let pdfDocument = PDFDocument(data: data),
-              let pdfPage = pdfDocument.page(at: 0) else {
-            return nil
-        }
+    // Now scaled down to a reasonable size to avoid performance issues
+    private func renderPDFAsImage(data: Data, maxDimension: CGFloat = 2048) async -> UIImage? {
+        // Perform PDF rendering off the main thread
+        return await Task.detached(priority: .userInitiated) {
+            guard let pdfDocument = PDFDocument(data: data),
+                  let pdfPage = pdfDocument.page(at: 0) else {
+                return nil
+            }
 
-        let pageRect = pdfPage.bounds(for: .mediaBox)
-        let renderer = UIGraphicsImageRenderer(size: pageRect.size)
+            let pageRect = pdfPage.bounds(for: .mediaBox)
 
-        let image = renderer.image { context in
-            UIColor.white.set()
-            context.fill(pageRect)
+            // Calculate scale to keep PDF within reasonable dimensions
+            let scale = min(maxDimension / pageRect.width, maxDimension / pageRect.height, 1.0)
+            let scaledSize = CGSize(width: pageRect.width * scale, height: pageRect.height * scale)
 
-            context.cgContext.translateBy(x: 0, y: pageRect.size.height)
-            context.cgContext.scaleBy(x: 1.0, y: -1.0)
+            let renderer = UIGraphicsImageRenderer(size: scaledSize)
 
-            pdfPage.draw(with: .mediaBox, to: context.cgContext)
-        }
+            let image = renderer.image { context in
+                UIColor.white.set()
+                context.fill(CGRect(origin: .zero, size: scaledSize))
 
-        return image
+                context.cgContext.scaleBy(x: scale, y: scale)
+                context.cgContext.translateBy(x: 0, y: pageRect.size.height)
+                context.cgContext.scaleBy(x: 1.0, y: -1.0)
+
+                pdfPage.draw(with: .mediaBox, to: context.cgContext)
+            }
+
+            return image
+        }.value
     }
 
     // Default initializer with thumbnail mode
@@ -92,6 +104,12 @@ struct ConversionResultView: View {
                             .padding(.horizontal, 24)
                             .padding(.top, 8)
                     }
+                } else if format == .pdf && isRenderingPDF {
+                    // Show loading indicator while PDF is rendering
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .frame(width: 350, height: 350)
+                        .padding(.top, 8)
                 }
 
                 Spacer(minLength: 16)
@@ -239,6 +257,14 @@ struct ConversionResultView: View {
             }
         } message: {
             Text(errorMessage)
+        }
+        .task {
+            // Render PDF asynchronously when view appears
+            if format == .pdf && renderedPDFImage == nil {
+                isRenderingPDF = true
+                renderedPDFImage = await renderPDFAsImage(data: convertedImageData)
+                isRenderingPDF = false
+            }
         }
     }
 
