@@ -50,7 +50,9 @@ struct HomeView: View {
                 .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
 
                 // History Content
-                if historyService.items.isEmpty {
+                if historyService.isLoading {
+                    loadingView
+                } else if historyService.items.isEmpty {
                     emptyStateView
                 } else {
                     historyListView
@@ -60,6 +62,10 @@ struct HomeView: View {
             .navigationBarHidden(true)
             .navigationTitle("History")
             .navigationBarTitleDisplayMode(.large)
+            .task {
+                // Load history asynchronously when view appears
+                await historyService.loadHistoryIfNeeded()
+            }
         }
         .alert("Delete Conversion", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {
@@ -84,6 +90,24 @@ struct HomeView: View {
         } message: {
             Text("Are you sure you want to delete all conversions from your history? This action cannot be undone.")
         }
+    }
+
+    // MARK: - Loading State
+    private var loadingView: some View {
+        VStack(spacing: 20) {
+            Spacer()
+
+            ProgressView()
+                .scaleEffect(1.5)
+
+            Text("Loading history...")
+                .font(.roundedBody())
+                .foregroundColor(.gray)
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
     }
 
     // MARK: - Empty State

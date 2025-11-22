@@ -12,12 +12,44 @@ class ConversionHistoryService: ObservableObject {
     static let shared = ConversionHistoryService()
 
     @Published var items: [ConversionHistoryItem] = []
+    @Published var isLoading = false
 
     private let userDefaultsKey = "conversionHistory"
     private let maxHistoryItems = 100
+    private var hasLoadedOnce = false
 
     private init() {
-        loadHistory()
+        // Don't load synchronously - let views trigger async load
+    }
+
+    // Load history asynchronously on first access
+    func loadHistoryIfNeeded() async {
+        guard !hasLoadedOnce else { return }
+        hasLoadedOnce = true
+
+        await MainActor.run {
+            isLoading = true
+        }
+
+        // Load and decode off the main thread
+        let loadedItems = await Task.detached(priority: .userInitiated) {
+            guard let data = UserDefaults.standard.data(forKey: self.userDefaultsKey) else {
+                return [ConversionHistoryItem]()
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                return try decoder.decode([ConversionHistoryItem].self, from: data)
+            } catch {
+                print("❌ Failed to load conversion history: \(error)")
+                return [ConversionHistoryItem]()
+            }
+        }.value
+
+        await MainActor.run {
+            self.items = loadedItems
+            self.isLoading = false
+        }
     }
 
     func addConversion(_ item: ConversionHistoryItem) {
@@ -43,25 +75,16 @@ class ConversionHistoryService: ObservableObject {
     }
 
     private func saveHistory() {
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(items)
-            UserDefaults.standard.set(data, forKey: userDefaultsKey)
-        } catch {
-            print("❌ Failed to save conversion history: \(error)")
-        }
-    }
-
-    private func loadHistory() {
-        guard let data = UserDefaults.standard.data(forKey: userDefaultsKey) else {
-            return
-        }
-
-        do {
-            let decoder = JSONDecoder()
-            items = try decoder.decode([ConversionHistoryItem].self, from: data)
-        } catch {
-            print("❌ Failed to load conversion history: \(error)")
+        let itemsToSave = items
+        let key = userDefaultsKey
+        Task.detached(priority: .utility) {
+            do {
+                let encoder = JSONEncoder()
+                let data = try encoder.encode(itemsToSave)
+                UserDefaults.standard.set(data, forKey: key)
+            } catch {
+                print("❌ Failed to save conversion history: \(error)")
+            }
         }
     }
 }
