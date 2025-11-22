@@ -14,6 +14,8 @@ struct HomeView: View {
     @State private var itemToDelete: ConversionHistoryItem?
     @State private var showDeleteConfirmation = false
     @State private var showDeleteAllConfirmation = false
+    @State private var isLoadingThumbnails = false
+    @State private var thumbnailCache: [UUID: UIImage] = [:]
 
     var body: some View {
         NavigationView {
@@ -175,38 +177,64 @@ struct HomeView: View {
         }
     }
 
-    // Helper to get thumbnail image from conversion data
-    private func getThumbnailImage(from item: ConversionHistoryItem) -> UIImage? {
-        // Special handling for PDF format
-        if item.toFormat == .pdf {
-            return renderPDFAsThumbnail(data: item.convertedImageData)
-        }
+    // Helper function to render PDF data as a UIImage thumbnail (async, scaled down)
+    private func renderPDFAsThumbnail(data: Data, maxDimension: CGFloat = 300) async -> UIImage? {
+        // Perform PDF rendering off the main thread
+        return await Task.detached(priority: .userInitiated) {
+            guard let pdfDocument = PDFDocument(data: data),
+                  let pdfPage = pdfDocument.page(at: 0) else {
+                return nil
+            }
 
-        // For other formats, create UIImage directly from data
-        return UIImage(data: item.convertedImageData)
+            let pageRect = pdfPage.bounds(for: .mediaBox)
+
+            // Scale down for thumbnail to reduce memory usage
+            let scale = min(maxDimension / pageRect.width, maxDimension / pageRect.height, 1.0)
+            let thumbnailSize = CGSize(width: pageRect.width * scale, height: pageRect.height * scale)
+
+            let renderer = UIGraphicsImageRenderer(size: thumbnailSize)
+
+            let image = renderer.image { context in
+                UIColor.white.set()
+                context.fill(CGRect(origin: .zero, size: thumbnailSize))
+
+                context.cgContext.scaleBy(x: scale, y: scale)
+                context.cgContext.translateBy(x: 0, y: pageRect.size.height)
+                context.cgContext.scaleBy(x: 1.0, y: -1.0)
+
+                pdfPage.draw(with: .mediaBox, to: context.cgContext)
+            }
+
+            return image
+        }.value
     }
 
-    // Helper function to render PDF data as a UIImage thumbnail
-    private func renderPDFAsThumbnail(data: Data) -> UIImage? {
-        guard let pdfDocument = PDFDocument(data: data),
-              let pdfPage = pdfDocument.page(at: 0) else {
-            return nil
+    // Load thumbnail asynchronously and cache it
+    private func loadThumbnail(for item: ConversionHistoryItem) async -> UIImage? {
+        // Check cache first
+        if let cachedImage = thumbnailCache[item.id] {
+            return cachedImage
         }
 
-        let pageRect = pdfPage.bounds(for: .mediaBox)
-        let renderer = UIGraphicsImageRenderer(size: pageRect.size)
-
-        let image = renderer.image { context in
-            UIColor.white.set()
-            context.fill(pageRect)
-
-            context.cgContext.translateBy(x: 0, y: pageRect.size.height)
-            context.cgContext.scaleBy(x: 1.0, y: -1.0)
-
-            pdfPage.draw(with: .mediaBox, to: context.cgContext)
+        // Load and cache thumbnail
+        let thumbnail: UIImage?
+        if item.toFormat == .pdf {
+            thumbnail = await renderPDFAsThumbnail(data: item.convertedImageData)
+        } else {
+            // Load image off main thread for large images
+            thumbnail = await Task.detached {
+                UIImage(data: item.convertedImageData)
+            }.value
         }
 
-        return image
+        // Cache the thumbnail
+        if let thumbnail = thumbnail {
+            await MainActor.run {
+                thumbnailCache[item.id] = thumbnail
+            }
+        }
+
+        return thumbnail
     }
 
     // MARK: - History Card
@@ -217,14 +245,8 @@ struct HomeView: View {
             displayMode: .fullImage
         )) {
             HStack(spacing: 16) {
-                // Thumbnail
-                if let image = getThumbnailImage(from: item) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 80, height: 80)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
+                // Async Thumbnail
+                AsyncThumbnailView(item: item, cache: $thumbnailCache, loadThumbnail: loadThumbnail)
 
                 // Info
                 VStack(alignment: .leading, spacing: 6) {
@@ -300,6 +322,59 @@ struct HomeView: View {
             } label: {
                 Label("Delete", systemImage: "trash")
             }
+        }
+    }
+}
+
+// MARK: - Async Thumbnail View
+struct AsyncThumbnailView: View {
+    let item: ConversionHistoryItem
+    @Binding var cache: [UUID: UIImage]
+    let loadThumbnail: (ConversionHistoryItem) async -> UIImage?
+
+    @State private var thumbnail: UIImage?
+    @State private var isLoading = true
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        Group {
+            if let thumbnail = thumbnail {
+                Image(uiImage: thumbnail)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 80, height: 80)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            } else if isLoading {
+                // Loading placeholder
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                    .frame(width: 80, height: 80)
+                    .overlay(
+                        ProgressView()
+                            .scaleEffect(0.8)
+                    )
+            } else {
+                // Error placeholder
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                    .frame(width: 80, height: 80)
+                    .overlay(
+                        Image(systemName: "photo")
+                            .foregroundColor(.gray)
+                    )
+            }
+        }
+        .task {
+            // Check cache first (synchronously)
+            if let cachedImage = cache[item.id] {
+                thumbnail = cachedImage
+                isLoading = false
+                return
+            }
+
+            // Load thumbnail asynchronously
+            thumbnail = await loadThumbnail(item)
+            isLoading = false
         }
     }
 }
