@@ -122,8 +122,15 @@ class ConverterViewModel: ObservableObject {
         do {
             // First, detect the original format from supportedContentTypes
             // This must be done BEFORE loading the data, as iOS may transcode HEIC to JPEG
-            if let contentType = selectedPhotoItem.supportedContentTypes.first {
-                originalImageFormat = formatFromUTType(contentType)
+            // Prioritize HEIC/HEIF over JPEG since PhotosPicker may list multiple formats
+            let contentTypes = selectedPhotoItem.supportedContentTypes
+
+            // Look for HEIC/HEIF first (original format)
+            if let heicType = contentTypes.first(where: { $0 == .heic || $0 == .heif }) {
+                originalImageFormat = formatFromUTType(heicType)
+            } else if let firstType = contentTypes.first {
+                // Fall back to first available type
+                originalImageFormat = formatFromUTType(firstType)
             } else {
                 // Fallback if no content type is available
                 originalImageFormat = "Unknown"
