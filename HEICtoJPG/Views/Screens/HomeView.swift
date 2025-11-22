@@ -16,6 +16,7 @@ struct HomeView: View {
     @State private var showDeleteAllConfirmation = false
     @State private var isLoadingThumbnails = false
     @State private var thumbnailCache: [UUID: UIImage] = [:]
+    @State private var animateItems = false
 
     var body: some View {
         NavigationView {
@@ -65,6 +66,21 @@ struct HomeView: View {
             .task {
                 // Load history asynchronously when view appears
                 await historyService.loadHistoryIfNeeded()
+
+                // Trigger animations after loading completes
+                if !historyService.items.isEmpty {
+                    // Small delay to ensure view is ready
+                    try? await Task.sleep(for: .milliseconds(50))
+                    animateItems = true
+                }
+            }
+            .onChange(of: historyService.items.count) { _, _ in
+                // Reset and re-trigger animations when items change
+                animateItems = false
+                Task {
+                    try? await Task.sleep(for: .milliseconds(50))
+                    animateItems = true
+                }
             }
         }
         .alert("Delete Conversion", isPresented: $showDeleteConfirmation) {
@@ -149,6 +165,14 @@ struct HomeView: View {
             LazyVStack(spacing: 0) {
                 ForEach(Array(historyService.items.enumerated()), id: \.element.id) { index, item in
                     historyCard(for: item)
+                        .opacity(animateItems ? 1 : 0)
+                        .scaleEffect(animateItems ? 1 : 0.9)
+                        .offset(y: animateItems ? 0 : -10)
+                        .animation(
+                            .spring(response: 0.6, dampingFraction: 0.8)
+                                .delay(Double(index) * 0.05),
+                            value: animateItems
+                        )
 
                     // Add dashed separator between cards (but not after the last one)
                     if index < historyService.items.count - 1 {
@@ -164,6 +188,12 @@ struct HomeView: View {
                         }
                         .frame(height: 2.5)
                         .padding(.vertical, 16)
+                        .opacity(animateItems ? 1 : 0)
+                        .animation(
+                            .spring(response: 0.6, dampingFraction: 0.8)
+                                .delay(Double(index) * 0.05),
+                            value: animateItems
+                        )
                     }
                 }
             }
