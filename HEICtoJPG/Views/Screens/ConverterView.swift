@@ -580,9 +580,8 @@ struct ConverterView: View {
             if url.startAccessingSecurityScopedResource() {
                 defer { url.stopAccessingSecurityScopedResource() }
 
-                if let data = try? Data(contentsOf: url),
-                   let image = UIImage(data: data) {
-                    viewModel.selectedImage = image
+                if let data = try? Data(contentsOf: url) {
+                    viewModel.loadImageFromData(data)
                 }
             }
 
