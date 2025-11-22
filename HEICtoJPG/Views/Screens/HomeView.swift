@@ -97,8 +97,7 @@ struct HomeView: View {
         VStack(spacing: 20) {
             Spacer()
 
-            ProgressView()
-                .scaleEffect(1.5)
+            LoadingSpinner()
 
             Text("Loading history...")
                 .font(.roundedBody())
@@ -374,8 +373,7 @@ struct AsyncThumbnailView: View {
                     .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
                     .frame(width: 80, height: 80)
                     .overlay(
-                        ProgressView()
-                            .scaleEffect(0.8)
+                        LoadingSpinner(size: 24)
                     )
             } else {
                 // Error placeholder
@@ -400,6 +398,32 @@ struct AsyncThumbnailView: View {
             thumbnail = await loadThumbnail(item)
             isLoading = false
         }
+    }
+}
+
+// MARK: - Loading Spinner
+struct LoadingSpinner: View {
+    var size: CGFloat = 40
+    @State private var isAnimating = false
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        Circle()
+            .trim(from: 0, to: 0.7)
+            .stroke(
+                colorScheme == .dark ? Color.white : Color.black,
+                style: StrokeStyle(lineWidth: size / 10, lineCap: .round)
+            )
+            .frame(width: size, height: size)
+            .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
+            .animation(
+                Animation.linear(duration: 1)
+                    .repeatForever(autoreverses: false),
+                value: isAnimating
+            )
+            .onAppear {
+                isAnimating = true
+            }
     }
 }
 
