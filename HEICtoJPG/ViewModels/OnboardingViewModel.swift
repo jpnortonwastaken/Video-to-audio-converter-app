@@ -31,6 +31,7 @@ class OnboardingViewModel: ObservableObject {
     @Published var hasShownPaywall = false
 
     private let hasCompletedOnboardingKey = "hasCompletedOnboarding"
+    private let shouldShowConverterIntroKey = "shouldShowConverterIntro"
 
     init() {
         self.showOnboarding = !UserDefaults.standard.bool(forKey: hasCompletedOnboardingKey)
@@ -66,6 +67,7 @@ class OnboardingViewModel: ObservableObject {
 
     func completeOnboarding() {
         UserDefaults.standard.set(true, forKey: hasCompletedOnboardingKey)
+        UserDefaults.standard.set(true, forKey: shouldShowConverterIntroKey)
 
         withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
             showOnboarding = false
@@ -90,6 +92,7 @@ class OnboardingViewModel: ObservableObject {
     // Reset for testing purposes
     func resetOnboarding() {
         UserDefaults.standard.set(false, forKey: hasCompletedOnboardingKey)
+        UserDefaults.standard.set(false, forKey: shouldShowConverterIntroKey)
         currentStep = .heicToJpg
         showOnboarding = true
         hasRequestedReview = false

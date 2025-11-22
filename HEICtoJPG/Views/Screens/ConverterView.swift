@@ -16,6 +16,15 @@ struct ConverterView: View {
     @State private var showFormatSheet = false
     @State private var isAnimating = false
 
+    // Intro animation state
+    @AppStorage("shouldShowConverterIntro") private var shouldShowIntro = false
+    @State private var showHeader = false
+    @State private var showTitle = false
+    @State private var showPhotosCard = false
+    @State private var showFilesCard = false
+    @State private var showPasteCard = false
+    @State private var showFormatContainer = false
+
     // Border style constants
     private let inputButtonsLineWidth: CGFloat = 2.5
     private let inputButtonsDashLength: CGFloat = 7
@@ -32,6 +41,8 @@ struct ConverterView: View {
         VStack(spacing: 0) {
             // Header
             headerView
+                .offset(y: showHeader ? 0 : -20)
+                .opacity(showHeader ? 1 : 0)
 
             // Content area
             VStack(alignment: .leading, spacing: 16) {
@@ -42,6 +53,8 @@ struct ConverterView: View {
                         .fontWeight(.semibold)
                         .foregroundColor(colorScheme == .dark ? .white : .black)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .offset(y: showTitle ? 0 : -15)
+                        .opacity(showTitle ? 1 : 0)
                 }
 
                 // Fixed-height content container (TESTING: Red border)
@@ -66,6 +79,8 @@ struct ConverterView: View {
                             ) {
                                 viewModel.selectFromPhotos()
                             }
+                            .scaleEffect(showPhotosCard ? 1.0 : 0.8)
+                            .opacity(showPhotosCard ? 1 : 0)
 
                             // Files and Paste Row
                             HStack(spacing: 16) {
@@ -81,6 +96,8 @@ struct ConverterView: View {
                                 ) {
                                     viewModel.selectFromFiles()
                                 }
+                                .scaleEffect(showFilesCard ? 1.0 : 0.8)
+                                .opacity(showFilesCard ? 1 : 0)
 
                                 // Paste Option
                                 smallInputOptionCard(
@@ -94,6 +111,8 @@ struct ConverterView: View {
                                 ) {
                                     viewModel.pasteImage()
                                 }
+                                .scaleEffect(showPasteCard ? 1.0 : 0.8)
+                                .opacity(showPasteCard ? 1 : 0)
                             }
                         }
                         .scaleEffect(showButtons ? 1.0 : 0.7)
@@ -131,11 +150,27 @@ struct ConverterView: View {
             )
             .compositingGroup()
             .padding(.horizontal, 24)
+            .offset(y: showFormatContainer ? 0 : 20)
+            .opacity(showFormatContainer ? 1 : 0)
 
             Spacer()
         }
         .padding(.bottom, 20)
         .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+        .onAppear {
+            if shouldShowIntro {
+                playIntroAnimation()
+                shouldShowIntro = false
+            } else {
+                // Skip animation, show everything immediately
+                showHeader = true
+                showTitle = true
+                showPhotosCard = true
+                showFilesCard = true
+                showPasteCard = true
+                showFormatContainer = true
+            }
+        }
         .photosPicker(
             isPresented: $viewModel.showPhotoPicker,
             selection: $viewModel.selectedPhotoItem,
@@ -208,6 +243,49 @@ struct ConverterView: View {
         .overlay {
             if viewModel.isConverting {
                 convertingOverlay
+            }
+        }
+    }
+
+    // MARK: - Intro Animation
+    private func playIntroAnimation() {
+        // Header - immediate start
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+            showHeader = true
+        }
+
+        // Title - slight delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                showTitle = true
+            }
+        }
+
+        // Photos card - bouncy
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.65)) {
+                showPhotosCard = true
+            }
+        }
+
+        // Files card - bouncy
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.65)) {
+                showFilesCard = true
+            }
+        }
+
+        // Paste card - bouncy
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.65)) {
+                showPasteCard = true
+            }
+        }
+
+        // Format container - slide up from bottom
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                showFormatContainer = true
             }
         }
     }
