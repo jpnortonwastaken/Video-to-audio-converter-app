@@ -104,9 +104,9 @@ struct ConverterView: View {
                                     title: "Paste",
                                     subtitle: "Paste an image",
                                     icon: "doc.on.clipboard.fill",
-                                    backgroundColor: Color.purple.opacity(0.1),
-                                    iconColor: .purple,
-                                    textColor: colorScheme == .dark ? Color(red: 0.85, green: 0.7, blue: 1.0) : Color(red: 0.4, green: 0.1, blue: 0.6),
+                                    backgroundColor: Color.indigo.opacity(0.1),
+                                    iconColor: .indigo,
+                                    textColor: colorScheme == .dark ? Color(red: 0.7, green: 0.75, blue: 1.0) : Color(red: 0.3, green: 0.2, blue: 0.7),
                                     colorScheme: colorScheme
                                 ) {
                                     viewModel.pasteImage()
