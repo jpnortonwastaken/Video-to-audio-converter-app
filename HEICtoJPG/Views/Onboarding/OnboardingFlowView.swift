@@ -43,9 +43,9 @@ struct WelcomeScreenView: View {
                 // App Icon
                 Image("WelcomeScreenAppIcon")
                     .resizable()
-                    .frame(width: 120, height: 120)
-                    .cornerRadius(24)
-                    .padding(.bottom, 24)
+                    .frame(width: 160, height: 160)
+                    .cornerRadius(32)
+                    .padding(.bottom, 32)
                     .opacity(showIcon ? 1 : 0)
                     .offset(y: showIcon ? 0 : 20)
                     .animation(.spring(response: 0.6, dampingFraction: 0.8), value: showIcon)
@@ -70,7 +70,8 @@ struct WelcomeScreenView: View {
             }
             .frame(maxWidth: .infinity, alignment: .center)
             .padding(.horizontal, 20)
-            .padding(.bottom, 80)
+            .padding(.top, 60)
+            .padding(.bottom, 40)
 
             // Get Started Button
             Button(action: {
