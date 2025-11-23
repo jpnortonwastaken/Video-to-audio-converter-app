@@ -39,13 +39,13 @@ struct WelcomeScreenView: View {
         VStack(spacing: 0) {
             Spacer()
 
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .center, spacing: 0) {
                 // App Icon
                 Image("WelcomeScreenAppIcon")
                     .resizable()
-                    .frame(width: 60, height: 60)
-                    .cornerRadius(12)
-                    .padding(.bottom, 16)
+                    .frame(width: 120, height: 120)
+                    .cornerRadius(24)
+                    .padding(.bottom, 24)
                     .opacity(showIcon ? 1 : 0)
                     .offset(y: showIcon ? 0 : 20)
                     .animation(.spring(response: 0.6, dampingFraction: 0.8), value: showIcon)
@@ -60,16 +60,17 @@ struct WelcomeScreenView: View {
                     .animation(.spring(response: 0.6, dampingFraction: 0.8), value: showTitle)
 
                 // Welcome message
-                Text("Welcome. Let's build your apps fast.")
+                Text("Convert your photos instantly.")
                     .font(.roundedSystem(size: 28, weight: .semibold))
                     .foregroundColor(.primary)
+                    .multilineTextAlignment(.center)
                     .opacity(showMessage ? 1 : 0)
                     .offset(y: showMessage ? 0 : 20)
                     .animation(.spring(response: 0.6, dampingFraction: 0.8), value: showMessage)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .center)
             .padding(.horizontal, 20)
-            .padding(.bottom, 50)
+            .padding(.bottom, 80)
 
             // Get Started Button
             Button(action: {
