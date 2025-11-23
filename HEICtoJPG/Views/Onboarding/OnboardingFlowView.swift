@@ -37,8 +37,6 @@ struct WelcomeScreenView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
-
             VStack(alignment: .center, spacing: 0) {
                 // App Icon
                 Image("WelcomeScreenAppIcon")
@@ -72,6 +70,8 @@ struct WelcomeScreenView: View {
             .padding(.horizontal, 20)
             .padding(.top, 120)
             .padding(.bottom, 30)
+
+            Spacer()
 
             // Get Started Button
             Button(action: {
