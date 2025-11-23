@@ -10,8 +10,8 @@ import SwiftUI
 
 struct ConversionHistoryItem: Identifiable, Codable {
     let id: UUID
-    let originalImageData: Data
-    let convertedImageData: Data
+    let originalImageId: UUID  // References file on disk
+    let convertedImageId: UUID  // References file on disk
     let fromFormat: String
     let toFormat: ImageFormat
     let date: Date
@@ -19,21 +19,23 @@ struct ConversionHistoryItem: Identifiable, Codable {
 
     init(
         id: UUID = UUID(),
-        originalImageData: Data,
-        convertedImageData: Data,
+        originalImageId: UUID,
+        convertedImageId: UUID,
         fromFormat: String,
         toFormat: ImageFormat,
         date: Date = Date(),
         fileSize: Int64
     ) {
         self.id = id
-        self.originalImageData = originalImageData
-        self.convertedImageData = convertedImageData
+        self.originalImageId = originalImageId
+        self.convertedImageId = convertedImageId
         self.fromFormat = fromFormat
         self.toFormat = toFormat
         self.date = date
         self.fileSize = fileSize
     }
+
+    // MARK: - Computed Properties
 
     var formattedDate: String {
         let formatter = DateFormatter()
@@ -47,5 +49,29 @@ struct ConversionHistoryItem: Identifiable, Codable {
         formatter.allowedUnits = [.useKB, .useMB]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: fileSize)
+    }
+
+    // MARK: - Image Loading
+
+    /// Load original image data from disk
+    nonisolated func loadOriginalImageData() throws -> Data {
+        return try ImageStorageService.shared.loadImage(withId: originalImageId)
+    }
+
+    /// Load converted image data from disk
+    nonisolated func loadConvertedImageData() throws -> Data {
+        return try ImageStorageService.shared.loadImage(withId: convertedImageId)
+    }
+
+    /// Load original image as UIImage
+    nonisolated func loadOriginalImage() -> UIImage? {
+        guard let data = try? loadOriginalImageData() else { return nil }
+        return UIImage(data: data)
+    }
+
+    /// Load converted image as UIImage
+    nonisolated func loadConvertedImage() -> UIImage? {
+        guard let data = try? loadConvertedImageData() else { return nil }
+        return UIImage(data: data)
     }
 }

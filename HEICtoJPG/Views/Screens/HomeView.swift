@@ -274,11 +274,18 @@ struct HomeView: View {
         // Load and cache thumbnail
         let thumbnail: UIImage?
         if item.toFormat == .pdf {
-            thumbnail = await renderPDFAsThumbnail(data: item.convertedImageData)
+            // Load converted image data from disk
+            guard let convertedData = try? item.loadConvertedImageData() else {
+                return nil
+            }
+            thumbnail = await renderPDFAsThumbnail(data: convertedData)
         } else {
             // Load image off main thread for large images
             thumbnail = await Task.detached {
-                UIImage(data: item.convertedImageData)
+                guard let data = try? item.loadConvertedImageData() else {
+                    return nil
+                }
+                return UIImage(data: data)
             }.value
         }
 
@@ -294,11 +301,7 @@ struct HomeView: View {
 
     // MARK: - History Card
     private func historyCard(for item: ConversionHistoryItem) -> some View {
-        NavigationLink(destination: ConversionResultView(
-            convertedImageData: item.convertedImageData,
-            format: item.toFormat,
-            displayMode: .fullImage
-        )) {
+        NavigationLink(destination: HistoryDetailView(item: item)) {
             HStack(spacing: 16) {
                 // Async Thumbnail
                 AsyncThumbnailView(item: item, cache: $thumbnailCache, loadThumbnail: loadThumbnail)
@@ -456,6 +459,58 @@ struct LoadingSpinner: View {
             .onAppear {
                 isAnimating = true
             }
+    }
+}
+
+// MARK: - History Detail View
+/// Wrapper view that loads image data from disk before showing ConversionResultView
+struct HistoryDetailView: View {
+    let item: ConversionHistoryItem
+    @State private var convertedImageData: Data?
+    @State private var isLoading = true
+    @State private var loadError = false
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        Group {
+            if isLoading {
+                VStack(spacing: 16) {
+                    LoadingSpinner(size: 40)
+                    Text("Loading image...")
+                        .font(.roundedBody())
+                        .foregroundColor(.gray)
+                }
+            } else if let convertedImageData = convertedImageData {
+                ConversionResultView(
+                    convertedImageData: convertedImageData,
+                    format: item.toFormat,
+                    displayMode: .fullImage
+                )
+            } else {
+                VStack(spacing: 16) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 48))
+                        .foregroundColor(.orange)
+                    Text("Failed to load image")
+                        .font(.roundedHeadline())
+                    Text("The image file may have been deleted")
+                        .font(.roundedBody())
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                }
+                .padding()
+            }
+        }
+        .task {
+            do {
+                convertedImageData = try item.loadConvertedImageData()
+                isLoading = false
+            } catch {
+                print("❌ Failed to load image data: \(error)")
+                loadError = true
+                isLoading = false
+            }
+        }
     }
 }
 

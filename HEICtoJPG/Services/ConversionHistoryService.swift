@@ -34,21 +34,17 @@ class ConversionHistoryService: ObservableObject {
         // Load and decode off the main thread
         let loadedItems = await Task.detached(priority: .userInitiated) {
             guard let data = UserDefaults.standard.data(forKey: self.userDefaultsKey) else {
-                print("📂 No existing history found in UserDefaults")
                 return [ConversionHistoryItem]()
             }
 
             do {
-                let sizeInMB = Double(data.count) / 1_048_576.0
-                print("📂 Loading history data: \(String(format: "%.2f", sizeInMB)) MB")
-
                 let decoder = JSONDecoder()
-                let items = try decoder.decode([ConversionHistoryItem].self, from: data)
-                print("✅ Successfully loaded \(items.count) items from history")
-                return items
+                return try decoder.decode([ConversionHistoryItem].self, from: data)
             } catch {
                 print("❌ Failed to load conversion history: \(error)")
-                print("   Error details: \(error.localizedDescription)")
+                print("ℹ️ This may be due to a model update. Old history will be cleared.")
+                // Clear old incompatible data
+                UserDefaults.standard.removeObject(forKey: self.userDefaultsKey)
                 return [ConversionHistoryItem]()
             }
         }.value
@@ -77,11 +73,20 @@ class ConversionHistoryService: ObservableObject {
     }
 
     func deleteItem(_ item: ConversionHistoryItem) {
+        // Delete images from disk
+        try? ImageStorageService.shared.deleteImage(withId: item.originalImageId)
+        try? ImageStorageService.shared.deleteImage(withId: item.convertedImageId)
+
+        // Remove from items array
         items.removeAll { $0.id == item.id }
         saveHistory()
     }
 
     func clearAll() {
+        // Clear all images from disk
+        try? ImageStorageService.shared.clearAllImages()
+
+        // Clear items array
         items.removeAll()
         saveHistory()
     }
@@ -93,25 +98,9 @@ class ConversionHistoryService: ObservableObject {
             do {
                 let encoder = JSONEncoder()
                 let data = try encoder.encode(itemsToSave)
-
-                // Log data size for debugging
-                let sizeInMB = Double(data.count) / 1_048_576.0
-                print("💾 Attempting to save \(itemsToSave.count) items, total size: \(String(format: "%.2f", sizeInMB)) MB")
-
-                // Check if data is too large for UserDefaults (typical limit ~4MB)
-                if data.count > 4_000_000 {
-                    print("⚠️ WARNING: History data (\(String(format: "%.2f", sizeInMB)) MB) exceeds recommended UserDefaults limit (4MB)")
-                }
-
                 UserDefaults.standard.set(data, forKey: key)
                 // Force immediate write to disk to prevent data loss on app termination
-                let success = UserDefaults.standard.synchronize()
-
-                if success {
-                    print("✅ Successfully saved history to disk")
-                } else {
-                    print("❌ UserDefaults.synchronize() returned false - save may have failed")
-                }
+                UserDefaults.standard.synchronize()
             } catch {
                 print("❌ Failed to save conversion history: \(error)")
             }
