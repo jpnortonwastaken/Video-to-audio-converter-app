@@ -52,13 +52,18 @@ class ConversionHistoryService: ObservableObject {
         }
     }
 
-    func addConversion(_ item: ConversionHistoryItem) {
-        // Add new item at the beginning
-        items.insert(item, at: 0)
+    func addConversion(_ item: ConversionHistoryItem) async {
+        // Ensure history is loaded before adding new items
+        await loadHistoryIfNeeded()
 
-        // Limit history size
-        if items.count > maxHistoryItems {
-            items = Array(items.prefix(maxHistoryItems))
+        // Add new item at the beginning
+        await MainActor.run {
+            items.insert(item, at: 0)
+
+            // Limit history size
+            if items.count > maxHistoryItems {
+                items = Array(items.prefix(maxHistoryItems))
+            }
         }
 
         saveHistory()

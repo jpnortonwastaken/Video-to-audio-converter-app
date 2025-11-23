@@ -213,7 +213,7 @@ class ConverterViewModel: ObservableObject {
             convertedImageData = convertedData
 
             // Save to history
-            saveConversionToHistory(
+            await saveConversionToHistory(
                 originalImage: selectedImage,
                 convertedData: convertedData
             )
@@ -230,7 +230,7 @@ class ConverterViewModel: ObservableObject {
         isConverting = false
     }
 
-    private func saveConversionToHistory(originalImage: UIImage, convertedData: Data) {
+    private func saveConversionToHistory(originalImage: UIImage, convertedData: Data) async {
         // Get original image data
         guard let originalData = originalImage.pngData() else {
             return
@@ -246,7 +246,7 @@ class ConverterViewModel: ObservableObject {
         )
 
         // Save to history service
-        ConversionHistoryService.shared.addConversion(historyItem)
+        await ConversionHistoryService.shared.addConversion(historyItem)
     }
 
     func reset() {
