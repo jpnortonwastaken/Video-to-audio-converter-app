@@ -31,16 +31,33 @@ class ConverterViewModel: ObservableObject {
 
     func selectFromPhotos() {
         HapticManager.shared.softImpact()
+
+        // Check subscription before allowing access
+        guard SubscriptionService.shared.requireSubscription() else {
+            return
+        }
+
         showPhotoPicker = true
     }
 
     func selectFromFiles() {
         HapticManager.shared.softImpact()
+
+        // Check subscription before allowing access
+        guard SubscriptionService.shared.requireSubscription() else {
+            return
+        }
+
         showFilePicker = true
     }
 
     func pasteImage() {
         HapticManager.shared.softImpact()
+
+        // Check subscription before allowing access
+        guard SubscriptionService.shared.requireSubscription() else {
+            return
+        }
 
         // Check if clipboard has an image
         if let image = UIPasteboard.general.image {
@@ -196,6 +213,11 @@ class ConverterViewModel: ObservableObject {
     func convertImage() async {
         guard let selectedImage else {
             errorMessage = "No image selected"
+            return
+        }
+
+        // Check subscription before allowing conversion
+        guard SubscriptionService.shared.requireSubscription() else {
             return
         }
 

@@ -11,18 +11,35 @@ import PDFKit
 struct HomeView: View {
     @Environment(\.colorScheme) private var colorScheme
     @StateObject private var historyService = ConversionHistoryService.shared
+    @StateObject private var subscriptionService = SubscriptionService.shared
     @State private var itemToDelete: ConversionHistoryItem?
     @State private var showDeleteConfirmation = false
     @State private var showDeleteAllConfirmation = false
     @State private var isLoadingThumbnails = false
     @State private var thumbnailCache: [UUID: UIImage] = [:]
     @State private var animateItems = false
+    @State private var selectedItemForNavigation: ConversionHistoryItem?
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
-                // History Header
-                HStack {
+            ZStack {
+                // Hidden NavigationLink controlled by state
+                NavigationLink(
+                    destination: selectedItemForNavigation.map { item in
+                        HistoryDetailView(item: item)
+                    },
+                    isActive: Binding(
+                        get: { selectedItemForNavigation != nil },
+                        set: { if !$0 { selectedItemForNavigation = nil } }
+                    )
+                ) {
+                    EmptyView()
+                }
+                .hidden()
+
+                VStack(spacing: 0) {
+                    // History Header
+                    HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("History")
                             .font(.roundedLargeTitle())
@@ -57,6 +74,7 @@ struct HomeView: View {
                     emptyStateView
                 } else {
                     historyListView
+                }
                 }
             }
             .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
@@ -301,7 +319,17 @@ struct HomeView: View {
 
     // MARK: - History Card
     private func historyCard(for item: ConversionHistoryItem) -> some View {
-        NavigationLink(destination: HistoryDetailView(item: item)) {
+        Button(action: {
+            HapticManager.shared.softImpact()
+
+            // Check subscription before allowing access to history detail
+            guard subscriptionService.requireSubscription() else {
+                return
+            }
+
+            // User is subscribed, navigate to detail view
+            selectedItemForNavigation = item
+        }) {
             HStack(spacing: 16) {
                 // Async Thumbnail
                 AsyncThumbnailView(item: item, cache: $thumbnailCache, loadThumbnail: loadThumbnail)
@@ -368,9 +396,6 @@ struct HomeView: View {
             .padding(.vertical, 8)
             .background(Color.white.opacity(0.001))
         }
-        .simultaneousGesture(TapGesture().onEnded {
-            HapticManager.shared.softImpact()
-        })
         .buttonStyle(ScaleDownButtonStyle())
         .contextMenu {
             Button(role: .destructive) {
