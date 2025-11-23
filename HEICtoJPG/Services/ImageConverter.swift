@@ -103,25 +103,26 @@ actor ImageConverter {
     }
 
     private func convertToHEIC(_ image: UIImage) throws -> Data {
-        // Normalize orientation to ensure image is not sideways
-        let cgImage = try normalizeOrientation(image)
-
-        // HEIC conversion using CIImage from the normalized CGImage
-        let ciImage = CIImage(cgImage: cgImage)
-
-        let context = CIContext()
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-
-        guard let data = context.heifRepresentation(
-            of: ciImage,
-            format: .RGBA8,
-            colorSpace: colorSpace,
-            options: [kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption: 0.9]
-        ) else {
+        let data = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(data, UTType.heic.identifier as CFString, 1, nil) else {
             throw ConversionError.conversionFailed
         }
 
-        return data
+        // Normalize orientation to ensure image is not sideways
+        let cgImage = try normalizeOrientation(image)
+
+        // Add compression quality option for HEIC
+        let options: [CFString: Any] = [
+            kCGImageDestinationLossyCompressionQuality: 0.9
+        ]
+
+        CGImageDestinationAddImage(destination, cgImage, options as CFDictionary)
+
+        guard CGImageDestinationFinalize(destination) else {
+            throw ConversionError.conversionFailed
+        }
+
+        return data as Data
     }
 
     private func convertToPDF(_ image: UIImage) throws -> Data {
