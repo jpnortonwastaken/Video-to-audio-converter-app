@@ -32,7 +32,7 @@ struct OnboardingHostView: View {
             }
 
             Spacer()
-                .frame(maxHeight: 20)
+                .frame(maxHeight: 12)
 
             // Title and subtitle (hidden for welcome screen) - centered below content
             if stepConfig.showTitleSection {
@@ -53,10 +53,11 @@ struct OnboardingHostView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 40)
-                .padding(.bottom, 40)
+                .padding(.bottom, 20)
             }
 
             Spacer()
+                .frame(maxHeight: .infinity)
 
             // Bottom action buttons
             bottomButtons
