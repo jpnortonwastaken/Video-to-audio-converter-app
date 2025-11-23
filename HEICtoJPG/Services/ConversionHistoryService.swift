@@ -82,6 +82,8 @@ class ConversionHistoryService: ObservableObject {
                 let encoder = JSONEncoder()
                 let data = try encoder.encode(itemsToSave)
                 UserDefaults.standard.set(data, forKey: key)
+                // Force immediate write to disk to prevent data loss on app termination
+                UserDefaults.standard.synchronize()
             } catch {
                 print("❌ Failed to save conversion history: \(error)")
             }

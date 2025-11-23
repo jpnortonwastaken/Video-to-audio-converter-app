@@ -20,7 +20,7 @@
       "internalID" : "6755287423",
       "localizations" : [
         {
-          "description" : "Lifetime",
+          "description" : "Lifetime Access",
           "displayName" : "Lifetime",
           "locale" : "en_US"
         }
@@ -35,7 +35,7 @@
       "internalID" : "6755287376",
       "localizations" : [
         {
-          "description" : "Lifetime",
+          "description" : "Lifetime Access",
           "displayName" : "Lifetime",
           "locale" : "en_US"
         }
@@ -50,7 +50,7 @@
       "internalID" : "6755287205",
       "localizations" : [
         {
-          "description" : "Lifetime",
+          "description" : "Lifetime Access",
           "displayName" : "Lifetime",
           "locale" : "en_US"
         }
@@ -65,7 +65,7 @@
       "internalID" : "6755287658",
       "localizations" : [
         {
-          "description" : "Lifetime",
+          "description" : "Lifetime Access",
           "displayName" : "Lifetime",
           "locale" : "en_US"
         }
@@ -80,7 +80,7 @@
       "internalID" : "6755288570",
       "localizations" : [
         {
-          "description" : "Lifetime",
+          "description" : "Lifetime Access",
           "displayName" : "Lifetime",
           "locale" : "en_US"
         }
@@ -98,7 +98,7 @@
     "_developerTeamID" : "9X945ZDXM2",
     "_disableDialogs" : false,
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 784795285.80371499,
+    "_lastSynchronizedDate" : 785547824.609429,
     "_locale" : "en_US",
     "_renewalBillingIssuesEnabled" : false,
     "_storefront" : "USA",
@@ -129,7 +129,7 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Weekly",
+              "description" : "Weekly Access",
               "displayName" : "Weekly",
               "locale" : "en_US"
             }
@@ -152,12 +152,45 @@
           ],
           "displayPrice" : "3.99",
           "familyShareable" : false,
+          "groupNumber" : 5,
+          "internalID" : "6755641935",
+          "introductoryOffer" : {
+            "internalID" : "2CB7CD4B",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P3D"
+          },
+          "localizations" : [
+            {
+              "description" : "Weekly Access",
+              "displayName" : "Weekly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Weekly3",
+          "recurringSubscriptionPeriod" : "P1W",
+          "referenceName" : "Weekly3",
+          "subscriptionGroupID" : "21832062",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "3.99",
+          "familyShareable" : false,
           "groupNumber" : 2,
           "internalID" : "6755281032",
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Weekly",
+              "description" : "Weekly Access",
               "displayName" : "Weekly",
               "locale" : "en_US"
             }
@@ -185,7 +218,7 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Weekly",
+              "description" : "Weekly Access",
               "displayName" : "Weekly",
               "locale" : "en_US"
             }
@@ -210,10 +243,15 @@
           "familyShareable" : false,
           "groupNumber" : 4,
           "internalID" : "6755286937",
-          "introductoryOffer" : null,
+          "introductoryOffer" : {
+            "internalID" : "AD643B51",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P3D"
+          },
           "localizations" : [
             {
-              "description" : "Weekly",
+              "description" : "Weekly Access",
               "displayName" : "Weekly",
               "locale" : "en_US"
             }
