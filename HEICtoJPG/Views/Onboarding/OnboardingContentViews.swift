@@ -167,7 +167,7 @@ struct ReviewContent: View {
 
                 // Supporting text
                 VStack(spacing: 12) {
-                    Text("Please Rate Us")
+                    Text("Please Give Us a Rating")
                         .font(.roundedSystem(size: 19, weight: .semibold))
                         .foregroundColor(.primary)
                         .multilineTextAlignment(.center)
