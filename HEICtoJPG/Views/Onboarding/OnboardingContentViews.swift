@@ -154,12 +154,10 @@ struct ReviewContent: View {
 
             VStack(spacing: 24) {
                 // Star rating display with laurel wreaths
-                HStack(spacing: 8) {
+                HStack(spacing: 12) {
                     // Left laurel wreath
-                    Image(systemName: "leaf.fill")
-                        .font(.roundedSystem(size: 35))
-                        .foregroundColor(.yellow)
-                        .rotationEffect(.degrees(180))
+                    LaurelWreath(side: .left, color: .yellow)
+                        .frame(width: 30, height: 50)
 
                     // Stars
                     HStack(spacing: 4) {
@@ -171,9 +169,8 @@ struct ReviewContent: View {
                     }
 
                     // Right laurel wreath
-                    Image(systemName: "leaf.fill")
-                        .font(.roundedSystem(size: 35))
-                        .foregroundColor(.yellow)
+                    LaurelWreath(side: .right, color: .yellow)
+                        .frame(width: 30, height: 50)
                 }
                 .opacity(isVisible ? 1 : 0)
                 .scaleEffect(isVisible ? 1 : 0.8)
