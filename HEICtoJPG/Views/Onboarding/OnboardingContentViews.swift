@@ -153,13 +153,27 @@ struct ReviewContent: View {
             Spacer()
 
             VStack(spacing: 24) {
-                // Star rating display
-                HStack(spacing: 4) {
-                    ForEach(0..<5) { _ in
-                        Image(systemName: "star.fill")
-                            .font(.roundedSystem(size: 40))
-                            .foregroundColor(.yellow)
+                // Star rating display with laurel wreaths
+                HStack(spacing: 8) {
+                    // Left laurel wreath
+                    Image(systemName: "leaf.fill")
+                        .font(.roundedSystem(size: 35))
+                        .foregroundColor(.yellow)
+                        .rotationEffect(.degrees(180))
+
+                    // Stars
+                    HStack(spacing: 4) {
+                        ForEach(0..<5) { _ in
+                            Image(systemName: "star.fill")
+                                .font(.roundedSystem(size: 40))
+                                .foregroundColor(.yellow)
+                        }
                     }
+
+                    // Right laurel wreath
+                    Image(systemName: "leaf.fill")
+                        .font(.roundedSystem(size: 35))
+                        .foregroundColor(.yellow)
                 }
                 .opacity(isVisible ? 1 : 0)
                 .scaleEffect(isVisible ? 1 : 0.8)
