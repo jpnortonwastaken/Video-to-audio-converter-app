@@ -231,22 +231,60 @@ class ConverterViewModel: ObservableObject {
     }
 
     private func saveConversionToHistory(originalImage: UIImage, convertedData: Data) async {
-        // Get original image data
-        guard let originalData = originalImage.pngData() else {
+        // Generate thumbnail of original image to save space in UserDefaults
+        // Full-resolution images (especially HEIC) can be very large and exceed UserDefaults limits
+        guard let originalThumbnail = generateThumbnail(from: originalImage, maxDimension: 300),
+              let originalThumbnailData = originalThumbnail.jpegData(compressionQuality: 0.8) else {
+            print("⚠️ Failed to generate thumbnail for history")
             return
         }
 
-        // Create history item
+        // Generate thumbnail of converted image
+        let convertedThumbnailData: Data
+        if let convertedImage = UIImage(data: convertedData),
+           let convertedThumbnail = generateThumbnail(from: convertedImage, maxDimension: 300),
+           let thumbnailData = convertedThumbnail.jpegData(compressionQuality: 0.8) {
+            convertedThumbnailData = thumbnailData
+        } else {
+            // Fallback: if conversion is already small or thumbnail generation fails, use original data
+            convertedThumbnailData = convertedData
+        }
+
+        // Create history item with thumbnails instead of full-resolution images
         let historyItem = ConversionHistoryItem(
-            originalImageData: originalData,
-            convertedImageData: convertedData,
+            originalImageData: originalThumbnailData,
+            convertedImageData: convertedThumbnailData,
             fromFormat: originalImageFormat,
             toFormat: selectedFormat,
-            fileSize: Int64(convertedData.count)
+            fileSize: Int64(convertedData.count)  // Still store original file size for display
         )
 
         // Save to history service
         await ConversionHistoryService.shared.addConversion(historyItem)
+    }
+
+    // Helper method to generate a thumbnail from a UIImage
+    private func generateThumbnail(from image: UIImage, maxDimension: CGFloat) -> UIImage? {
+        let size = image.size
+        let aspectRatio = size.width / size.height
+
+        let thumbnailSize: CGSize
+        if size.width > size.height {
+            thumbnailSize = CGSize(width: maxDimension, height: maxDimension / aspectRatio)
+        } else {
+            thumbnailSize = CGSize(width: maxDimension * aspectRatio, height: maxDimension)
+        }
+
+        // Don't upscale small images
+        guard size.width > thumbnailSize.width || size.height > thumbnailSize.height else {
+            return image
+        }
+
+        // Generate thumbnail
+        let renderer = UIGraphicsImageRenderer(size: thumbnailSize)
+        return renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: thumbnailSize))
+        }
     }
 
     func reset() {
