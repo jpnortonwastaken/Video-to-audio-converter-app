@@ -15,31 +15,26 @@ struct HEICtoJPGContent: View {
     @State private var isVisible = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
+        VStack(spacing: 24) {
+            // Icon
+            Image(systemName: "photo.fill")
+                .font(.roundedSystem(size: 80))
+                .foregroundColor(.blue)
+                .opacity(isVisible ? 1 : 0)
+                .scaleEffect(isVisible ? 1 : 0.8)
+                .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
 
-            VStack(spacing: 24) {
-                // Icon
-                Image(systemName: "photo.fill")
-                    .font(.roundedSystem(size: 80))
-                    .foregroundColor(.blue)
-                    .opacity(isVisible ? 1 : 0)
-                    .scaleEffect(isVisible ? 1 : 0.8)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
-
-                // Description
-                Text("Convert your iPhone photos from HEIC to JPG format with ease.")
-                    .font(.roundedSystem(size: 17))
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 20)
-                    .opacity(isVisible ? 1 : 0)
-                    .offset(y: isVisible ? 0 : 20)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
-            }
-
-            Spacer()
+            // Description
+            Text("Convert your iPhone photos from HEIC to JPG format with ease.")
+                .font(.roundedSystem(size: 17))
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 20)
+                .opacity(isVisible ? 1 : 0)
+                .offset(y: isVisible ? 0 : 20)
+                .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
         }
+        .frame(maxWidth: .infinity, alignment: .center)
         .onAppear {
             isVisible = true
         }
@@ -54,50 +49,45 @@ struct MultipleFormatsContent: View {
     let formats = ["JPG", "PNG", "HEIF", "PDF"]
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
+        VStack(spacing: 24) {
+            // Icon
+            Image(systemName: "rectangle.3.group.fill")
+                .font(.roundedSystem(size: 80))
+                .foregroundColor(.green)
+                .opacity(isVisible ? 1 : 0)
+                .scaleEffect(isVisible ? 1 : 0.8)
+                .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
 
-            VStack(spacing: 24) {
-                // Icon
-                Image(systemName: "rectangle.3.group.fill")
-                    .font(.roundedSystem(size: 80))
-                    .foregroundColor(.green)
-                    .opacity(isVisible ? 1 : 0)
-                    .scaleEffect(isVisible ? 1 : 0.8)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
-
-                // Format chips
-                HStack(spacing: 12) {
-                    ForEach(Array(formats.enumerated()), id: \.element) { index, format in
-                        Text(format)
-                            .font(.roundedSystem(size: 15, weight: .semibold))
-                            .foregroundColor(.primary)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(.systemGray5))
-                            )
-                            .opacity(isVisible ? 1 : 0)
-                            .scaleEffect(isVisible ? 1 : 0.8)
-                            .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2 + Double(index) * 0.05), value: isVisible)
-                    }
+            // Format chips
+            HStack(spacing: 12) {
+                ForEach(Array(formats.enumerated()), id: \.element) { index, format in
+                    Text(format)
+                        .font(.roundedSystem(size: 15, weight: .semibold))
+                        .foregroundColor(.primary)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color(.systemGray5))
+                        )
+                        .opacity(isVisible ? 1 : 0)
+                        .scaleEffect(isVisible ? 1 : 0.8)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2 + Double(index) * 0.05), value: isVisible)
                 }
-
-                // Description
-                Text("Convert images between multiple formats to suit your needs.")
-                    .font(.roundedSystem(size: 17))
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .opacity(isVisible ? 1 : 0)
-                    .offset(y: isVisible ? 0 : 20)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.4), value: isVisible)
             }
 
-            Spacer()
+            // Description
+            Text("Convert images between multiple formats to suit your needs.")
+                .font(.roundedSystem(size: 17))
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+                .opacity(isVisible ? 1 : 0)
+                .offset(y: isVisible ? 0 : 20)
+                .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.4), value: isVisible)
         }
+        .frame(maxWidth: .infinity, alignment: .center)
         .onAppear {
             isVisible = true
         }
@@ -110,31 +100,26 @@ struct ConversionHistoryContent: View {
     @State private var isVisible = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
+        VStack(spacing: 24) {
+            // Icon
+            Image(systemName: "clock.arrow.circlepath")
+                .font(.roundedSystem(size: 80))
+                .foregroundColor(.orange)
+                .opacity(isVisible ? 1 : 0)
+                .scaleEffect(isVisible ? 1 : 0.8)
+                .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
 
-            VStack(spacing: 24) {
-                // Icon
-                Image(systemName: "clock.arrow.circlepath")
-                    .font(.roundedSystem(size: 80))
-                    .foregroundColor(.orange)
-                    .opacity(isVisible ? 1 : 0)
-                    .scaleEffect(isVisible ? 1 : 0.8)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
-
-                // Description
-                Text("Keep track of all your conversions in one convenient place.")
-                    .font(.roundedSystem(size: 17))
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 20)
-                    .opacity(isVisible ? 1 : 0)
-                    .offset(y: isVisible ? 0 : 20)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
-            }
-
-            Spacer()
+            // Description
+            Text("Keep track of all your conversions in one convenient place.")
+                .font(.roundedSystem(size: 17))
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 20)
+                .opacity(isVisible ? 1 : 0)
+                .offset(y: isVisible ? 0 : 20)
+                .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
         }
+        .frame(maxWidth: .infinity, alignment: .center)
         .onAppear {
             isVisible = true
         }
@@ -149,45 +134,40 @@ struct ReviewContent: View {
     @State private var reviewTask: DispatchWorkItem?
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-
-            VStack(spacing: 24) {
-                // Star rating display
-                HStack(spacing: 4) {
-                    ForEach(0..<5) { _ in
-                        Image(systemName: "star.fill")
-                            .font(.roundedSystem(size: 40))
-                            .foregroundColor(.yellow)
-                    }
-                }
-                .opacity(isVisible ? 1 : 0)
-                .scaleEffect(isVisible ? 1 : 0.8)
-                .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
-
-                // Supporting text
-                VStack(spacing: 12) {
-                    Text("Please Rate Us")
-                        .font(.roundedSystem(size: 19, weight: .semibold))
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.center)
-                        .opacity(isVisible ? 1 : 0)
-                        .offset(y: isVisible ? 0 : 20)
-                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
-
-                    Text("Your feedback helps us grow and continue improving for everyone.")
-                        .font(.roundedSystem(size: 15))
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 20)
-                        .opacity(isVisible ? 1 : 0)
-                        .offset(y: isVisible ? 0 : 20)
-                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.3), value: isVisible)
+        VStack(spacing: 24) {
+            // Star rating display
+            HStack(spacing: 4) {
+                ForEach(0..<5) { _ in
+                    Image(systemName: "star.fill")
+                        .font(.roundedSystem(size: 40))
+                        .foregroundColor(.yellow)
                 }
             }
+            .opacity(isVisible ? 1 : 0)
+            .scaleEffect(isVisible ? 1 : 0.8)
+            .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
 
-            Spacer()
+            // Supporting text
+            VStack(spacing: 12) {
+                Text("Please Rate Us")
+                    .font(.roundedSystem(size: 19, weight: .semibold))
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.center)
+                    .opacity(isVisible ? 1 : 0)
+                    .offset(y: isVisible ? 0 : 20)
+                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
+
+                Text("Your feedback helps us grow and continue improving for everyone.")
+                    .font(.roundedSystem(size: 15))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+                    .opacity(isVisible ? 1 : 0)
+                    .offset(y: isVisible ? 0 : 20)
+                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.3), value: isVisible)
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .center)
         .onAppear {
             isVisible = true
 
@@ -218,40 +198,35 @@ struct PaywallContent: View {
     @State private var continueButtonTask: DispatchWorkItem?
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
+        VStack(spacing: 32) {
+            // Icon
+            Image(systemName: "bolt.fill")
+                .font(.roundedSystem(size: 80))
+                .foregroundColor(.yellow)
+                .opacity(isVisible ? 1 : 0)
+                .scaleEffect(isVisible ? 1 : 0.8)
+                .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
 
-            VStack(spacing: 32) {
-                // Icon
-                Image(systemName: "bolt.fill")
-                    .font(.roundedSystem(size: 80))
-                    .foregroundColor(.yellow)
+            // Main message
+            VStack(spacing: 16) {
+                Text("Get Started Converting Now")
+                    .font(.roundedSystem(size: 28, weight: .bold))
+                    .multilineTextAlignment(.center)
                     .opacity(isVisible ? 1 : 0)
-                    .scaleEffect(isVisible ? 1 : 0.8)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: isVisible)
+                    .offset(y: isVisible ? 0 : 20)
+                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
 
-                // Main message
-                VStack(spacing: 16) {
-                    Text("Get Started Converting Now")
-                        .font(.roundedSystem(size: 28, weight: .bold))
-                        .multilineTextAlignment(.center)
-                        .opacity(isVisible ? 1 : 0)
-                        .offset(y: isVisible ? 0 : 20)
-                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.2), value: isVisible)
-
-                    Text("Unlock unlimited conversions and premium features")
-                        .font(.roundedSystem(size: 17))
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 20)
-                        .opacity(isVisible ? 1 : 0)
-                        .offset(y: isVisible ? 0 : 20)
-                        .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.3), value: isVisible)
-                }
+                Text("Unlock unlimited conversions and premium features")
+                    .font(.roundedSystem(size: 17))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+                    .opacity(isVisible ? 1 : 0)
+                    .offset(y: isVisible ? 0 : 20)
+                    .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.3), value: isVisible)
             }
-
-            Spacer()
         }
+        .frame(maxWidth: .infinity, alignment: .center)
         .onAppear {
             isVisible = true
 
