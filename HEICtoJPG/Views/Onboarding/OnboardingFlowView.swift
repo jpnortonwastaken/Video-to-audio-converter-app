@@ -60,7 +60,7 @@ struct WelcomeScreenView: View {
                     .animation(.spring(response: 0.6, dampingFraction: 0.8), value: showTitle)
 
                 // Welcome message
-                Text("Convert your photos instantly.")
+                Text("Convert your HEIC photos to JPG instantly.")
                     .font(.roundedSystem(size: 28, weight: .semibold))
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.center)
