@@ -69,9 +69,6 @@ struct WelcomeScreenView: View {
             .frame(maxWidth: .infinity, alignment: .center)
             .padding(.horizontal, 20)
             .padding(.top, 120)
-            .padding(.bottom, 30)
-
-            Spacer()
 
             // Get Started Button
             Button(action: {
@@ -90,11 +87,12 @@ struct WelcomeScreenView: View {
             }
             .buttonStyle(BounceButtonStyle(scaleAmount: 0.9))
             .padding(.horizontal, 20)
-            .padding(.top, 24)
-            .padding(.bottom, 34)
+            .padding(.top, 40)
             .opacity(showButton ? 1 : 0)
             .offset(y: showButton ? 0 : 20)
             .animation(.spring(response: 0.6, dampingFraction: 0.8), value: showButton)
+
+            Spacer()
         }
         .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea())
         .onAppear {
