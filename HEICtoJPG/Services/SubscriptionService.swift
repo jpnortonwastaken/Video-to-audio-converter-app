@@ -18,36 +18,57 @@ class SubscriptionService: ObservableObject {
 
     // MARK: - Private Properties
     private var cancellables = Set<AnyCancellable>()
-    private var isCheckingSubscription = false
 
     private init() {
-        // Check subscription status based on Superwall's subscription status
+        // Check initial subscription status
         checkSubscriptionStatus()
     }
 
     // MARK: - Public Methods
 
     /// Shows the paywall if user is not subscribed
-    /// - Returns: True if user is subscribed (paywall not shown), false if paywall was shown
+    /// - Returns: True if user is subscribed (allow action), false if not subscribed (prevent action)
     func requireSubscription() -> Bool {
-        // Use Superwall's register method which automatically checks subscription
-        // If user is subscribed, it will skip showing the paywall
-        // If not subscribed, it will show the paywall
+        // First check current subscription status
+        checkSubscriptionStatus()
+
+        // If user is already subscribed, allow the action
+        if isSubscribed {
+            return true
+        }
+
+        // User is not subscribed, show the paywall
         showPaywall()
 
-        // Return false to prevent the action (paywall will handle navigation)
-        // The actual subscription check happens in Superwall's register method
+        // Return false to prevent the action
         return false
     }
 
     /// Shows the paywall using Superwall
     /// Superwall automatically checks if user is subscribed and skips if they are
     func showPaywall() {
-        // Superwall's register method will:
-        // 1. Check if user is subscribed
-        // 2. If subscribed, skip showing paywall (returns .skipped(.userIsSubscribed))
-        // 3. If not subscribed, show the paywall
-        Superwall.shared.register(placement: "feature_gated")
+        // Create a handler to monitor paywall events
+        let handler = PaywallPresentationHandler()
+        handler.onPresent { [weak self] paywallInfo in
+            print("✅ Paywall presented: \(paywallInfo.name)")
+        }
+        handler.onDismiss { [weak self] paywallInfo, result in
+            print("✅ Paywall dismissed")
+            // Update subscription status after paywall is dismissed
+            self?.checkSubscriptionStatus()
+        }
+        handler.onSkip { [weak self] skipReason in
+            print("✅ Paywall skipped: \(skipReason)")
+            // Update subscription status
+            self?.checkSubscriptionStatus()
+        }
+        handler.onError { error in
+            print("❌ Paywall error: \(error.localizedDescription)")
+        }
+
+        // Register with Superwall using the same placement as onboarding
+        // This will show the paywall if user is not subscribed
+        Superwall.shared.register(placement: "campaign_trigger", handler: handler)
     }
 
     // MARK: - Private Methods
@@ -66,5 +87,7 @@ class SubscriptionService: ObservableObject {
         default:
             isSubscribed = false
         }
+
+        print("💳 Subscription status: \(isSubscribed ? "ACTIVE" : "INACTIVE")")
     }
 }
