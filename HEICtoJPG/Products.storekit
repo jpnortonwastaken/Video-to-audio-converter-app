@@ -15,78 +15,78 @@
   ],
   "products" : [
     {
-      "displayPrice" : "17.99",
+      "displayPrice" : "2.99",
       "familyShareable" : false,
-      "internalID" : "6755287423",
+      "internalID" : "6756433447",
       "localizations" : [
         {
           "description" : "Lifetime Access",
-          "displayName" : "Lifetime",
+          "displayName" : "Lifetime Access",
           "locale" : "en_US"
         }
       ],
-      "productID" : "Lifetime22",
-      "referenceName" : "Lifetime22",
+      "productID" : "LifetimeDiscount",
+      "referenceName" : "LifetimeDiscount",
       "type" : "NonConsumable"
     },
     {
-      "displayPrice" : "23.99",
+      "displayPrice" : "3.99",
       "familyShareable" : false,
-      "internalID" : "6755287376",
+      "internalID" : "6756433154",
       "localizations" : [
         {
           "description" : "Lifetime Access",
-          "displayName" : "Lifetime",
+          "displayName" : "Lifetime Access",
           "locale" : "en_US"
         }
       ],
-      "productID" : "Lifetime44",
-      "referenceName" : "Lifetime44",
-      "type" : "NonConsumable"
-    },
-    {
-      "displayPrice" : "29.99",
-      "familyShareable" : false,
-      "internalID" : "6755287205",
-      "localizations" : [
-        {
-          "description" : "Lifetime Access",
-          "displayName" : "Lifetime",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "Lifetime66",
-      "referenceName" : "Lifetime66",
-      "type" : "NonConsumable"
-    },
-    {
-      "displayPrice" : "35.99",
-      "familyShareable" : false,
-      "internalID" : "6755287658",
-      "localizations" : [
-        {
-          "description" : "Lifetime Access",
-          "displayName" : "Lifetime",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "Lifetime88",
-      "referenceName" : "Lifetime88",
+      "productID" : "LifetimeVariation1",
+      "referenceName" : "LifetimeVariation1",
       "type" : "NonConsumable"
     },
     {
       "displayPrice" : "5.99",
       "familyShareable" : false,
-      "internalID" : "6755288570",
+      "internalID" : "6756433269",
       "localizations" : [
         {
           "description" : "Lifetime Access",
-          "displayName" : "Lifetime",
+          "displayName" : "Lifetime Access",
           "locale" : "en_US"
         }
       ],
-      "productID" : "LifetimeDiscount1",
-      "referenceName" : "LifetimeDiscount1",
+      "productID" : "LifetimeVariation2",
+      "referenceName" : "LifetimeVariation2",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "7.99",
+      "familyShareable" : false,
+      "internalID" : "6756433494",
+      "localizations" : [
+        {
+          "description" : "Lifetime Access",
+          "displayName" : "Lifetime Access",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "LifetimeVariation3",
+      "referenceName" : "LifetimeVariation3",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "6756433385",
+      "localizations" : [
+        {
+          "description" : "Lifetime Access",
+          "displayName" : "Lifetime Access",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "LifetimeVariation4",
+      "referenceName" : "LifetimeVariation4",
       "type" : "NonConsumable"
     }
   ],
@@ -98,7 +98,7 @@
     "_developerTeamID" : "9X945ZDXM2",
     "_disableDialogs" : false,
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 785547824.609429,
+    "_lastSynchronizedDate" : 787165396.60278594,
     "_locale" : "en_US",
     "_renewalBillingIssuesEnabled" : false,
     "_storefront" : "USA",
@@ -108,165 +108,7 @@
     "_timeRate" : 0
   },
   "subscriptionGroups" : [
-    {
-      "id" : "21832062",
-      "localizations" : [
 
-      ],
-      "name" : "HEIC to JPG",
-      "subscriptions" : [
-        {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "2.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "6755281133",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "Weekly Access",
-              "displayName" : "Weekly",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "Weekly2",
-          "recurringSubscriptionPeriod" : "P1W",
-          "referenceName" : "Weekly2",
-          "subscriptionGroupID" : "21832062",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "3.99",
-          "familyShareable" : false,
-          "groupNumber" : 5,
-          "internalID" : "6755641935",
-          "introductoryOffer" : {
-            "internalID" : "2CB7CD4B",
-            "numberOfPeriods" : 1,
-            "paymentMode" : "free",
-            "subscriptionPeriod" : "P3D"
-          },
-          "localizations" : [
-            {
-              "description" : "Weekly Access",
-              "displayName" : "Weekly",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "Weekly3",
-          "recurringSubscriptionPeriod" : "P1W",
-          "referenceName" : "Weekly3",
-          "subscriptionGroupID" : "21832062",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "3.99",
-          "familyShareable" : false,
-          "groupNumber" : 2,
-          "internalID" : "6755281032",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "Weekly Access",
-              "displayName" : "Weekly",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "Weekly4",
-          "recurringSubscriptionPeriod" : "P1W",
-          "referenceName" : "Weekly4",
-          "subscriptionGroupID" : "21832062",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "4.99",
-          "familyShareable" : false,
-          "groupNumber" : 3,
-          "internalID" : "6755286628",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "Weekly Access",
-              "displayName" : "Weekly",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "Weekly6",
-          "recurringSubscriptionPeriod" : "P1W",
-          "referenceName" : "Weekly6",
-          "subscriptionGroupID" : "21832062",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "5.99",
-          "familyShareable" : false,
-          "groupNumber" : 4,
-          "internalID" : "6755286937",
-          "introductoryOffer" : {
-            "internalID" : "AD643B51",
-            "numberOfPeriods" : 1,
-            "paymentMode" : "free",
-            "subscriptionPeriod" : "P3D"
-          },
-          "localizations" : [
-            {
-              "description" : "Weekly Access",
-              "displayName" : "Weekly",
-              "locale" : "en_US"
-            }
-          ],
-          "productID" : "Weekly8",
-          "recurringSubscriptionPeriod" : "P1W",
-          "referenceName" : "Weekly8",
-          "subscriptionGroupID" : "21832062",
-          "type" : "RecurringSubscription",
-          "winbackOffers" : [
-
-          ]
-        }
-      ]
-    }
   ],
   "version" : {
     "major" : 4,
