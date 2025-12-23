@@ -65,7 +65,15 @@
           }
         },
         {
-          "fill" : "automatic",
+          "fill-specializations" : [
+            {
+              "value" : "automatic"
+            },
+            {
+              "appearance" : "dark",
+              "value" : "none"
+            }
+          ],
           "hidden" : false,
           "image-name" : "Logo.svg",
           "name" : "Logo"
