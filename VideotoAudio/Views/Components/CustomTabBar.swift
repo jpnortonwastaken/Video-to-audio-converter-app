@@ -61,6 +61,7 @@ struct CustomTabBar: View {
         .padding(.top, 12)
         .background(
             (colorScheme == .light ? Color.white : Color.appSecondaryBackground(for: colorScheme))
+                .clipShape(UnevenRoundedRectangle(topLeadingRadius: 20, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 20))
                 .ignoresSafeArea(edges: .bottom)
                 .overlay(alignment: .top) {
                     GeometryReader { geometry in
