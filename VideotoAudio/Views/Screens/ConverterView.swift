@@ -84,7 +84,7 @@ struct ConverterView: View {
 
                                 // Clipboard Option
                                 smallInputOptionCard(
-                                    title: "Clipboard",
+                                    title: "Paste",
                                     icon: "doc.on.clipboard.fill",
                                     iconColor: .cyan
                                 ) {
