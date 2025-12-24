@@ -22,13 +22,16 @@ struct VideotoAudioApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if !onboardingManager.showOnboarding {
-                MainTabView()
-                    .environmentObject(onboardingManager)
-            } else {
-                OnboardingFlowView()
-                    .environmentObject(onboardingManager)
+            Group {
+                if !onboardingManager.showOnboarding {
+                    MainTabView()
+                        .environmentObject(onboardingManager)
+                } else {
+                    OnboardingFlowView()
+                        .environmentObject(onboardingManager)
+                }
             }
+            .preferredColorScheme(.dark)
         }
     }
 }
