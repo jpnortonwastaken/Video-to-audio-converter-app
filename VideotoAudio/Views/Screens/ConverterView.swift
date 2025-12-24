@@ -517,7 +517,7 @@ struct ConverterView: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.appTertiaryBackground(for: colorScheme).opacity(0.3))
+                    .fill(Color.clear)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
@@ -615,14 +615,14 @@ struct ConverterView: View {
                     .frame(width: 28, height: 28)
                     .background(
                         Circle()
-                            .fill(Color.appTertiaryBackground(for: colorScheme))
+                            .fill(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5))
                     )
             }
         }
         .padding(12)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color.appSecondaryBackground(for: colorScheme))
+                .fill(Color.appTertiaryBackground(for: colorScheme))
         )
     }
 
