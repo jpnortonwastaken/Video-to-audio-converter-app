@@ -293,11 +293,11 @@ struct HomeView: View {
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
                             .background(
-                                RoundedRectangle(cornerRadius: 6)
+                                Capsule()
                                     .fill(colorForFormat(item.fromFormat).opacity(0.2))
                             )
                             .overlay(
-                                RoundedRectangle(cornerRadius: 6)
+                                Capsule()
                                     .stroke(
                                         colorForFormat(item.fromFormat).opacity(0.4),
                                         style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [3, 3])
@@ -315,11 +315,11 @@ struct HomeView: View {
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
                             .background(
-                                RoundedRectangle(cornerRadius: 6)
+                                Capsule()
                                     .fill(colorForFormat(item.toFormat.displayName).opacity(0.2))
                             )
                             .overlay(
-                                RoundedRectangle(cornerRadius: 6)
+                                Capsule()
                                     .stroke(
                                         colorForFormat(item.toFormat.displayName).opacity(0.4),
                                         style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [3, 3])

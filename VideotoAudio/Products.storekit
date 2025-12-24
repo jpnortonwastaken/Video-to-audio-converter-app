@@ -24,9 +24,9 @@
     "_developerTeamID" : "9X945ZDXM2",
     "_disableDialogs" : false,
     "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 788248850.96081901,
     "_locale" : "en_US",
     "_renewalBillingIssuesEnabled" : false,
-    "_shouldSetupSyncOnLoad" : true,
     "_storefront" : "USA",
     "_storeKitErrors" : [
 
@@ -34,7 +34,114 @@
     "_timeRate" : 0
   },
   "subscriptionGroups" : [
+    {
+      "id" : "21868253",
+      "localizations" : [
 
+      ],
+      "name" : "Subscription Group",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "3.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6756948613",
+          "introductoryOffer" : {
+            "internalID" : "8D2F3C97",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P3D"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited - Weekly (1 Week)",
+              "displayName" : "Unlimited - Weekly (1 Week)",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Weekly",
+          "recurringSubscriptionPeriod" : "P1W",
+          "referenceName" : "Weekly",
+          "subscriptionGroupID" : "21868253",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "29.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6756948703",
+          "introductoryOffer" : {
+            "internalID" : "3A466DC8",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P3D"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited - Yearly (1 Year)",
+              "displayName" : "Unlimited - Yearly (1 Year)",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly",
+          "subscriptionGroupID" : "21868253",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "6756948661",
+          "introductoryOffer" : {
+            "internalID" : "BDC94D52",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P3D"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited - Yearly (1 Year)",
+              "displayName" : "Unlimited - Yearly (1 Year)",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "YearlyDiscount",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "YearlyDiscount",
+          "subscriptionGroupID" : "21868253",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
   ],
   "version" : {
     "major" : 4,
