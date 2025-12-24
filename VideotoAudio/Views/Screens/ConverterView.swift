@@ -47,7 +47,7 @@ struct ConverterView: View {
             VStack(alignment: .leading, spacing: 16) {
                 // Title (outside border)
                 if viewModel.selectedVideoURL == nil {
-                    Text("Extract audio from video")
+                    Text("Convert to any format")
                         .font(.roundedTitle2())
                         .fontWeight(.semibold)
                         .foregroundColor(colorScheme == .dark ? .white : .black)
