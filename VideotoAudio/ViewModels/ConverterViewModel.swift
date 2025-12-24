@@ -18,6 +18,8 @@ class ConverterViewModel: ObservableObject {
     @Published var selectedVideoURL: URL?
     @Published var videoThumbnail: UIImage?
     @Published var videoDuration: Double?
+    @Published var videoTitle: String?
+    @Published var videoDate: Date?
     @Published var isConverting = false
     @Published var showFilePicker = false
     @Published var showFormatPicker = false
@@ -145,6 +147,18 @@ class ConverterViewModel: ObservableObject {
         selectedVideoURL = url
         isSecurityScoped = securityScoped
 
+        // Extract video title from filename
+        let filename = url.deletingPathExtension().lastPathComponent
+        videoTitle = filename.isEmpty ? "Video" : filename
+
+        // Get file creation/modification date
+        if let attributes = try? FileManager.default.attributesOfItem(atPath: url.path),
+           let creationDate = attributes[.creationDate] as? Date {
+            videoDate = creationDate
+        } else {
+            videoDate = Date()
+        }
+
         // Generate thumbnail and get duration
         let converter = VideoConverter()
 
@@ -249,6 +263,8 @@ class ConverterViewModel: ObservableObject {
         selectedVideoURL = nil
         videoThumbnail = nil
         videoDuration = nil
+        videoTitle = nil
+        videoDate = nil
         convertedAudioData = nil
         errorMessage = nil
         showResultView = false
@@ -260,6 +276,14 @@ class ConverterViewModel: ObservableObject {
         let minutes = Int(duration) / 60
         let seconds = Int(duration) % 60
         return String(format: "%d:%02d", minutes, seconds)
+    }
+
+    var formattedDate: String? {
+        guard let date = videoDate else { return nil }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: date)
     }
 }
 

@@ -57,7 +57,7 @@ struct ConverterView: View {
                 }
 
                 // Fixed-height content container
-                ZStack {
+                ZStack(alignment: .top) {
                     if viewModel.selectedVideoURL != nil {
                         // Video Preview
                         videoPreviewView
@@ -490,61 +490,128 @@ struct ConverterView: View {
 
     // MARK: - Video Preview
     private var videoPreviewView: some View {
-        ZStack(alignment: .topTrailing) {
-            // Video Thumbnail
-            Group {
-                if let thumbnail = viewModel.videoThumbnail {
-                    Image(uiImage: thumbnail)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } else {
-                    // Placeholder
-                    Rectangle()
-                        .fill(Color.appTertiaryBackground(for: colorScheme))
-                        .overlay(
-                            Image(systemName: "film")
-                                .font(.roundedSystem(size: 60))
-                                .foregroundColor(.gray)
+        VStack(spacing: 16) {
+            // Title above the container
+            Text("Selected Video")
+                .font(.roundedTitle2())
+                .fontWeight(.semibold)
+                .foregroundColor(colorScheme == .dark ? .white : .black)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Video card container with dotted border
+            VStack(spacing: 0) {
+                videoCardItem
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color.appTertiaryBackground(for: colorScheme).opacity(0.3))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(
+                        (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(containerOpacity),
+                        style: containerUseDottedLine
+                            ? StrokeStyle(lineWidth: containerLineWidth, lineCap: .round, dash: [containerDashLength, containerGapLength])
+                            : StrokeStyle(lineWidth: containerLineWidth)
+                    )
+            )
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    // MARK: - Video Card Item
+    private var videoCardItem: some View {
+        HStack(spacing: 16) {
+            // Thumbnail
+            ZStack(alignment: .bottomTrailing) {
+                Group {
+                    if let thumbnail = viewModel.videoThumbnail {
+                        Image(uiImage: thumbnail)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } else {
+                        Rectangle()
+                            .fill(Color.appTertiaryBackground(for: colorScheme))
+                            .overlay(
+                                Image(systemName: "film")
+                                    .font(.roundedSystem(size: 24))
+                                    .foregroundColor(.gray)
+                            )
+                    }
+                }
+                .frame(width: 100, height: 80)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                // Duration badge on thumbnail
+                if let duration = viewModel.formattedDuration {
+                    Text(duration)
+                        .font(.roundedSystem(size: 10, weight: .semibold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 3)
+                        .background(
+                            Capsule()
+                                .fill(Color.black.opacity(0.75))
                         )
+                        .padding(6)
                 }
             }
-            .frame(width: 350, height: 350)
-            .clipped()
-            .clipShape(RoundedRectangle(cornerRadius: 20))
 
-            // Duration badge
-            if let duration = viewModel.formattedDuration {
-                Text(duration)
-                    .font(.roundedCaption())
+            // Video info
+            VStack(alignment: .leading, spacing: 6) {
+                // Title
+                Text(viewModel.videoTitle ?? "Video")
+                    .font(.roundedHeadline())
                     .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(
-                        Capsule()
-                            .fill(Color.black.opacity(0.7))
-                    )
-                    .padding(12)
-                    .offset(x: 0, y: 40)
-            }
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                    .lineLimit(2)
 
-            // X button
+                // Format and date row
+                HStack(spacing: 8) {
+                    // Format badge
+                    Text(viewModel.originalVideoFormat)
+                        .font(.roundedCaption())
+                        .fontWeight(.medium)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule()
+                                .fill(Color.blue.opacity(0.8))
+                        )
+
+                    // Date
+                    if let date = viewModel.formattedDate {
+                        Text(date)
+                            .font(.roundedCaption())
+                            .foregroundColor(.gray)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            // X button to remove
             Button(action: {
                 HapticManager.shared.softImpact()
                 viewModel.reset()
             }) {
                 Image(systemName: "xmark")
-                    .font(.roundedSystem(size: 14, weight: .bold))
-                    .foregroundColor(.white)
+                    .font(.roundedSystem(size: 12, weight: .bold))
+                    .foregroundColor(.gray)
                     .frame(width: 28, height: 28)
                     .background(
                         Circle()
-                            .fill(Color.black.opacity(0.6))
+                            .fill(Color.appTertiaryBackground(for: colorScheme))
                     )
             }
-            .padding(12)
         }
-        .frame(width: 350, height: 350)
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.appSecondaryBackground(for: colorScheme))
+        )
     }
 
     // MARK: - Format Selector

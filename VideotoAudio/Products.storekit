@@ -9,98 +9,24 @@
       }
     ]
   },
-  "identifier" : "96BD399D",
+  "identifier" : "F651F0A4",
   "nonRenewingSubscriptions" : [
 
   ],
   "products" : [
-    {
-      "displayPrice" : "2.99",
-      "familyShareable" : false,
-      "internalID" : "6756433447",
-      "localizations" : [
-        {
-          "description" : "Lifetime Access",
-          "displayName" : "Lifetime Access",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "LifetimeDiscount",
-      "referenceName" : "LifetimeDiscount",
-      "type" : "NonConsumable"
-    },
-    {
-      "displayPrice" : "3.99",
-      "familyShareable" : false,
-      "internalID" : "6756433154",
-      "localizations" : [
-        {
-          "description" : "Lifetime Access",
-          "displayName" : "Lifetime Access",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "LifetimeVariation1",
-      "referenceName" : "LifetimeVariation1",
-      "type" : "NonConsumable"
-    },
-    {
-      "displayPrice" : "5.99",
-      "familyShareable" : false,
-      "internalID" : "6756433269",
-      "localizations" : [
-        {
-          "description" : "Lifetime Access",
-          "displayName" : "Lifetime Access",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "LifetimeVariation2",
-      "referenceName" : "LifetimeVariation2",
-      "type" : "NonConsumable"
-    },
-    {
-      "displayPrice" : "7.99",
-      "familyShareable" : false,
-      "internalID" : "6756433494",
-      "localizations" : [
-        {
-          "description" : "Lifetime Access",
-          "displayName" : "Lifetime Access",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "LifetimeVariation3",
-      "referenceName" : "LifetimeVariation3",
-      "type" : "NonConsumable"
-    },
-    {
-      "displayPrice" : "9.99",
-      "familyShareable" : false,
-      "internalID" : "6756433385",
-      "localizations" : [
-        {
-          "description" : "Lifetime Access",
-          "displayName" : "Lifetime Access",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "LifetimeVariation4",
-      "referenceName" : "LifetimeVariation4",
-      "type" : "NonConsumable"
-    }
+
   ],
   "settings" : {
-    "_applicationInternalID" : "6755275481",
+    "_applicationInternalID" : "6756948440",
     "_askToBuyEnabled" : false,
     "_billingGracePeriodEnabled" : false,
     "_billingIssuesEnabled" : false,
     "_developerTeamID" : "9X945ZDXM2",
     "_disableDialogs" : false,
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 787165396.60278594,
     "_locale" : "en_US",
     "_renewalBillingIssuesEnabled" : false,
+    "_shouldSetupSyncOnLoad" : true,
     "_storefront" : "USA",
     "_storeKitErrors" : [
 
