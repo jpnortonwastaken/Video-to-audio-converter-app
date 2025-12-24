@@ -616,12 +616,19 @@ struct ConverterView: View {
                     Text(viewModel.originalVideoFormat)
                         .font(.roundedCaption())
                         .fontWeight(.medium)
-                        .foregroundColor(.white)
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background(
                             Capsule()
-                                .fill(Color.blue.opacity(0.8))
+                                .fill(colorForFormat(viewModel.originalVideoFormat).opacity(0.2))
+                        )
+                        .overlay(
+                            Capsule()
+                                .stroke(
+                                    colorForFormat(viewModel.originalVideoFormat).opacity(0.4),
+                                    style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [3, 3])
+                                )
                         )
 
                     // Date
@@ -725,6 +732,26 @@ struct ConverterView: View {
         }
         .disabled(viewModel.selectedVideoURL == nil || viewModel.isConverting)
         .buttonStyle(ScaleDownButtonStyle())
+    }
+
+    // MARK: - Helper Functions
+    private func colorForFormat(_ format: String) -> Color {
+        switch format.uppercased() {
+        case "MP4", "MOV", "AVI", "MKV":
+            return .blue
+        case "MP3":
+            return .red
+        case "M4A", "AAC":
+            return .orange
+        case "WAV":
+            return .green
+        case "FLAC":
+            return .purple
+        case "AIFF":
+            return .teal
+        default:
+            return .gray
+        }
     }
 
     // MARK: - File Selection Handler
