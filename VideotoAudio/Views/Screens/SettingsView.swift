@@ -200,7 +200,7 @@ struct SettingsSection<Content: View>: View {
             }
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                    .fill(Color.appCardBackground(for: colorScheme))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
