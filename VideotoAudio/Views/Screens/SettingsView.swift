@@ -123,7 +123,7 @@ struct SettingsView: View {
                                 )
 
                             VStack(spacing: 8) {
-                                Text(AppConstants.appDisplayName)
+                                Text("Video to Audio: V2A")
                                     .font(.roundedBody())
                                     .fontWeight(.medium)
                                     .foregroundColor(.primary)
