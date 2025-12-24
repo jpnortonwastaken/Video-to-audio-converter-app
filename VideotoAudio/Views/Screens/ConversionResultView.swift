@@ -301,6 +301,7 @@ struct ConversionResultView: View {
                 }
             }
             .padding(.horizontal, 24)
+            .padding(.bottom, 24)
         }
         .onAppear {
             prepareAudioPlayer()
