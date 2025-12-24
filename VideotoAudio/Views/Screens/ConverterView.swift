@@ -590,9 +590,9 @@ struct ConverterView: View {
             HStack {
                 if viewModel.isConverting {
                     ProgressView()
-                        .tint(colorScheme == .dark ? .black : .white)
+                        .tint(.white)
                 } else {
-                    Text("Extract Audio")
+                    Text("Convert")
                         .font(.roundedHeadline())
                         .fontWeight(.semibold)
                 }
@@ -601,9 +601,18 @@ struct ConverterView: View {
             .frame(height: 56)
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(colorScheme == .dark ? Color.white : Color.black)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color(red: 0.0, green: 0.5, blue: 1.0),
+                                Color(red: 0.0, green: 0.3, blue: 0.9)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
             )
-            .foregroundColor(colorScheme == .dark ? .black : .white)
+            .foregroundColor(.white)
         }
         .disabled(viewModel.selectedVideoURL == nil || viewModel.isConverting)
         .buttonStyle(ScaleDownButtonStyle())
