@@ -77,7 +77,7 @@ struct ConverterView: View {
                                 smallInputOptionCard(
                                     title: "Files",
                                     icon: "folder.fill",
-                                    iconColor: .orange
+                                    iconColor: .indigo
                                 ) {
                                     viewModel.selectFromFiles()
                                 }
@@ -86,7 +86,7 @@ struct ConverterView: View {
                                 smallInputOptionCard(
                                     title: "Clipboard",
                                     icon: "doc.on.clipboard.fill",
-                                    iconColor: .green
+                                    iconColor: .cyan
                                 ) {
                                     viewModel.pasteFromClipboard()
                                 }
