@@ -327,18 +327,14 @@ struct HomeView: View {
                             )
                     }
 
-                    HStack(spacing: 8) {
-                        Text(item.formattedDate)
+                    Text(item.formattedDate)
+                        .font(.roundedSubheadline())
+                        .foregroundColor(.gray)
+
+                    if let duration = item.formattedDuration {
+                        Text(duration)
                             .font(.roundedSubheadline())
                             .foregroundColor(.gray)
-
-                        if let duration = item.formattedDuration {
-                            Text("•")
-                                .foregroundColor(.gray)
-                            Text(duration)
-                                .font(.roundedSubheadline())
-                                .foregroundColor(.gray)
-                        }
                     }
 
                     Text(item.formattedFileSize)
