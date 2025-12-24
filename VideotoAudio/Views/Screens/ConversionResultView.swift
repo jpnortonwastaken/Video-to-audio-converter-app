@@ -27,6 +27,10 @@ struct ConversionResultView: View {
     @State private var errorMessage = ""
     @State private var isPlaying = false
     @State private var audioPlayer: AVAudioPlayer?
+    @State private var currentTime: TimeInterval = 0
+    @State private var duration: TimeInterval = 0
+    @State private var isDraggingSlider = false
+    @State private var playbackTimer: Timer?
 
     // Default initializer with thumbnail mode
     init(convertedAudioData: Data, format: AudioFormat, displayMode: ConversionResultDisplayMode = .thumbnail, onDismiss: (() -> Void)? = nil) {
@@ -196,28 +200,28 @@ struct ConversionResultView: View {
 
     // MARK: - Audio Preview
     private var audioPreviewView: some View {
-        VStack(spacing: 24) {
-            // Audio icon
+        VStack(spacing: 32) {
+            Spacer()
+
+            // Audio visualization icon
             ZStack {
                 Circle()
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color.blue.opacity(0.3),
-                                Color.purple.opacity(0.3)
+                                Color.blue.opacity(0.2),
+                                Color.purple.opacity(0.2)
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
                     )
-                    .frame(width: 200, height: 200)
+                    .frame(width: 160, height: 160)
 
-                Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                    .font(.system(size: 80))
+                Image(systemName: "waveform")
+                    .font(.system(size: 60, weight: .medium))
                     .foregroundColor(colorScheme == .dark ? .white : .black)
-            }
-            .onTapGesture {
-                togglePlayback()
+                    .symbolEffect(.variableColor.iterative, isActive: isPlaying)
             }
 
             // Format label
@@ -226,11 +230,124 @@ struct ConversionResultView: View {
                 .fontWeight(.semibold)
                 .foregroundColor(colorScheme == .dark ? .white : .black)
 
-            Text("Tap to preview")
-                .font(.roundedCaption())
-                .foregroundColor(.gray)
+            Spacer()
+
+            // Audio Player Controls
+            VStack(spacing: 16) {
+                // Progress Bar
+                VStack(spacing: 8) {
+                    Slider(
+                        value: Binding(
+                            get: { currentTime },
+                            set: { newValue in
+                                currentTime = newValue
+                                audioPlayer?.currentTime = newValue
+                            }
+                        ),
+                        in: 0...max(duration, 1),
+                        onEditingChanged: { editing in
+                            isDraggingSlider = editing
+                            if !editing {
+                                audioPlayer?.currentTime = currentTime
+                            }
+                        }
+                    )
+                    .tint(colorScheme == .dark ? .white : .black)
+
+                    // Time Labels
+                    HStack {
+                        Text(formatTime(currentTime))
+                            .font(.roundedCaption())
+                            .foregroundColor(.gray)
+                            .monospacedDigit()
+
+                        Spacer()
+
+                        Text(formatTime(duration))
+                            .font(.roundedCaption())
+                            .foregroundColor(.gray)
+                            .monospacedDigit()
+                    }
+                }
+
+                // Playback Controls
+                HStack(spacing: 40) {
+                    // Skip Backward 15s
+                    Button(action: skipBackward) {
+                        Image(systemName: "gobackward.15")
+                            .font(.roundedSystem(size: 28))
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                    }
+                    .buttonStyle(ScaleDownButtonStyle())
+
+                    // Play/Pause Button
+                    Button(action: togglePlayback) {
+                        ZStack {
+                            Circle()
+                                .fill(colorScheme == .dark ? Color.white : Color.black)
+                                .frame(width: 72, height: 72)
+
+                            Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                                .font(.roundedSystem(size: 28))
+                                .foregroundColor(colorScheme == .dark ? .black : .white)
+                                .offset(x: isPlaying ? 0 : 2)
+                        }
+                    }
+                    .buttonStyle(ScaleDownButtonStyle())
+
+                    // Skip Forward 15s
+                    Button(action: skipForward) {
+                        Image(systemName: "goforward.15")
+                            .font(.roundedSystem(size: 28))
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                    }
+                    .buttonStyle(ScaleDownButtonStyle())
+                }
+            }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 16)
         }
-        .frame(height: 350)
+        .frame(height: 380)
+        .onAppear {
+            prepareAudioPlayer()
+        }
+    }
+
+    // MARK: - Time Formatting
+    private func formatTime(_ time: TimeInterval) -> String {
+        let minutes = Int(time) / 60
+        let seconds = Int(time) % 60
+        return String(format: "%d:%02d", minutes, seconds)
+    }
+
+    // MARK: - Skip Controls
+    private func skipBackward() {
+        HapticManager.shared.softImpact()
+        let newTime = max(currentTime - 15, 0)
+        currentTime = newTime
+        audioPlayer?.currentTime = newTime
+    }
+
+    private func skipForward() {
+        HapticManager.shared.softImpact()
+        let newTime = min(currentTime + 15, duration)
+        currentTime = newTime
+        audioPlayer?.currentTime = newTime
+    }
+
+    // MARK: - Prepare Audio Player
+    private func prepareAudioPlayer() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+
+            let player = try AVAudioPlayer(data: convertedAudioData)
+            player.prepareToPlay()
+            duration = player.duration
+            audioPlayer = player
+        } catch {
+            print("❌ Failed to prepare audio: \(error)")
+        }
     }
 
     // MARK: - Audio Playback
@@ -245,29 +362,47 @@ struct ConversionResultView: View {
     }
 
     private func playAudio() {
-        do {
-            // Configure audio session
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-            try AVAudioSession.sharedInstance().setActive(true)
+        // Prepare player if not already done
+        if audioPlayer == nil {
+            prepareAudioPlayer()
+        }
 
-            audioPlayer = try AVAudioPlayer(data: convertedAudioData)
-            audioPlayer?.delegate = AudioPlayerDelegate.shared
-            AudioPlayerDelegate.shared.onFinish = {
-                isPlaying = false
-            }
-            audioPlayer?.play()
-            isPlaying = true
-        } catch {
-            print("❌ Failed to play audio: \(error)")
+        guard let player = audioPlayer else {
             errorMessage = "Failed to play audio"
             showError = true
+            return
         }
+
+        // Set up delegate for playback completion
+        player.delegate = AudioPlayerDelegate.shared
+        AudioPlayerDelegate.shared.onFinish = {
+            stopPlaybackTimer()
+            isPlaying = false
+            currentTime = 0
+        }
+
+        player.play()
+        isPlaying = true
+        startPlaybackTimer()
     }
 
     private func stopAudio() {
-        audioPlayer?.stop()
-        audioPlayer = nil
+        audioPlayer?.pause()
+        stopPlaybackTimer()
         isPlaying = false
+    }
+
+    private func startPlaybackTimer() {
+        stopPlaybackTimer()
+        playbackTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            guard let player = audioPlayer, !isDraggingSlider else { return }
+            currentTime = player.currentTime
+        }
+    }
+
+    private func stopPlaybackTimer() {
+        playbackTimer?.invalidate()
+        playbackTimer = nil
     }
 
     // MARK: - Actions
