@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import PhotosUI
 
 struct ConverterView: View {
     @StateObject private var viewModel = ConverterViewModel()
@@ -64,18 +65,31 @@ struct ConverterView: View {
                             .opacity(showVideo ? 1.0 : 0.0)
                     } else {
                         // Input Options
-                        VStack(spacing: 16) {
-                            // Files Option (large, centered)
-                            inputOptionCard(
-                                title: "Select Video",
-                                subtitle: "Choose from Files",
-                                icon: "film",
-                                backgroundColor: Color.blue.opacity(0.1),
-                                iconColor: .blue,
-                                textColor: colorScheme == .dark ? Color(red: 0.6, green: 0.8, blue: 1.0) : Color(red: 0.0, green: 0.2, blue: 0.5),
-                                colorScheme: colorScheme
-                            ) {
-                                viewModel.selectFromFiles()
+                        VStack(spacing: 12) {
+                            // Photos Option (large)
+                            photosPickerButton
+                                .scaleEffect(showFilesCard ? 1.0 : 0.8)
+                                .opacity(showFilesCard ? 1 : 0)
+
+                            // Files and Clipboard buttons (side by side)
+                            HStack(spacing: 12) {
+                                // Files Option
+                                smallInputOptionCard(
+                                    title: "Files",
+                                    icon: "folder.fill",
+                                    iconColor: .orange
+                                ) {
+                                    viewModel.selectFromFiles()
+                                }
+
+                                // Clipboard Option
+                                smallInputOptionCard(
+                                    title: "Clipboard",
+                                    icon: "doc.on.clipboard.fill",
+                                    iconColor: .green
+                                ) {
+                                    viewModel.pasteFromClipboard()
+                                }
                             }
                             .scaleEffect(showFilesCard ? 1.0 : 0.8)
                             .opacity(showFilesCard ? 1 : 0)
@@ -357,6 +371,112 @@ struct ConverterView: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
+                    .stroke(
+                        iconColor.opacity(inputButtonsOpacity),
+                        style: inputButtonsUseDottedLine
+                            ? StrokeStyle(lineWidth: inputButtonsLineWidth, lineCap: .round, dash: [inputButtonsDashLength, inputButtonsGapLength])
+                            : StrokeStyle(lineWidth: inputButtonsLineWidth)
+                    )
+            )
+        }
+        .buttonStyle(ScaleDownButtonStyle())
+    }
+
+    // MARK: - Photos Picker Button (Large)
+    private var photosPickerButton: some View {
+        PhotosPicker(
+            selection: $viewModel.selectedPhotoItem,
+            matching: .videos,
+            photoLibrary: .shared()
+        ) {
+            VStack(spacing: 12) {
+                if viewModel.isLoadingFromPhotos {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .frame(height: 50)
+                } else {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .font(.roundedSystem(size: 50))
+                        .foregroundColor(.blue)
+                }
+
+                Text("Select Video")
+                    .font(.roundedTitle2())
+                    .fontWeight(.semibold)
+                    .foregroundColor(colorScheme == .dark ? Color(red: 0.6, green: 0.8, blue: 1.0) : Color(red: 0.0, green: 0.2, blue: 0.5))
+
+                Text("Choose from Photos")
+                    .font(.roundedSubheadline())
+                    .foregroundColor((colorScheme == .dark ? Color(red: 0.6, green: 0.8, blue: 1.0) : Color(red: 0.0, green: 0.2, blue: 0.5)).opacity(0.6))
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 200)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.blue.opacity(0.2),
+                                Color.blue.opacity(0.05)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(
+                        Color.blue.opacity(inputButtonsOpacity),
+                        style: inputButtonsUseDottedLine
+                            ? StrokeStyle(lineWidth: inputButtonsLineWidth, lineCap: .round, dash: [inputButtonsDashLength, inputButtonsGapLength])
+                            : StrokeStyle(lineWidth: inputButtonsLineWidth)
+                    )
+            )
+        }
+        .buttonStyle(ScaleDownButtonStyle())
+        .onChange(of: viewModel.selectedPhotoItem) { _, newValue in
+            Task {
+                await viewModel.handlePhotoPickerSelection(newValue)
+            }
+        }
+    }
+
+    // MARK: - Small Input Option Card
+    private func smallInputOptionCard(
+        title: String,
+        icon: String,
+        iconColor: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(spacing: 8) {
+                Image(systemName: icon)
+                    .font(.roundedSystem(size: 28))
+                    .foregroundColor(iconColor)
+
+                Text(title)
+                    .font(.roundedSubheadline())
+                    .fontWeight(.semibold)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 90)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                iconColor.opacity(0.15),
+                                iconColor.opacity(0.05)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
                     .stroke(
                         iconColor.opacity(inputButtonsOpacity),
                         style: inputButtonsUseDottedLine

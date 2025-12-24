@@ -9,6 +9,7 @@ import SwiftUI
 import Combine
 import AVFoundation
 import UniformTypeIdentifiers
+import PhotosUI
 
 @MainActor
 class ConverterViewModel: ObservableObject {
@@ -24,6 +25,8 @@ class ConverterViewModel: ObservableObject {
     @Published var convertedAudioData: Data?
     @Published var showResultView = false
     @Published var originalVideoFormat: String = "MP4"
+    @Published var selectedPhotoItem: PhotosPickerItem?
+    @Published var isLoadingFromPhotos = false
 
     // MARK: - Supported Video Types
     static let supportedVideoTypes: [UTType] = [
@@ -49,6 +52,77 @@ class ConverterViewModel: ObservableObject {
         }
 
         showFilePicker = true
+    }
+
+    func handlePhotoPickerSelection(_ item: PhotosPickerItem?) async {
+        guard let item = item else { return }
+
+        // Check subscription before allowing access
+        guard SubscriptionService.shared.requireSubscription() else {
+            return
+        }
+
+        isLoadingFromPhotos = true
+        HapticManager.shared.softImpact()
+
+        do {
+            // Load the video data from Photos
+            if let movie = try await item.loadTransferable(type: VideoTransferable.self) {
+                await loadVideoFromURL(movie.url)
+            } else {
+                errorMessage = "Could not load video from Photos"
+            }
+        } catch {
+            errorMessage = "Failed to load video: \(error.localizedDescription)"
+        }
+
+        isLoadingFromPhotos = false
+        selectedPhotoItem = nil
+    }
+
+    func pasteFromClipboard() {
+        HapticManager.shared.softImpact()
+
+        // Check subscription before allowing access
+        guard SubscriptionService.shared.requireSubscription() else {
+            return
+        }
+
+        let pasteboard = UIPasteboard.general
+
+        // Check for video URL
+        if pasteboard.hasURLs, let url = pasteboard.url {
+            // Check if URL points to a video file
+            let videoExtensions = ["mp4", "mov", "avi", "mkv", "webm", "flv", "wmv", "m4v"]
+            if videoExtensions.contains(url.pathExtension.lowercased()) {
+                Task {
+                    await loadVideoFromURL(url)
+                }
+                return
+            }
+        }
+
+        // Check for video data types
+        let videoTypes = ["public.movie", "public.mpeg-4", "com.apple.quicktime-movie"]
+        for type in videoTypes {
+            if let data = pasteboard.data(forPasteboardType: type) {
+                // Save to temp file and load
+                let tempURL = FileManager.default.temporaryDirectory
+                    .appendingPathComponent("clipboard_video_\(Int(Date().timeIntervalSince1970)).mp4")
+                do {
+                    try data.write(to: tempURL)
+                    Task {
+                        await loadVideoFromURL(tempURL)
+                    }
+                    return
+                } catch {
+                    errorMessage = "Failed to save clipboard video"
+                }
+            }
+        }
+
+        errorMessage = "No video found in clipboard"
+        HapticManager.shared.error()
     }
 
     // Helper method to detect video format from URL
@@ -179,5 +253,23 @@ class ConverterViewModel: ObservableObject {
         let minutes = Int(duration) / 60
         let seconds = Int(duration) % 60
         return String(format: "%d:%02d", minutes, seconds)
+    }
+}
+
+// MARK: - Video Transferable for PhotosPicker
+struct VideoTransferable: Transferable {
+    let url: URL
+
+    static var transferRepresentation: some TransferRepresentation {
+        FileRepresentation(contentType: .movie) { movie in
+            SentTransferredFile(movie.url)
+        } importing: { received in
+            let tempDirectory = FileManager.default.temporaryDirectory
+            let fileName = "video_\(UUID().uuidString).mov"
+            let destinationURL = tempDirectory.appendingPathComponent(fileName)
+
+            try FileManager.default.copyItem(at: received.file, to: destinationURL)
+            return Self(url: destinationURL)
+        }
     }
 }
