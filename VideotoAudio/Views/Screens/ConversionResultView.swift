@@ -127,7 +127,7 @@ struct ConversionResultView: View {
                             .frame(height: 56)
                             .background(
                                 RoundedRectangle(cornerRadius: 14)
-                                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                                    .fill(Color.appTertiaryBackground(for: colorScheme))
                             )
                             .foregroundColor(colorScheme == .dark ? .white : .black)
                     }
@@ -136,7 +136,7 @@ struct ConversionResultView: View {
                 .padding(20)
                 .background(
                     RoundedRectangle(cornerRadius: 28)
-                        .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                        .fill(Color.appSecondaryBackground(for: colorScheme))
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 28)
@@ -149,7 +149,7 @@ struct ConversionResultView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
             }
-            .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+            .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
             .navigationTitle("Extraction Complete")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

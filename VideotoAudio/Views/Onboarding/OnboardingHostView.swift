@@ -62,7 +62,7 @@ struct OnboardingHostView: View {
             // Bottom action buttons
             bottomButtons
         }
-        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea())
+        .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea())
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.currentStep)
     }
 

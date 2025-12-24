@@ -25,7 +25,7 @@ struct ProgressView: View {
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 8)
-                .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                .background(Color.appSecondaryBackground(for: colorScheme))
 
                 // Progress Content
                 ScrollView {
@@ -58,9 +58,9 @@ struct ProgressView: View {
                 }
                 .gradientFadeMask()
                 .scrollIndicators(.hidden)
-                .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+                .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
             }
-            .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+            .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
             .navigationBarHidden(true)
             .navigationTitle("Progress")
             .navigationBarTitleDisplayMode(.large)

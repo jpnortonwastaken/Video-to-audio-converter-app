@@ -94,7 +94,7 @@ struct WelcomeScreenView: View {
 
             Spacer()
         }
-        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea())
+        .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea())
         .onAppear {
             playAnimations()
         }

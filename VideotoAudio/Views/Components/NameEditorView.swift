@@ -41,7 +41,7 @@ struct NameEditorView: View {
                             .frame(width: 32, height: 32)
                             .background(
                                 Circle()
-                                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                                    .fill(Color.appTertiaryBackground(for: colorScheme))
                             )
                     }
                     .buttonStyle(BounceButtonStyle(scaleAmount: 0.9))
@@ -65,7 +65,7 @@ struct NameEditorView: View {
                     .padding(16)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
+                            .fill(Color.appTertiaryBackground(for: colorScheme))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 16)
                                     .stroke(Color(.systemGray4), lineWidth: 0.5)
@@ -100,7 +100,7 @@ struct NameEditorView: View {
             }
             .padding(.horizontal, 24)
         }
-        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+        .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
         .onAppear {
             isTextFieldFocused = true
         }

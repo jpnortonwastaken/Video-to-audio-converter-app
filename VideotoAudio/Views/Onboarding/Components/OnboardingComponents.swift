@@ -80,7 +80,7 @@ struct SelectionCard: View {
             .padding(.vertical, 18)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground))
+                    .fill(Color.appTertiaryBackground(for: colorScheme))
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
                             .stroke(

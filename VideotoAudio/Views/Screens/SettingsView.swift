@@ -27,7 +27,7 @@ struct SettingsView: View {
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 8)
-                .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                .background(Color.appSecondaryBackground(for: colorScheme))
 
                 // Settings Content
                 ScrollView {
@@ -165,9 +165,9 @@ struct SettingsView: View {
                 }
                 .gradientFadeMask()
                 .scrollIndicators(.hidden)
-                .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+                .background(Color.appSecondaryBackground(for: colorScheme).ignoresSafeArea(.all))
             }
-            .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+            .background(Color.appSecondaryBackground(for: colorScheme).ignoresSafeArea(.all))
             .navigationBarHidden(true)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
@@ -361,7 +361,7 @@ struct AppearanceSettingsCard: View {
                 .padding(.vertical, 6)
                 .background(
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray6))
+                        .fill(Color.appTertiaryBackground(for: colorScheme))
                 )
             }
         }

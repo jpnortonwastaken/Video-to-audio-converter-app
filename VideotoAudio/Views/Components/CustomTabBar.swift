@@ -60,7 +60,7 @@ struct CustomTabBar: View {
         .padding(.horizontal, 40)
         .padding(.top, 12)
         .background(
-            (colorScheme == .light ? Color.white : Color(.systemGray6))
+            (colorScheme == .light ? Color.white : Color.appSecondaryBackground(for: colorScheme))
                 .ignoresSafeArea(edges: .bottom)
                 .overlay(alignment: .top) {
                     Rectangle()

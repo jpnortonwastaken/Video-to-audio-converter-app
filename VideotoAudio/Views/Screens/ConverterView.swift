@@ -108,7 +108,7 @@ struct ConverterView: View {
             .padding(20)
             .background(
                 RoundedRectangle(cornerRadius: 28)
-                    .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                    .fill(Color.appSecondaryBackground(for: colorScheme))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 28)
@@ -127,7 +127,7 @@ struct ConverterView: View {
             Spacer()
         }
         .padding(.bottom, 20)
-        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+        .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
         .onAppear {
             if shouldShowIntro {
                 playIntroAnimation()
@@ -238,7 +238,7 @@ struct ConverterView: View {
     // MARK: - Converting Overlay
     private var convertingOverlay: some View {
         ZStack {
-            (colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+            (Color.appSecondaryBackground(for: colorScheme))
                 .opacity(0.95)
                 .ignoresSafeArea()
 
@@ -276,7 +276,7 @@ struct ConverterView: View {
             .padding(40)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                    .fill(Color.appSecondaryBackground(for: colorScheme))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
@@ -311,7 +311,7 @@ struct ConverterView: View {
             .padding(.top, 8)
             .padding(.bottom, 8)
         }
-        .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+        .background(Color.appSecondaryBackground(for: colorScheme))
     }
 
     // MARK: - Input Option Card (Large)
@@ -380,7 +380,7 @@ struct ConverterView: View {
                 } else {
                     // Placeholder
                     Rectangle()
-                        .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                        .fill(Color.appTertiaryBackground(for: colorScheme))
                         .overlay(
                             Image(systemName: "film")
                                 .font(.roundedSystem(size: 60))
@@ -453,7 +453,7 @@ struct ConverterView: View {
             .padding(20)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                    .fill(Color.appTertiaryBackground(for: colorScheme))
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
@@ -536,7 +536,7 @@ struct FormatSelectionSheet: View {
                     .padding(.bottom, 24)
                 }
             }
-            .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+            .background(Color.appSecondaryBackground(for: colorScheme))
             .navigationBarHidden(true)
         }
     }
@@ -546,7 +546,7 @@ struct FormatSelectionSheet: View {
         let isSelected = selectedFormat == format
         let backgroundColor = isSelected
             ? (colorScheme == .dark ? Color.white : Color.black)
-            : (colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+            : (Color.appTertiaryBackground(for: colorScheme))
         let textColor = isSelected
             ? (colorScheme == .dark ? Color.black : Color.white)
             : (colorScheme == .dark ? Color.white : Color.black)

@@ -63,7 +63,7 @@ struct HomeView: View {
                     .padding(.horizontal, 24)
                     .padding(.top, 8)
                     .padding(.bottom, 0)
-                    .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground))
+                    .background(Color.appSecondaryBackground(for: colorScheme))
 
                     // History Content
                     if historyService.isLoading {
@@ -75,7 +75,7 @@ struct HomeView: View {
                     }
                 }
             }
-            .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+            .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
             .navigationBarHidden(true)
             .navigationTitle("History")
             .navigationBarTitleDisplayMode(.large)
@@ -138,7 +138,7 @@ struct HomeView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+        .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
     }
 
     // MARK: - Empty State
@@ -172,7 +172,7 @@ struct HomeView: View {
         }
         .gradientFadeMask()
         .scrollIndicators(.hidden)
-        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+        .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
     }
 
     // MARK: - History List
@@ -221,7 +221,7 @@ struct HomeView: View {
         }
         .gradientFadeMask()
         .scrollIndicators(.hidden)
-        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+        .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
     }
 
     // MARK: - Helper Functions
@@ -389,7 +389,7 @@ struct AsyncThumbnailView: View {
             } else if isLoading {
                 // Loading placeholder
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                    .fill(Color.appTertiaryBackground(for: colorScheme))
                     .frame(width: 80, height: 80)
                     .overlay(
                         LoadingSpinner(size: 24)
@@ -397,7 +397,7 @@ struct AsyncThumbnailView: View {
             } else {
                 // Error/default placeholder - audio icon
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
+                    .fill(Color.appTertiaryBackground(for: colorScheme))
                     .frame(width: 80, height: 80)
                     .overlay(
                         Image(systemName: "waveform")

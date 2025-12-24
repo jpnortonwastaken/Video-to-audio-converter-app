@@ -67,7 +67,7 @@ struct PaywallPlaceholderView: View {
             }
         }
         .padding(.horizontal, 20)
-        .background((colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)).ignoresSafeArea(.all))
+        .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
         .navigationBarBackButtonHidden(true)
     }
 }
