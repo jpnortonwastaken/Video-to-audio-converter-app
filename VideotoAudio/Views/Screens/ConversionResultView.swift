@@ -154,7 +154,7 @@ struct ConversionResultView: View {
                 .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
             }
             .background((Color.appSecondaryBackground(for: colorScheme)).ignoresSafeArea(.all))
-            .navigationTitle("Extraction Complete")
+            .navigationTitle("Conversion Complete")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -200,9 +200,7 @@ struct ConversionResultView: View {
 
     // MARK: - Audio Preview
     private var audioPreviewView: some View {
-        VStack(spacing: 32) {
-            Spacer()
-
+        VStack(spacing: 20) {
             // Audio visualization icon
             ZStack {
                 Circle()
@@ -216,10 +214,10 @@ struct ConversionResultView: View {
                             endPoint: .bottomTrailing
                         )
                     )
-                    .frame(width: 160, height: 160)
+                    .frame(width: 140, height: 140)
 
                 Image(systemName: "waveform")
-                    .font(.system(size: 60, weight: .medium))
+                    .font(.system(size: 50, weight: .medium))
                     .foregroundColor(colorScheme == .dark ? .white : .black)
                     .symbolEffect(.variableColor.iterative, isActive: isPlaying)
             }
@@ -230,12 +228,10 @@ struct ConversionResultView: View {
                 .fontWeight(.semibold)
                 .foregroundColor(colorScheme == .dark ? .white : .black)
 
-            Spacer()
-
             // Audio Player Controls
-            VStack(spacing: 16) {
+            VStack(spacing: 12) {
                 // Progress Bar
-                VStack(spacing: 8) {
+                VStack(spacing: 6) {
                     Slider(
                         value: Binding(
                             get: { currentTime },
@@ -285,10 +281,10 @@ struct ConversionResultView: View {
                         ZStack {
                             Circle()
                                 .fill(colorScheme == .dark ? Color.white : Color.black)
-                                .frame(width: 72, height: 72)
+                                .frame(width: 64, height: 64)
 
                             Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                                .font(.roundedSystem(size: 28))
+                                .font(.roundedSystem(size: 24))
                                 .foregroundColor(colorScheme == .dark ? .black : .white)
                                 .offset(x: isPlaying ? 0 : 2)
                         }
@@ -305,9 +301,7 @@ struct ConversionResultView: View {
                 }
             }
             .padding(.horizontal, 24)
-            .padding(.bottom, 16)
         }
-        .frame(height: 380)
         .onAppear {
             prepareAudioPlayer()
         }
