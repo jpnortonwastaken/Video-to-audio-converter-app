@@ -331,15 +331,15 @@ struct HomeView: View {
                         .font(.roundedSubheadline())
                         .foregroundColor(.gray)
 
-                    if let duration = item.formattedDuration {
-                        Text(duration)
-                            .font(.roundedSubheadline())
-                            .foregroundColor(.gray)
+                    HStack(spacing: 4) {
+                        if let duration = item.formattedDuration {
+                            Text(duration)
+                            Text("•")
+                        }
+                        Text(item.formattedFileSize)
                     }
-
-                    Text(item.formattedFileSize)
-                        .font(.roundedSubheadline())
-                        .foregroundColor(.gray)
+                    .font(.roundedSubheadline())
+                    .foregroundColor(.gray)
                 }
 
                 Spacer()
