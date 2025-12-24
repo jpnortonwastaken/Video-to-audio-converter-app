@@ -61,11 +61,11 @@ struct CustomTabBar: View {
         .padding(.top, 12)
         .background(
             (colorScheme == .light ? Color.white : Color.appSecondaryBackground(for: colorScheme))
-                .clipShape(UnevenRoundedRectangle(topLeadingRadius: 20, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 20))
+                .clipShape(UnevenRoundedRectangle(topLeadingRadius: 28, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 28))
                 .ignoresSafeArea(edges: .bottom)
                 .overlay(alignment: .top) {
                     GeometryReader { geometry in
-                        let cornerRadius: CGFloat = 20
+                        let cornerRadius: CGFloat = 28
                         Path { path in
                             // Start at bottom-left
                             path.move(to: CGPoint(x: 0, y: cornerRadius))
@@ -93,7 +93,7 @@ struct CustomTabBar: View {
                             style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
                         )
                     }
-                    .frame(height: 20)
+                    .frame(height: 28)
                 }
         )
     }
