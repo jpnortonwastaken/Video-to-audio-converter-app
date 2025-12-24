@@ -17,6 +17,7 @@ struct ConverterView: View {
     @State private var showFormatSheet = false
     @State private var showPhotoPicker = false
     @State private var isAnimating = false
+    @State private var showBatchConverter = false
 
     // Intro animation state
     @AppStorage("shouldShowConverterIntro") private var shouldShowIntro = false
@@ -214,6 +215,9 @@ struct ConverterView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $showBatchConverter) {
+            BatchConverterView()
+        }
         .overlay {
             if viewModel.isConverting {
                 convertingOverlay
@@ -321,6 +325,32 @@ struct ConverterView: View {
                 }
 
                 Spacer()
+
+                // Batch Convert Button
+                Button(action: {
+                    HapticManager.shared.softImpact()
+                    showBatchConverter = true
+                }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "square.stack.3d.up")
+                            .font(.roundedBody())
+                        Text("Batch")
+                            .font(.roundedSubheadline())
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(.blue)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(
+                        Capsule()
+                            .fill(Color.blue.opacity(0.15))
+                    )
+                    .overlay(
+                        Capsule()
+                            .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+                    )
+                }
+                .buttonStyle(ScaleDownButtonStyle())
             }
             .padding(.horizontal, 24)
             .padding(.top, 8)
