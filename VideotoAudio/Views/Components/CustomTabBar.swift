@@ -65,16 +65,35 @@ struct CustomTabBar: View {
                 .ignoresSafeArea(edges: .bottom)
                 .overlay(alignment: .top) {
                     GeometryReader { geometry in
+                        let cornerRadius: CGFloat = 20
                         Path { path in
-                            path.move(to: CGPoint(x: 0, y: 0))
-                            path.addLine(to: CGPoint(x: geometry.size.width, y: 0))
+                            // Start at bottom-left
+                            path.move(to: CGPoint(x: 0, y: cornerRadius))
+                            // Curve around top-left corner
+                            path.addArc(
+                                center: CGPoint(x: cornerRadius, y: cornerRadius),
+                                radius: cornerRadius,
+                                startAngle: .degrees(180),
+                                endAngle: .degrees(270),
+                                clockwise: false
+                            )
+                            // Line across top
+                            path.addLine(to: CGPoint(x: geometry.size.width - cornerRadius, y: 0))
+                            // Curve around top-right corner
+                            path.addArc(
+                                center: CGPoint(x: geometry.size.width - cornerRadius, y: cornerRadius),
+                                radius: cornerRadius,
+                                startAngle: .degrees(270),
+                                endAngle: .degrees(0),
+                                clockwise: false
+                            )
                         }
                         .stroke(
                             (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(0.3),
                             style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
                         )
                     }
-                    .frame(height: 2.5)
+                    .frame(height: 20)
                 }
         )
     }
