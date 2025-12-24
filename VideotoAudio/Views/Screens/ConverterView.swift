@@ -15,6 +15,7 @@ struct ConverterView: View {
     @State private var showVideo = false
     @State private var showButtons = true
     @State private var showFormatSheet = false
+    @State private var showPhotoPicker = false
     @State private var isAnimating = false
 
     // Intro animation state
@@ -384,11 +385,16 @@ struct ConverterView: View {
 
     // MARK: - Photos Picker Button (Large)
     private var photosPickerButton: some View {
-        PhotosPicker(
-            selection: $viewModel.selectedPhotoItem,
-            matching: .videos,
-            photoLibrary: .shared()
-        ) {
+        Button(action: {
+            HapticManager.shared.softImpact()
+
+            // Check subscription before showing picker
+            guard SubscriptionService.shared.requireSubscription() else {
+                return
+            }
+
+            showPhotoPicker = true
+        }) {
             VStack(spacing: 12) {
                 if viewModel.isLoadingFromPhotos {
                     ProgressView()
@@ -435,6 +441,12 @@ struct ConverterView: View {
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
+        .photosPicker(
+            isPresented: $showPhotoPicker,
+            selection: $viewModel.selectedPhotoItem,
+            matching: .videos,
+            photoLibrary: .shared()
+        )
         .onChange(of: viewModel.selectedPhotoItem) { _, newValue in
             Task {
                 await viewModel.handlePhotoPickerSelection(newValue)

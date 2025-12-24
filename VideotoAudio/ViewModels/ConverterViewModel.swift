@@ -62,13 +62,7 @@ class ConverterViewModel: ObservableObject {
     func handlePhotoPickerSelection(_ item: PhotosPickerItem?) async {
         guard let item = item else { return }
 
-        // Check subscription before allowing access
-        guard SubscriptionService.shared.requireSubscription() else {
-            return
-        }
-
         isLoadingFromPhotos = true
-        HapticManager.shared.softImpact()
 
         do {
             // Load the video data from Photos
