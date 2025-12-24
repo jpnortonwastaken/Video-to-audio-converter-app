@@ -9,7 +9,6 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var onboardingViewModel: OnboardingViewModel
-    @AppStorage("appearance_preference") private var appearancePreference: AppearancePreference = .system
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -32,13 +31,6 @@ struct SettingsView: View {
                 // Settings Content
                 ScrollView {
                     VStack(spacing: 32) {
-                        // Preferences Section
-                        SettingsSection(title: "Preferences") {
-                            VStack(spacing: 0) {
-                                AppearanceSettingsCard()
-                            }
-                        }
-
                         // Legal Section
                         SettingsSection(title: "Legal") {
                             VStack(spacing: 0) {
@@ -307,80 +299,6 @@ struct ToggleSettingsCard: View {
         }
         .padding()
         .background(Color.clear)
-    }
-}
-
-struct AppearanceSettingsCard: View {
-    @AppStorage("appearance_preference") private var appearancePreference: AppearancePreference = .system
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            Image(systemName: "paintbrush.fill")
-                .foregroundColor(.primary)
-                .frame(width: 24, height: 24)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Appearance")
-                    .font(.roundedBody())
-                    .fontWeight(.medium)
-                    .foregroundColor(.primary)
-                    .contentTransition(.numericText())
-            }
-
-            Spacer()
-
-            Menu {
-                ForEach(AppearancePreference.allCases, id: \.self) { mode in
-                    Button(action: {
-                        HapticManager.shared.buttonTap()
-                        appearancePreference = mode
-                        updateAppearance(mode)
-                    }) {
-                        HStack {
-                            Text(mode.displayName)
-                            if appearancePreference == mode {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                    }
-                }
-            } label: {
-                HStack(spacing: 4) {
-                    Text(appearancePreference.displayName)
-                        .font(.roundedBody())
-                        .fontWeight(.medium)
-                        .foregroundColor(.primary)
-                        .contentTransition(.numericText())
-
-                    Image(systemName: "chevron.up.chevron.down")
-                        .font(.roundedCallout())
-                        .foregroundColor(.secondary)
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.appTertiaryBackground(for: colorScheme))
-                )
-            }
-        }
-        .padding()
-        .background(Color.clear)
-    }
-
-    private func updateAppearance(_ preference: AppearancePreference) {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else { return }
-
-        switch preference {
-        case .light:
-            window.overrideUserInterfaceStyle = .light
-        case .dark:
-            window.overrideUserInterfaceStyle = .dark
-        case .system:
-            window.overrideUserInterfaceStyle = .unspecified
-        }
     }
 }
 
