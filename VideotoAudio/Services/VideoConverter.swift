@@ -45,21 +45,24 @@ actor VideoConverter {
             throw ConversionError.invalidVideo
         }
 
+        // Determine the appropriate preset and output type
+        let (preset, outputFileType, intermediateExtension) = getExportConfiguration(for: format)
+
         // Create export session
-        guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else {
+        guard let exportSession = AVAssetExportSession(asset: asset, presetName: preset) else {
             throw ConversionError.conversionFailed
         }
 
-        // Create temporary output URL
+        // Create temporary output URL for the export
         let tempDirectory = FileManager.default.temporaryDirectory
-        let outputFileName = "\(UUID().uuidString).\(format.fileExtension)"
-        let outputURL = tempDirectory.appendingPathComponent(outputFileName)
+        let exportFileName = "\(UUID().uuidString).\(intermediateExtension)"
+        let exportURL = tempDirectory.appendingPathComponent(exportFileName)
 
         // Clean up any existing file
-        try? FileManager.default.removeItem(at: outputURL)
+        try? FileManager.default.removeItem(at: exportURL)
 
-        exportSession.outputURL = outputURL
-        exportSession.outputFileType = getOutputFileType(for: format)
+        exportSession.outputURL = exportURL
+        exportSession.outputFileType = outputFileType
 
         // Perform export
         await exportSession.export()
@@ -67,11 +70,17 @@ actor VideoConverter {
         // Check export status
         switch exportSession.status {
         case .completed:
-            // Read the exported file
-            let audioData = try Data(contentsOf: outputURL)
-            // Clean up temp file
-            try? FileManager.default.removeItem(at: outputURL)
-            return audioData
+            // If we need to convert from M4A to another format (WAV, AIFF)
+            if needsPostConversion(for: format) {
+                let convertedData = try await convertAudioFormat(from: exportURL, to: format)
+                try? FileManager.default.removeItem(at: exportURL)
+                return convertedData
+            } else {
+                // Read the exported file directly
+                let audioData = try Data(contentsOf: exportURL)
+                try? FileManager.default.removeItem(at: exportURL)
+                return audioData
+            }
 
         case .failed:
             let errorMessage = exportSession.error?.localizedDescription ?? "Unknown error"
@@ -85,22 +94,102 @@ actor VideoConverter {
         }
     }
 
-    /// Gets the appropriate AVFileType for the target audio format
-    private func getOutputFileType(for format: AudioFormat) -> AVFileType {
+    /// Determines if the format requires post-conversion from M4A
+    private func needsPostConversion(for format: AudioFormat) -> Bool {
         switch format {
-        case .mp3:
-            // Note: AVAssetExportSession doesn't directly support MP3
-            // We'll use M4A and can convert to MP3 with additional processing if needed
-            return .m4a
-        case .m4a, .aac:
-            return .m4a
+        case .wav, .aiff:
+            return true
+        case .mp3, .m4a, .aac, .flac:
+            return false
+        }
+    }
+
+    /// Gets the export configuration for a given format
+    /// Returns: (preset, outputFileType, intermediateExtension)
+    private func getExportConfiguration(for format: AudioFormat) -> (String, AVFileType, String) {
+        switch format {
+        case .wav, .aiff:
+            // Export to M4A first, then convert to target format
+            return (AVAssetExportPresetAppleM4A, .m4a, "m4a")
+        case .mp3, .m4a, .aac, .flac:
+            // M4A/AAC use native M4A export; MP3/FLAC fall back to M4A
+            return (AVAssetExportPresetAppleM4A, .m4a, "m4a")
+        }
+    }
+
+    /// Converts audio from M4A to WAV or AIFF format using AVAudioFile
+    private func convertAudioFormat(from sourceURL: URL, to format: AudioFormat) async throws -> Data {
+        // Capture format properties before any async work to avoid actor isolation issues
+        let fileExtension = format.fileExtension
+
+        let sourceFile = try AVAudioFile(forReading: sourceURL)
+        let processingFormat = sourceFile.processingFormat
+
+        let tempDirectory = FileManager.default.temporaryDirectory
+        let outputFileName = "\(UUID().uuidString).\(fileExtension)"
+        let outputURL = tempDirectory.appendingPathComponent(outputFileName)
+
+        // Clean up any existing file
+        try? FileManager.default.removeItem(at: outputURL)
+
+        // Determine the output settings based on format
+        let outputSettings = createAudioSettings(for: format, sampleRate: processingFormat.sampleRate, channels: processingFormat.channelCount)
+
+        let outputFile = try AVAudioFile(
+            forWriting: outputURL,
+            settings: outputSettings,
+            commonFormat: processingFormat.commonFormat,
+            interleaved: processingFormat.isInterleaved
+        )
+
+        // Read and write in chunks to handle large files efficiently
+        let bufferSize: AVAudioFrameCount = 4096
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: processingFormat, frameCapacity: bufferSize) else {
+            throw ConversionError.conversionFailed
+        }
+
+        while sourceFile.framePosition < sourceFile.length {
+            try sourceFile.read(into: buffer)
+            try outputFile.write(from: buffer)
+        }
+
+        // Read the converted file
+        let audioData = try Data(contentsOf: outputURL)
+        try? FileManager.default.removeItem(at: outputURL)
+
+        return audioData
+    }
+
+    /// Creates audio settings for the target format
+    private func createAudioSettings(for format: AudioFormat, sampleRate: Double, channels: AVAudioChannelCount) -> [String: Any] {
+
+        switch format {
         case .wav:
-            return .wav
+            return [
+                AVFormatIDKey: kAudioFormatLinearPCM,
+                AVSampleRateKey: sampleRate,
+                AVNumberOfChannelsKey: channels,
+                AVLinearPCMBitDepthKey: 16,
+                AVLinearPCMIsFloatKey: false,
+                AVLinearPCMIsBigEndianKey: false,
+                AVLinearPCMIsNonInterleaved: false
+            ]
         case .aiff:
-            return .aiff
-        case .flac:
-            // FLAC isn't natively supported, fallback to M4A
-            return .m4a
+            return [
+                AVFormatIDKey: kAudioFormatLinearPCM,
+                AVSampleRateKey: sampleRate,
+                AVNumberOfChannelsKey: channels,
+                AVLinearPCMBitDepthKey: 16,
+                AVLinearPCMIsFloatKey: false,
+                AVLinearPCMIsBigEndianKey: true,
+                AVLinearPCMIsNonInterleaved: false
+            ]
+        default:
+            return [
+                AVFormatIDKey: kAudioFormatMPEG4AAC,
+                AVSampleRateKey: sampleRate,
+                AVNumberOfChannelsKey: channels
+            ]
         }
     }
 

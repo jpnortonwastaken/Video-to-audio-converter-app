@@ -8,7 +8,7 @@
 import Foundation
 import UniformTypeIdentifiers
 
-enum AudioFormat: String, CaseIterable, Identifiable, Codable {
+enum AudioFormat: String, CaseIterable, Identifiable, Codable, Sendable {
     case mp3 = "MP3"
     case m4a = "M4A"
     case wav = "WAV"
@@ -39,7 +39,7 @@ enum AudioFormat: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    var fileExtension: String {
+    nonisolated var fileExtension: String {
         switch self {
         case .mp3:
             return "mp3"
