@@ -544,12 +544,7 @@ struct FormatSelectionSheet: View {
     // MARK: - Format Card
     private func formatCard(for format: AudioFormat) -> some View {
         let isSelected = selectedFormat == format
-        let backgroundColor = isSelected
-            ? (colorScheme == .dark ? Color.white : Color.black)
-            : (Color.appTertiaryBackground(for: colorScheme))
-        let textColor = isSelected
-            ? (colorScheme == .dark ? Color.black : Color.white)
-            : (colorScheme == .dark ? Color.white : Color.black)
+        let textColor = colorScheme == .dark ? Color.white : Color.black
 
         return Button(action: {
             HapticManager.shared.softImpact()
@@ -566,14 +561,21 @@ struct FormatSelectionSheet: View {
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.roundedTitle3())
-                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                        .foregroundColor(.blue)
                 }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 24)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(backgroundColor)
+                    .fill(Color.appTertiaryBackground(for: colorScheme))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(
+                        isSelected ? Color.blue : Color.clear,
+                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round, dash: [7, 8])
+                    )
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
