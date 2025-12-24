@@ -25,7 +25,7 @@ enum AppearancePreference: String, CaseIterable {
 @main
 struct VideotoAudioApp: App {
     @StateObject private var onboardingManager = OnboardingViewModel()
-    @AppStorage("appearance_preference") private var appearancePreference: AppearancePreference = .system
+    @AppStorage("appearance_preference") private var appearancePreference: AppearancePreference = .dark
 
     init() {
         // Warm up haptics early to eliminate first-use delay
