@@ -28,6 +28,9 @@ class ConverterViewModel: ObservableObject {
     @Published var selectedPhotoItem: PhotosPickerItem?
     @Published var isLoadingFromPhotos = false
 
+    // Track if URL requires security-scoped access (only for Files picker)
+    private var isSecurityScoped = false
+
     // MARK: - Supported Video Types
     static let supportedVideoTypes: [UTType] = [
         .movie,
@@ -134,12 +137,13 @@ class ConverterViewModel: ObservableObject {
         return ext
     }
 
-    func loadVideoFromURL(_ url: URL) async {
+    func loadVideoFromURL(_ url: URL, securityScoped: Bool = false) async {
         // Detect format from file extension
         originalVideoFormat = detectVideoFormat(from: url)
 
-        // Store the URL
+        // Store the URL and security scope status
         selectedVideoURL = url
+        isSecurityScoped = securityScoped
 
         // Generate thumbnail and get duration
         let converter = VideoConverter()
@@ -172,15 +176,13 @@ class ConverterViewModel: ObservableObject {
         isConverting = true
         HapticManager.shared.softImpact()
 
-        do {
-            // Need security scoped access for the file
-            guard videoURL.startAccessingSecurityScopedResource() else {
-                errorMessage = "Cannot access video file"
-                isConverting = false
-                return
-            }
-            defer { videoURL.stopAccessingSecurityScopedResource() }
+        // Only use security-scoped access for files from the Files picker
+        let needsSecurityScope = isSecurityScoped
+        if needsSecurityScope {
+            _ = videoURL.startAccessingSecurityScopedResource()
+        }
 
+        do {
             let converter = VideoConverter()
             let audioData = try await converter.extractAudio(
                 from: videoURL,
@@ -203,6 +205,10 @@ class ConverterViewModel: ObservableObject {
         } catch {
             errorMessage = "Conversion failed: \(error.localizedDescription)"
             HapticManager.shared.error()
+        }
+
+        if needsSecurityScope {
+            videoURL.stopAccessingSecurityScopedResource()
         }
 
         isConverting = false
@@ -246,6 +252,7 @@ class ConverterViewModel: ObservableObject {
         convertedAudioData = nil
         errorMessage = nil
         showResultView = false
+        isSecurityScoped = false
     }
 
     var formattedDuration: String? {

@@ -624,12 +624,10 @@ struct ConverterView: View {
         case .success(let urls):
             guard let url = urls.first else { return }
 
-            // Load video from file URL
-            if url.startAccessingSecurityScopedResource() {
-                Task {
-                    await viewModel.loadVideoFromURL(url)
-                }
-                // Note: Don't stop accessing here - we need the access for conversion
+            // Try to get security-scoped access for files from the Files picker
+            let hasSecurityAccess = url.startAccessingSecurityScopedResource()
+            Task {
+                await viewModel.loadVideoFromURL(url, securityScoped: hasSecurityAccess)
             }
 
         case .failure(let error):
