@@ -100,14 +100,14 @@ struct BatchQueueItemView: View {
             .font(.roundedCaption())
             .fontWeight(.medium)
             .foregroundColor(colorScheme == .dark ? .white : .black)
-            .padding(.horizontal, 8)
+            .padding(.horizontal, 10)
             .padding(.vertical, 4)
             .background(
-                RoundedRectangle(cornerRadius: 6)
+                Capsule()
                     .fill(colorForFormat(item.originalFormat).opacity(0.2))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 6)
+                Capsule()
                     .stroke(
                         colorForFormat(item.originalFormat).opacity(0.4),
                         style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [3, 3])
