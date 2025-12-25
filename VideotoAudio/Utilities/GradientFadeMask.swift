@@ -32,8 +32,31 @@ struct GradientFadeMaskModifier: ViewModifier {
     }
 }
 
+struct BottomGradientFadeMaskModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content.mask(
+            LinearGradient(
+                gradient: Gradient(stops: [
+                    .init(color: .black, location: 0.0),
+                    .init(color: .black, location: 0.75),
+                    .init(color: Color.black.opacity(0.7), location: 0.82),
+                    .init(color: Color.black.opacity(0.4), location: 0.88),
+                    .init(color: Color.black.opacity(0.1), location: 0.94),
+                    .init(color: .clear, location: 1.0),
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
+    }
+}
+
 extension View {
     func gradientFadeMask() -> some View {
         modifier(GradientFadeMaskModifier())
+    }
+
+    func bottomGradientFadeMask() -> some View {
+        modifier(BottomGradientFadeMaskModifier())
     }
 }
