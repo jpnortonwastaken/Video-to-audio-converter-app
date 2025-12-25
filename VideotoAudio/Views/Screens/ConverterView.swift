@@ -47,8 +47,8 @@ struct ConverterView: View {
 
             // Content area
             VStack(alignment: .leading, spacing: 16) {
-                // Title (outside border) - only show when no videos selected
-                if !viewModel.hasSelection {
+                // Title (outside border) - only show when no videos selected or still loading
+                if !viewModel.hasSelection || viewModel.isLoadingItems {
                     Text("Convert to any format")
                         .font(.roundedTitle2())
                         .fontWeight(.semibold)
@@ -60,7 +60,8 @@ struct ConverterView: View {
 
                 // Fixed-height content container
                 ZStack(alignment: .top) {
-                    if viewModel.hasSelection {
+                    // Show video preview only when items are loaded and ready
+                    if viewModel.hasSelection && !viewModel.isLoadingItems {
                         if viewModel.isSingleMode {
                             // Single video card view
                             videoPreviewView
@@ -170,22 +171,26 @@ struct ConverterView: View {
         ) { result in
             handleFileSelection(result)
         }
-        .onChange(of: viewModel.items.count) { oldValue, newValue in
-            if newValue > 0 && oldValue == 0 {
-                // Videos added: hide buttons, show video
+        .onChange(of: viewModel.isLoadingItems) { oldValue, newValue in
+            // When loading finishes and we have items, animate to show video
+            if oldValue == true && newValue == false && viewModel.hasSelection {
                 showButtons = false
                 showVideo = false
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
                     showVideo = true
                 }
-            } else if newValue == 0 && oldValue > 0 {
+            }
+        }
+        .onChange(of: viewModel.items.count) { oldValue, newValue in
+            // Only handle removal animations here (loading handles additions)
+            if newValue == 0 && oldValue > 0 {
                 // All videos removed: hide video, show buttons
                 showVideo = false
                 showButtons = false
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
                     showButtons = true
                 }
-            } else if newValue != oldValue {
+            } else if newValue != oldValue && !viewModel.isLoadingItems {
                 // Count changed but still have videos - animate
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     // Just trigger a re-render
