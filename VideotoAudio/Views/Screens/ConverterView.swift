@@ -3,6 +3,7 @@
 //  Video to Audio
 //
 //  Main converter view for selecting videos and extracting audio.
+//  Supports both single and batch conversion with auto-adapting UI.
 //
 
 import SwiftUI
@@ -17,7 +18,6 @@ struct ConverterView: View {
     @State private var showFormatSheet = false
     @State private var showPhotoPicker = false
     @State private var isAnimating = false
-    @State private var showBatchConverter = false
 
     // Intro animation state
     @AppStorage("shouldShowConverterIntro") private var shouldShowIntro = false
@@ -47,8 +47,8 @@ struct ConverterView: View {
 
             // Content area
             VStack(alignment: .leading, spacing: 16) {
-                // Title (outside border)
-                if viewModel.selectedVideoURL == nil {
+                // Title (outside border) - only show when no videos selected
+                if !viewModel.hasSelection {
                     Text("Convert to any format")
                         .font(.roundedTitle2())
                         .fontWeight(.semibold)
@@ -60,11 +60,18 @@ struct ConverterView: View {
 
                 // Fixed-height content container
                 ZStack(alignment: .top) {
-                    if viewModel.selectedVideoURL != nil {
-                        // Video Preview
-                        videoPreviewView
-                            .scaleEffect(showVideo ? 1.0 : 0.3)
-                            .opacity(showVideo ? 1.0 : 0.0)
+                    if viewModel.hasSelection {
+                        if viewModel.isSingleMode {
+                            // Single video card view
+                            videoPreviewView
+                                .scaleEffect(showVideo ? 1.0 : 0.3)
+                                .opacity(showVideo ? 1.0 : 0.0)
+                        } else {
+                            // Batch queue list view
+                            batchQueueListView
+                                .scaleEffect(showVideo ? 1.0 : 0.3)
+                                .opacity(showVideo ? 1.0 : 0.0)
+                        }
                     } else {
                         // Input Options
                         VStack(spacing: 12) {
@@ -159,26 +166,29 @@ struct ConverterView: View {
         .fileImporter(
             isPresented: $viewModel.showFilePicker,
             allowedContentTypes: ConverterViewModel.supportedVideoTypes,
-            allowsMultipleSelection: false
+            allowsMultipleSelection: true
         ) { result in
             handleFileSelection(result)
         }
-        .onChange(of: viewModel.selectedVideoURL) { _, newValue in
-            if newValue != nil {
-                // Video selected: hide buttons, show video
+        .onChange(of: viewModel.items.count) { oldValue, newValue in
+            if newValue > 0 && oldValue == 0 {
+                // Videos added: hide buttons, show video
                 showButtons = false
                 showVideo = false
-                // Trigger bouncy animation with spring
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
                     showVideo = true
                 }
-            } else {
-                // Video removed: hide video, show buttons
+            } else if newValue == 0 && oldValue > 0 {
+                // All videos removed: hide video, show buttons
                 showVideo = false
                 showButtons = false
-                // Trigger bouncy animation for buttons with spring
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
                     showButtons = true
+                }
+            } else if newValue != oldValue {
+                // Count changed but still have videos - animate
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    // Just trigger a re-render
                 }
             }
         }
@@ -200,7 +210,8 @@ struct ConverterView: View {
             .presentationDragIndicator(.visible)
         }
         .fullScreenCover(isPresented: $viewModel.showResultView) {
-            if let convertedData = viewModel.convertedAudioData {
+            if viewModel.isSingleMode, let convertedData = viewModel.convertedAudioData {
+                // Single result view
                 NavigationStack {
                     ConversionResultView(
                         convertedAudioData: convertedData,
@@ -213,10 +224,22 @@ struct ConverterView: View {
                         viewModel.reset()
                     }
                 }
+            } else {
+                // Batch results view
+                BatchResultsView(
+                    results: viewModel.results,
+                    format: viewModel.selectedFormat,
+                    onDismiss: {
+                        viewModel.showResultView = false
+                        viewModel.reset()
+                    },
+                    onRetryFailed: {
+                        Task {
+                            await viewModel.retryFailed()
+                        }
+                    }
+                )
             }
-        }
-        .fullScreenCover(isPresented: $showBatchConverter) {
-            BatchConverterView()
         }
         .overlay {
             if viewModel.isConverting {
@@ -262,7 +285,7 @@ struct ConverterView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
-                // Custom loading animation
+                // Progress indicator
                 ZStack {
                     Circle()
                         .stroke(
@@ -271,26 +294,61 @@ struct ConverterView: View {
                         )
                         .frame(width: 60, height: 60)
 
-                    Circle()
-                        .trim(from: 0, to: 0.7)
-                        .stroke(
-                            colorScheme == .dark ? Color.white : Color.black,
-                            lineWidth: 4
-                        )
-                        .frame(width: 60, height: 60)
-                        .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
-                        .animation(.linear(duration: 1).repeatForever(autoreverses: false), value: isAnimating)
-                        .onAppear {
-                            isAnimating = true
-                        }
-                        .onDisappear {
-                            isAnimating = false
-                        }
+                    if viewModel.isBatchMode {
+                        // Batch mode: show progress ring with percentage
+                        Circle()
+                            .trim(from: 0, to: viewModel.overallProgress)
+                            .stroke(
+                                colorScheme == .dark ? Color.white : Color.black,
+                                style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                            )
+                            .frame(width: 60, height: 60)
+                            .rotationEffect(.degrees(-90))
+                            .animation(.linear(duration: 0.2), value: viewModel.overallProgress)
+
+                        Text("\(Int(viewModel.overallProgress * 100))%")
+                            .font(.roundedSystem(size: 14, weight: .semibold))
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                    } else {
+                        // Single mode: spinning loader
+                        Circle()
+                            .trim(from: 0, to: 0.7)
+                            .stroke(
+                                colorScheme == .dark ? Color.white : Color.black,
+                                lineWidth: 4
+                            )
+                            .frame(width: 60, height: 60)
+                            .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
+                            .animation(.linear(duration: 1).repeatForever(autoreverses: false), value: isAnimating)
+                            .onAppear {
+                                isAnimating = true
+                            }
+                            .onDisappear {
+                                isAnimating = false
+                            }
+                    }
                 }
 
-                Text("Extracting audio...")
-                    .font(.roundedHeadline())
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                // Status text
+                VStack(spacing: 8) {
+                    if viewModel.isBatchMode {
+                        Text("Converting \(viewModel.completedCount + 1) of \(viewModel.items.count)")
+                            .font(.roundedHeadline())
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                        if let currentIndex = viewModel.currentConvertingIndex,
+                           viewModel.items.indices.contains(currentIndex) {
+                            Text(viewModel.items[currentIndex].title)
+                                .font(.roundedSubheadline())
+                                .foregroundColor(.gray)
+                                .lineLimit(1)
+                        }
+                    } else {
+                        Text("Extracting audio...")
+                            .font(.roundedHeadline())
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                    }
+                }
             }
             .padding(40)
             .background(
@@ -325,38 +383,111 @@ struct ConverterView: View {
                 }
 
                 Spacer()
-
-                // Batch Convert Button
-                Button(action: {
-                    HapticManager.shared.softImpact()
-                    showBatchConverter = true
-                }) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "square.stack.3d.up")
-                            .font(.roundedBody())
-                        Text("Batch")
-                            .font(.roundedSubheadline())
-                            .fontWeight(.medium)
-                    }
-                    .foregroundColor(.blue)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(
-                        Capsule()
-                            .fill(Color.blue.opacity(0.15))
-                    )
-                    .overlay(
-                        Capsule()
-                            .stroke(Color.blue.opacity(0.3), lineWidth: 1)
-                    )
-                }
-                .buttonStyle(ScaleDownButtonStyle())
             }
             .padding(.horizontal, 24)
             .padding(.top, 8)
             .padding(.bottom, 8)
         }
         .background(Color.appSecondaryBackground(for: colorScheme))
+    }
+
+    // MARK: - Batch Queue List View
+    private var batchQueueListView: some View {
+        VStack(spacing: 16) {
+            // Title with count and clear button
+            HStack {
+                Text("Selected Videos")
+                    .font(.roundedTitle2())
+                    .fontWeight(.semibold)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                Spacer()
+
+                Text("\(viewModel.items.count) videos")
+                    .font(.roundedCaption())
+                    .foregroundColor(.gray)
+
+                // Clear all button
+                Button(action: {
+                    HapticManager.shared.softImpact()
+                    viewModel.clearQueue()
+                }) {
+                    Image(systemName: "trash")
+                        .font(.roundedBody())
+                        .foregroundColor(.red.opacity(0.8))
+                }
+                .buttonStyle(ScaleDownButtonStyle())
+            }
+
+            // Scrollable list with add more button
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    // Add more videos button
+                    addMoreVideosButton
+
+                    // Queue items
+                    ForEach(viewModel.items) { item in
+                        BatchQueueItemView(
+                            item: item,
+                            onRemove: {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    viewModel.removeItem(item)
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    // MARK: - Add More Videos Button
+    private var addMoreVideosButton: some View {
+        Button(action: {
+            HapticManager.shared.softImpact()
+
+            guard SubscriptionService.shared.requireSubscription() else {
+                return
+            }
+
+            showPhotoPicker = true
+        }) {
+            HStack(spacing: 8) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.roundedBody())
+                Text("Add More Videos")
+                    .font(.roundedSubheadline())
+                    .fontWeight(.medium)
+            }
+            .foregroundColor(.blue)
+            .frame(maxWidth: .infinity)
+            .frame(height: 50)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color.blue.opacity(0.1))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(
+                        Color.blue.opacity(0.3),
+                        style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [6, 6])
+                    )
+            )
+        }
+        .buttonStyle(ScaleDownButtonStyle())
+        .photosPicker(
+            isPresented: $showPhotoPicker,
+            selection: $viewModel.selectedPhotoItems,
+            maxSelectionCount: 50,
+            matching: .videos,
+            photoLibrary: .shared()
+        )
+        .onChange(of: viewModel.selectedPhotoItems) { _, newValue in
+            Task {
+                await viewModel.handlePhotoPickerSelection(newValue)
+            }
+        }
     }
 
     // MARK: - Input Option Card (Large)
@@ -426,7 +557,7 @@ struct ConverterView: View {
             showPhotoPicker = true
         }) {
             VStack(spacing: 12) {
-                if viewModel.isLoadingFromPhotos {
+                if viewModel.isLoadingItems {
                     ProgressView()
                         .scaleEffect(1.5)
                         .frame(height: 50)
@@ -473,11 +604,12 @@ struct ConverterView: View {
         .buttonStyle(ScaleDownButtonStyle())
         .photosPicker(
             isPresented: $showPhotoPicker,
-            selection: $viewModel.selectedPhotoItem,
+            selection: $viewModel.selectedPhotoItems,
+            maxSelectionCount: 50,
             matching: .videos,
             photoLibrary: .shared()
         )
-        .onChange(of: viewModel.selectedPhotoItem) { _, newValue in
+        .onChange(of: viewModel.selectedPhotoItems) { _, newValue in
             Task {
                 await viewModel.handlePhotoPickerSelection(newValue)
             }
@@ -530,15 +662,44 @@ struct ConverterView: View {
         .buttonStyle(ScaleDownButtonStyle())
     }
 
-    // MARK: - Video Preview
+    // MARK: - Video Preview (Single Mode)
     private var videoPreviewView: some View {
         VStack(spacing: 16) {
             // Title above the container
-            Text("Selected Video")
-                .font(.roundedTitle2())
-                .fontWeight(.semibold)
-                .foregroundColor(colorScheme == .dark ? .white : .black)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                Text("Selected Video")
+                    .font(.roundedTitle2())
+                    .fontWeight(.semibold)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+
+                Spacer()
+
+                // Add more button for single mode
+                Button(action: {
+                    HapticManager.shared.softImpact()
+
+                    guard SubscriptionService.shared.requireSubscription() else {
+                        return
+                    }
+
+                    showPhotoPicker = true
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "plus")
+                            .font(.roundedCaption())
+                        Text("Add More")
+                            .font(.roundedCaption())
+                    }
+                    .foregroundColor(.blue)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule()
+                            .fill(Color.blue.opacity(0.15))
+                    )
+                }
+                .buttonStyle(ScaleDownButtonStyle())
+            }
 
             // Video card container with dotted border
             VStack(spacing: 0) {
@@ -708,7 +869,7 @@ struct ConverterView: View {
                     ProgressView()
                         .tint(.white)
                 } else {
-                    Text("Convert")
+                    Text(viewModel.isBatchMode ? "Convert \(viewModel.items.count) Videos" : "Convert")
                         .font(.roundedHeadline())
                         .fontWeight(.semibold)
                 }
@@ -730,7 +891,7 @@ struct ConverterView: View {
             )
             .foregroundColor(.white)
         }
-        .disabled(viewModel.selectedVideoURL == nil || viewModel.isConverting)
+        .disabled(!viewModel.hasSelection || viewModel.isConverting)
         .buttonStyle(ScaleDownButtonStyle())
     }
 
@@ -758,12 +919,10 @@ struct ConverterView: View {
     private func handleFileSelection(_ result: Result<[URL], Error>) {
         switch result {
         case .success(let urls):
-            guard let url = urls.first else { return }
+            guard !urls.isEmpty else { return }
 
-            // Try to get security-scoped access for files from the Files picker
-            let hasSecurityAccess = url.startAccessingSecurityScopedResource()
             Task {
-                await viewModel.loadVideoFromURL(url, securityScoped: hasSecurityAccess)
+                await viewModel.handleFileSelection(urls)
             }
 
         case .failure(let error):
