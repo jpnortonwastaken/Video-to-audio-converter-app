@@ -413,8 +413,9 @@ struct ConverterView: View {
 
                 if viewModel.items.count > 1 {
                     Text("(\(viewModel.items.count))")
-                        .font(.roundedSubheadline())
-                        .foregroundColor(.gray)
+                        .font(.roundedHeadline())
+                        .fontWeight(.semibold)
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
                 }
 
                 Spacer()
