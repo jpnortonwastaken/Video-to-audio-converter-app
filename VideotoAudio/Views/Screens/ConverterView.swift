@@ -629,7 +629,7 @@ struct ConverterView: View {
                 Text(title)
                     .font(.roundedSubheadline())
                     .fontWeight(.semibold)
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                    .foregroundColor(colorScheme == .dark ? Color(red: 0.6, green: 0.8, blue: 1.0) : Color(red: 0.0, green: 0.2, blue: 0.5))
             }
             .frame(maxWidth: .infinity)
             .frame(height: 90)
