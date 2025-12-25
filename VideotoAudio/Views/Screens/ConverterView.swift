@@ -26,6 +26,9 @@ struct ConverterView: View {
     @State private var showFilesCard = false
     @State private var showFormatContainer = false
 
+    // Confirmation popup state
+    @State private var showClearConfirmation = false
+
     // Border style constants
     private let inputButtonsLineWidth: CGFloat = 2.5
     private let inputButtonsDashLength: CGFloat = 7
@@ -210,6 +213,15 @@ struct ConverterView: View {
             if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage)
             }
+        }
+        .alert("Clear Selected Videos", isPresented: $showClearConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Clear", role: .destructive) {
+                HapticManager.shared.softImpact()
+                viewModel.clearQueue()
+            }
+        } message: {
+            Text("Are you sure you want to remove all selected videos?")
         }
         .sheet(isPresented: $showFormatSheet) {
             FormatSelectionSheet(
@@ -445,7 +457,7 @@ struct ConverterView: View {
                 // Clear button
                 Button(action: {
                     HapticManager.shared.softImpact()
-                    viewModel.clearQueue()
+                    showClearConfirmation = true
                 }) {
                     Image(systemName: "xmark")
                         .font(.roundedCaption())
