@@ -428,7 +428,7 @@ struct ConverterView: View {
                     HStack(spacing: 4) {
                         Image(systemName: "plus")
                             .font(.roundedCaption())
-                        Text("Add")
+                        Text("Add Videos")
                             .font(.roundedCaption())
                     }
                     .foregroundColor(.blue)
@@ -449,11 +449,11 @@ struct ConverterView: View {
                     Image(systemName: "xmark")
                         .font(.roundedCaption())
                         .fontWeight(.semibold)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.red)
                         .padding(8)
                         .background(
                             Circle()
-                                .fill(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5))
+                                .fill(Color.red.opacity(0.15))
                         )
                 }
                 .buttonStyle(ScaleDownButtonStyle())
