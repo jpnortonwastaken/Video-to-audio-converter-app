@@ -492,6 +492,7 @@ struct ConverterView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
             }
+            .clipShape(RoundedRectangle(cornerRadius: 16))
             .bottomGradientFadeMask()
             .scrollIndicators(.hidden)
         }
