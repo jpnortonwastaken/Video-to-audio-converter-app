@@ -62,17 +62,10 @@ struct ConverterView: View {
                 ZStack(alignment: .top) {
                     // Show video preview only when items are loaded and ready
                     if viewModel.hasSelection && !viewModel.isLoadingItems {
-                        if viewModel.isSingleMode {
-                            // Single video card view
-                            videoPreviewView
-                                .scaleEffect(showVideo ? 1.0 : 0.3)
-                                .opacity(showVideo ? 1.0 : 0.0)
-                        } else {
-                            // Batch queue list view
-                            batchQueueListView
-                                .scaleEffect(showVideo ? 1.0 : 0.3)
-                                .opacity(showVideo ? 1.0 : 0.0)
-                        }
+                        // Unified selected videos container
+                        selectedVideosContainer
+                            .scaleEffect(showVideo ? 1.0 : 0.3)
+                            .opacity(showVideo ? 1.0 : 0.0)
                     } else {
                         // Input Options
                         VStack(spacing: 12) {
@@ -408,41 +401,70 @@ struct ConverterView: View {
         .background(Color.appSecondaryBackground(for: colorScheme))
     }
 
-    // MARK: - Batch Queue List View
-    private var batchQueueListView: some View {
-        VStack(spacing: 16) {
-            // Title with count and clear button
+    // MARK: - Selected Videos Container (Unified for single and multiple)
+    private var selectedVideosContainer: some View {
+        VStack(spacing: 0) {
+            // Header row with title and actions
             HStack {
-                Text("Selected Videos")
-                    .font(.roundedTitle2())
+                Text("Selected Video\(viewModel.items.count > 1 ? "s" : "")")
+                    .font(.roundedHeadline())
                     .fontWeight(.semibold)
                     .foregroundColor(colorScheme == .dark ? .white : .black)
 
+                if viewModel.items.count > 1 {
+                    Text("(\(viewModel.items.count))")
+                        .font(.roundedSubheadline())
+                        .foregroundColor(.gray)
+                }
+
                 Spacer()
 
-                Text("\(viewModel.items.count) videos")
-                    .font(.roundedCaption())
-                    .foregroundColor(.gray)
+                // Add more button
+                Button(action: {
+                    HapticManager.shared.softImpact()
+                    guard SubscriptionService.shared.requireSubscription() else { return }
+                    showPhotoPicker = true
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "plus")
+                            .font(.roundedCaption())
+                        Text("Add")
+                            .font(.roundedCaption())
+                    }
+                    .foregroundColor(.blue)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule()
+                            .fill(Color.blue.opacity(0.15))
+                    )
+                }
+                .buttonStyle(ScaleDownButtonStyle())
 
-                // Clear all button
+                // Clear button
                 Button(action: {
                     HapticManager.shared.softImpact()
                     viewModel.clearQueue()
                 }) {
-                    Image(systemName: "trash")
-                        .font(.roundedBody())
-                        .foregroundColor(.red.opacity(0.8))
+                    Image(systemName: "xmark")
+                        .font(.roundedCaption())
+                        .fontWeight(.semibold)
+                        .foregroundColor(.gray)
+                        .padding(8)
+                        .background(
+                            Circle()
+                                .fill(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5))
+                        )
                 }
                 .buttonStyle(ScaleDownButtonStyle())
             }
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 12)
 
-            // Scrollable list with add more button
+            // Scrollable video cards
             ScrollView {
-                LazyVStack(spacing: 12) {
-                    // Add more videos button
-                    addMoreVideosButton
-
-                    // Queue items
+                LazyVStack(spacing: 10) {
                     ForEach(viewModel.items) { item in
                         BatchQueueItemView(
                             item: item,
@@ -454,45 +476,34 @@ struct ConverterView: View {
                         )
                     }
                 }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 16)
             }
         }
         .frame(maxWidth: .infinity)
-    }
-
-    // MARK: - Add More Videos Button
-    private var addMoreVideosButton: some View {
-        Button(action: {
-            HapticManager.shared.softImpact()
-
-            guard SubscriptionService.shared.requireSubscription() else {
-                return
-            }
-
-            showPhotoPicker = true
-        }) {
-            HStack(spacing: 8) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.roundedBody())
-                Text("Add More Videos")
-                    .font(.roundedSubheadline())
-                    .fontWeight(.medium)
-            }
-            .foregroundColor(.blue)
-            .frame(maxWidth: .infinity)
-            .frame(height: 50)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color.blue.opacity(0.1))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(
-                        Color.blue.opacity(0.3),
-                        style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [6, 6])
+        .frame(height: 330)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color.blue.opacity(0.08),
+                            Color.blue.opacity(0.02)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
                     )
-            )
-        }
-        .buttonStyle(ScaleDownButtonStyle())
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(
+                    Color.blue.opacity(inputButtonsOpacity),
+                    style: inputButtonsUseDottedLine
+                        ? StrokeStyle(lineWidth: inputButtonsLineWidth, lineCap: .round, dash: [inputButtonsDashLength, inputButtonsGapLength])
+                        : StrokeStyle(lineWidth: inputButtonsLineWidth)
+                )
+        )
     }
 
     // MARK: - Input Option Card (Large)
@@ -655,167 +666,6 @@ struct ConverterView: View {
         .buttonStyle(ScaleDownButtonStyle())
     }
 
-    // MARK: - Video Preview (Single Mode)
-    private var videoPreviewView: some View {
-        VStack(spacing: 16) {
-            // Title above the container
-            HStack {
-                Text("Selected Video")
-                    .font(.roundedTitle2())
-                    .fontWeight(.semibold)
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
-
-                Spacer()
-
-                // Add more button for single mode
-                Button(action: {
-                    HapticManager.shared.softImpact()
-
-                    guard SubscriptionService.shared.requireSubscription() else {
-                        return
-                    }
-
-                    showPhotoPicker = true
-                }) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "plus")
-                            .font(.roundedCaption())
-                        Text("Add More")
-                            .font(.roundedCaption())
-                    }
-                    .foregroundColor(.blue)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .background(
-                        Capsule()
-                            .fill(Color.blue.opacity(0.15))
-                    )
-                }
-                .buttonStyle(ScaleDownButtonStyle())
-            }
-
-            // Video card container with dotted border
-            VStack(spacing: 0) {
-                videoCardItem
-            }
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.clear)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(
-                        (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(containerOpacity),
-                        style: containerUseDottedLine
-                            ? StrokeStyle(lineWidth: containerLineWidth, lineCap: .round, dash: [containerDashLength, containerGapLength])
-                            : StrokeStyle(lineWidth: containerLineWidth)
-                    )
-            )
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    // MARK: - Video Card Item
-    private var videoCardItem: some View {
-        HStack(spacing: 16) {
-            // Thumbnail
-            ZStack(alignment: .bottomTrailing) {
-                Group {
-                    if let thumbnail = viewModel.videoThumbnail {
-                        Image(uiImage: thumbnail)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } else {
-                        Rectangle()
-                            .fill(Color.appTertiaryBackground(for: colorScheme))
-                            .overlay(
-                                Image(systemName: "film")
-                                    .font(.roundedSystem(size: 24))
-                                    .foregroundColor(.gray)
-                            )
-                    }
-                }
-                .frame(width: 100, height: 80)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                // Duration badge on thumbnail
-                if let duration = viewModel.formattedDuration {
-                    Text(duration)
-                        .font(.roundedSystem(size: 10, weight: .semibold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 3)
-                        .background(
-                            Capsule()
-                                .fill(Color.black.opacity(0.75))
-                        )
-                        .padding(6)
-                }
-            }
-
-            // Video info
-            VStack(alignment: .leading, spacing: 6) {
-                // Title
-                Text(viewModel.videoTitle ?? "Video")
-                    .font(.roundedHeadline())
-                    .fontWeight(.semibold)
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
-                    .lineLimit(2)
-
-                // Format and date row
-                HStack(spacing: 8) {
-                    // Format badge
-                    Text(viewModel.originalVideoFormat)
-                        .font(.roundedCaption())
-                        .fontWeight(.medium)
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(
-                            Capsule()
-                                .fill(colorForFormat(viewModel.originalVideoFormat).opacity(0.2))
-                        )
-                        .overlay(
-                            Capsule()
-                                .stroke(
-                                    colorForFormat(viewModel.originalVideoFormat).opacity(0.4),
-                                    style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [3, 3])
-                                )
-                        )
-
-                    // Date
-                    if let date = viewModel.formattedDate {
-                        Text(date)
-                            .font(.roundedCaption())
-                            .foregroundColor(.gray)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            // X button to remove
-            Button(action: {
-                HapticManager.shared.softImpact()
-                viewModel.reset()
-            }) {
-                Image(systemName: "xmark")
-                    .font(.roundedSystem(size: 12, weight: .bold))
-                    .foregroundColor(.gray)
-                    .frame(width: 28, height: 28)
-                    .background(
-                        Circle()
-                            .fill(colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5))
-                    )
-            }
-        }
-        .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.appTertiaryBackground(for: colorScheme))
-        )
-    }
 
     // MARK: - Format Selector
     private var formatSelectorView: some View {
