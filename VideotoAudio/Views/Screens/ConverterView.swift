@@ -484,24 +484,15 @@ struct ConverterView: View {
         .frame(height: 330)
         .background(
             RoundedRectangle(cornerRadius: 20)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color.blue.opacity(0.08),
-                            Color.blue.opacity(0.02)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
+                .fill(Color.appSecondaryBackground(for: colorScheme))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 20)
                 .stroke(
-                    Color.blue.opacity(inputButtonsOpacity),
-                    style: inputButtonsUseDottedLine
-                        ? StrokeStyle(lineWidth: inputButtonsLineWidth, lineCap: .round, dash: [inputButtonsDashLength, inputButtonsGapLength])
-                        : StrokeStyle(lineWidth: inputButtonsLineWidth)
+                    (colorScheme == .dark ? Color(.systemGray3) : Color(.systemGray4)).opacity(containerOpacity),
+                    style: containerUseDottedLine
+                        ? StrokeStyle(lineWidth: containerLineWidth, lineCap: .round, dash: [containerDashLength, containerGapLength])
+                        : StrokeStyle(lineWidth: containerLineWidth)
                 )
         )
     }
