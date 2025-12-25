@@ -427,7 +427,7 @@ struct ConverterView: View {
                     Text("(\(viewModel.items.count))")
                         .font(.roundedHeadline())
                         .fontWeight(.semibold)
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                        .foregroundColor(.gray)
                 }
 
                 Spacer()
