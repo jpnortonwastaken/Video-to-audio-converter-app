@@ -572,7 +572,7 @@ struct ConverterView: View {
                         .foregroundColor(.blue)
                 }
 
-                Text("Select Video")
+                Text("Select Video(s)")
                     .font(.roundedTitle2())
                     .fontWeight(.semibold)
                     .foregroundColor(colorScheme == .dark ? Color(red: 0.6, green: 0.8, blue: 1.0) : Color(red: 0.0, green: 0.2, blue: 0.5))
