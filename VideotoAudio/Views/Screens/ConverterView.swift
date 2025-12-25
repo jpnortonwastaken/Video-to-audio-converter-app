@@ -480,6 +480,7 @@ struct ConverterView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
             }
+            .scrollIndicators(.hidden)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 330)
