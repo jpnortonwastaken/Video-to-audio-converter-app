@@ -171,6 +171,18 @@ struct ConverterView: View {
         ) { result in
             handleFileSelection(result)
         }
+        .photosPicker(
+            isPresented: $showPhotoPicker,
+            selection: $viewModel.selectedPhotoItems,
+            maxSelectionCount: 50,
+            matching: .videos,
+            photoLibrary: .shared()
+        )
+        .onChange(of: viewModel.selectedPhotoItems) { _, newValue in
+            Task {
+                await viewModel.handlePhotoPickerSelection(newValue)
+            }
+        }
         .onChange(of: viewModel.isLoadingItems) { oldValue, newValue in
             // When loading finishes and we have items, animate to show video
             if oldValue == true && newValue == false && viewModel.hasSelection {
@@ -481,18 +493,6 @@ struct ConverterView: View {
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
-        .photosPicker(
-            isPresented: $showPhotoPicker,
-            selection: $viewModel.selectedPhotoItems,
-            maxSelectionCount: 50,
-            matching: .videos,
-            photoLibrary: .shared()
-        )
-        .onChange(of: viewModel.selectedPhotoItems) { _, newValue in
-            Task {
-                await viewModel.handlePhotoPickerSelection(newValue)
-            }
-        }
     }
 
     // MARK: - Input Option Card (Large)
@@ -607,18 +607,6 @@ struct ConverterView: View {
             )
         }
         .buttonStyle(ScaleDownButtonStyle())
-        .photosPicker(
-            isPresented: $showPhotoPicker,
-            selection: $viewModel.selectedPhotoItems,
-            maxSelectionCount: 50,
-            matching: .videos,
-            photoLibrary: .shared()
-        )
-        .onChange(of: viewModel.selectedPhotoItems) { _, newValue in
-            Task {
-                await viewModel.handlePhotoPickerSelection(newValue)
-            }
-        }
     }
 
     // MARK: - Small Input Option Card
